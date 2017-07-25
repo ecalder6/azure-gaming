@@ -1,0 +1,19 @@
+Windows Update Report For Computer: cloudgaming
+Report Created On: 07/25/2017 10:05:35
+==============================================================================
+
+List of Applicable Updates For This Computer
+------------------------------------------------
+	 1 -- Definition Update for Windows Defender - KB2267602 (Definition 1.249.211.0)
+
+
+Initialising Download of Applicable Updates
+------------------------------------------------
+	 1 -- Downloading Update Definition Update for Windows Defender - KB2267602 (Definition 1.249.211.0) 
+	 Download Status: SUCCESS
+
+
+Installation of Downloaded Updates
+------------------------------------------------
+	 1 -- Installing Update: Definition Update for Windows Defender - KB2267602 (Definition 1.249.211.0)
+	 Update Installation Status: SUCCESS

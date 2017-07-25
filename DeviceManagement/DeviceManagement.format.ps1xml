@@ -1,0 +1,48 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Configuration>
+  <ViewDefinitions>
+    
+    <View>
+      <Name>DeviceManagementLib.Device</Name>
+      <ViewSelectedBy>
+        <TypeName>DeviceManagementLib.Device</TypeName>
+      </ViewSelectedBy>
+      <TableControl>
+        <AutoSize />
+        <TableHeaders>
+          <TableColumnHeader>
+            <Label>Name</Label>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Label>Enabled</Label>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Label>Class</Label>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Label>InstanceId</Label>
+          </TableColumnHeader>
+        </TableHeaders>
+        <TableRowEntries>
+          <TableRowEntry>
+            <TableColumnItems>
+              <TableColumnItem>
+                <PropertyName>Name</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>IsEnabled</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>Class</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>InstanceId</PropertyName>
+              </TableColumnItem>
+            </TableColumnItems>
+          </TableRowEntry>
+        </TableRowEntries>
+      </TableControl>
+    </View>
+
+  </ViewDefinitions>
+</Configuration>
