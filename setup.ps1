@@ -2,7 +2,7 @@
 function Update-Windows {
     # Source: https://gallery.technet.microsoft.com/scriptcenter/Execute-Windows-Update-fc6acb16
     Write-Host "Running Windows Update"
-    Invoke-Expression .\PS_WinUpdate.ps1
+    Invoke-Expression $PSScriptRoot\PS_WinUpdate.ps1
 }
 
 function Update-Firewall {
@@ -40,27 +40,27 @@ function Install-NvidiaDriver {
 
     $version = $r.parsedhtml.GetElementsByClassName("gridItem")[2].innerText
     $url = "http://us.download.nvidia.com/Windows/Quadro_Certified/$version/$version-tesla-desktop-winserver2016-international-whql.exe"
-    $driver_file = ".\$version-driver.exe"
+    $driver_file = "$version-driver.exe"
 
     Write-Host "Downloading Nvidia M60 driver from URL + $url"
-    (New-Object System.Net.WebClient).DownloadFile($url, $driver_file)
+    (New-Object System.Net.WebClient).DownloadFile($url, "$PSScriptRoot\$driver_file")
 
-    Write-Host "Extracting Nvidia M60 driver from file $driver_file"
-    # Start-Process -FilePath ".\$driver_file" -ArgumentList "-s", "-noreboot" -Wait
+    Write-Host "Extracting Nvidia M60 driver from file $PSScriptRoot\$driver_file"
+    Start-Process -FilePath "$PSScriptRoot\$driver_file" -ArgumentList "-s", "-noreboot" -Wait
 
     $setup_file = "C:\NVIDIA\DisplayDriver\$version\Win10_64\International\setup.exe"
     Write-Host "Installing Nvidia M60 driver from file $setup_file"
-    # Start-Process -FilePath $setup_file -ArgumentList "-s", "-noreboot", "-noeula" -Wait
+    Start-Process -FilePath $setup_file -ArgumentList "-s", "-noreboot", "-noeula" -Wait
 
     Write-Host "Cleaning up driver files"
-    Remove-Item -Path $driver_file -Confirm:$false
-    Remove-Item "C:\NVIDIA\DisplayDriver\$version\*" -Confirm:$false -Recurse
+    Remove-Item -Path $PSScriptRoot\$driver_file -Confirm:$false
+    Remove-Item "C:\NVIDIA\DisplayDriver\$version" -Confirm:$false -Recurse
 }
 
 function Disable-Devices {
     # Source: https://gallery.technet.microsoft.com/PowerShell-Device-60d73bb0
     Write-Host "Disabling Hyper-V Video"
-    Import-Module .\DeviceManagement\DeviceManagement.psd1
+    Import-Module $PSScriptRoot\DeviceManagement\DeviceManagement.psd1
     Get-Device | Where-Object -Property Name -Like "Microsoft Hyper-V Video" | Disable-Device -Confirm:$false
 }
 
