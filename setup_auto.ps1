@@ -164,7 +164,6 @@ workflow Set-Computer($network, $steam_username, $steam_password) {
         Update-Windows
     }
     Install-NvidiaDriver
-    Install-VirtualAudio
     Install-Chocolatey
     Install-VPN
     Join-Network $network
