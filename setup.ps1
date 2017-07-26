@@ -179,11 +179,11 @@ workflow Set-Computer($network, $steam_username, $steam_password) {
     Install-VirtualAudio
     Install-Chocolatey
     Install-VPN
-    Join-Network($network)
+    Join-Network $network
     Install-Steam
-    Set-Steam($steam_username, $steam_password)
+    Set-Steam $steam_username $steam_password
     Restart-Computer -Wait
     Disable-Devices
 }
 
-Set-Computer($network, $steam_username, $steam_password) -JobName SetComputer
+Set-Computer $network $steam_username $steam_password -JobName SetComputer
