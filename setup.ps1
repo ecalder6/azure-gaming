@@ -96,6 +96,7 @@ function Install-Chocolatey {
 function Install-VPN {
     Write-Host "Importing zero tier certificate"
     Import-Certificate -FilePath "$PSScriptRoot\zerotier_cert.cer" -CertStoreLocation "cert:\CurrentUser\TrustedPublisher"
+    Import-Certificate -FilePath "$PSScriptRoot\zerotier_cert.cer" -CertStoreLocation "cert:\LocalMachine\TrustedPublisher"
 
     Write-Host "Installing ZeroTier"
     choco install zerotier-one --force
@@ -128,20 +129,9 @@ function Set-Steam {
 }
 
 function main {
-    Update-Windows
-    Update-Firewall
-    Disable-Defender
-    Disable-ScheduledTasks
-    Edit-VisualEffectsRegistry
-    Install-NvidiaDriver
-    Disable-Devices
-    Enable-Audio
-    Install-VirtualAudio
     Install-Chocolatey
     Install-VPN
     Join-Network
-    Install-Steam
-    Set-Steam
 }
 
 main
