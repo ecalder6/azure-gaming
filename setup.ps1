@@ -94,6 +94,9 @@ function Install-Chocolatey {
 }
 
 function Install-VPN {
+    Write-Host "Importing zero tier certificate"
+    Import-Certificate -FilePath "$PSScriptRoot\zerotier_cert.cer"
+
     Write-Host "Installing ZeroTier"
     choco install zerotier-one --force
     $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine")
