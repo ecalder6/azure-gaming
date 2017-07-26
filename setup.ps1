@@ -1,8 +1,3 @@
-$network=$args[0]
-$steam_username = $args[1]
-$steam_password = $args[2]
-$windows_update = $args[3]
-
 function Update-Windows {
     $url = "https://gallery.technet.microsoft.com/scriptcenter/Execute-Windows-Update-fc6acb16/file/144365/1/PS_WinUpdate.zip"
     $compressed_file = "PS_WinUpdate.zip"
@@ -152,6 +147,13 @@ function Set-Steam {
 }
 
 function main {
+    param (
+        [string]$network,
+        [string]$steam_username,
+        [string]$steam_password,
+        [switch]$windows_update = $false
+    )
+
     if ($windows_update) {
         Update-Windows
     }
