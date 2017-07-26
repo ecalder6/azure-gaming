@@ -95,7 +95,7 @@ function Install-Chocolatey {
 
 function Install-VPN {
     Write-Host "Importing zero tier certificate"
-    Import-Certificate -FilePath "$PSScriptRoot\zerotier_cert.cer"
+    Import-Certificate -FilePath "$PSScriptRoot\zerotier_cert.cer" -CertStoreLocation "cert:\CurrentUser\TrustedPublisher"
 
     Write-Host "Installing ZeroTier"
     choco install zerotier-one --force
