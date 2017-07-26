@@ -4,9 +4,18 @@ $steam_password = $args[2]
 $windows_update = $args[3]
 
 function Update-Windows {
-    # Source: https://gallery.technet.microsoft.com/scriptcenter/Execute-Windows-Update-fc6acb16
+    $url = "https://gallery.technet.microsoft.com/scriptcenter/Execute-Windows-Update-fc6acb16/file/144365/1/PS_WinUpdate.zip"
+    $compressed_file = "PS_WinUpdate.zip"
+    $update_script = "PS_WinUpdate.ps1"
+
+    Write-Host "Downloading Windows Update Powershell Script from $url"
+    (New-Object System.Net.WebClient).DownloadFile($url, "$PSScriptRoot\$compressed_file")
+
+    Write-Host "Extracting Windows Update Powershell Script"
+    Expand-Archive "$PSScriptRoot\$compressed_file" -DestinationPath "$PSScriptRoot\" -Force
+
     Write-Host "Running Windows Update"
-    Invoke-Expression $PSScriptRoot\PS_WinUpdate.ps1
+    Invoke-Expression $PSScriptRoot\$update_script
 }
 
 function Update-Firewall {
@@ -62,9 +71,18 @@ function Install-NvidiaDriver {
 }
 
 function Disable-Devices {
-    # Source: https://gallery.technet.microsoft.com/PowerShell-Device-60d73bb0
+    $url = "https://gallery.technet.microsoft.com/PowerShell-Device-60d73bb0/file/147248/2/DeviceManagement.zip"
+    $compressed_file = "DeviceManagement.zip"
+    $extract_folder = "DeviceManagement"
+
+    Write-Host "Downloading Device Management Powershell Script from $url"
+    (New-Object System.Net.WebClient).DownloadFile($url, "$PSScriptRoot\$compressed_file")
+
+    Write-Host "Extracting Device Management Powershell Script"
+    Expand-Archive "$PSScriptRoot\$compressed_file" -DestinationPath "$PSScriptRoot\$extract_folder" -Force
+
     Write-Host "Disabling Hyper-V Video"
-    Import-Module $PSScriptRoot\DeviceManagement\DeviceManagement.psd1
+    Import-Module "$PSScriptRoot\$extract_folder\DeviceManagement.psd1"
     Get-Device | Where-Object -Property Name -Like "Microsoft Hyper-V Video" | Disable-Device -Confirm:$false
 }
 
@@ -89,15 +107,21 @@ function Install-VirtualAudio {
 
 function Install-Chocolatey {
     Write-Host "Installing Chocolatey"
-    iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))
+    Invoke-Expression ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))
     $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine")
     chocolatey feature enable -n allowGlobalConfirmation
 }
 
 function Install-VPN {
+    $url = "https://github.com/ecalder6/azure-gaming/raw/master/zerotier_cert.cer"
+    $cert = "zerotier_cert.cer"
+
+    Write-Host "Downloading zero tier certificate from $url"
+    (New-Object System.Net.WebClient).DownloadFile($url, "$PSScriptRoot\$cert")
+
     Write-Host "Importing zero tier certificate"
-    Import-Certificate -FilePath "$PSScriptRoot\zerotier_cert.cer" -CertStoreLocation "cert:\CurrentUser\TrustedPublisher"
-    Import-Certificate -FilePath "$PSScriptRoot\zerotier_cert.cer" -CertStoreLocation "cert:\LocalMachine\TrustedPublisher"
+    Import-Certificate -FilePath "$PSScriptRoot\$cert" -CertStoreLocation "cert:\CurrentUser\TrustedPublisher"
+    Import-Certificate -FilePath "$PSScriptRoot\$cert" -CertStoreLocation "cert:\LocalMachine\TrustedPublisher"
 
     Write-Host "Installing ZeroTier"
     choco install zerotier-one --force
