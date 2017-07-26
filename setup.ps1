@@ -146,8 +146,6 @@ function Install-Steam {
 
 function Set-Steam {
     $steam = "C:\Program Files (x86)\Steam\Steam.exe"
-    Write-Host "Logging into steam"
-    Start-Process -FilePath $steam -ArgumentList "-login $steam_username $steam_password", "-silent"
 
     Write-Host "Editing registry to log into steam at startup"
     Set-ItemProperty -Path "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Run" -Name "Steam" -Value "$steam -login $steam_username $steam_password -silent"
