@@ -54,11 +54,7 @@ function Disable-ScheduledTasks {
 }
 
 function Install-NvidiaDriver {
-    # Modified from source: https://github.com/lord-carlos/nvidia-update
-    Write-Host "Installing Nvidia Driver"
-    $r = Invoke-WebRequest -Uri 'https://www.nvidia.com/Download/processFind.aspx?psid=75&pfid=783&osid=74&lid=1&whql=&lang=en-us&ctk=16' -Method GET
-
-    $version = $r.parsedhtml.GetElementsByClassName("gridItem")[2].innerText
+    $version = "377.35"
     $url = "http://us.download.nvidia.com/Windows/Quadro_Certified/$version/$version-tesla-desktop-winserver2016-international-whql.exe"
     $driver_file = "$version-driver.exe"
 
