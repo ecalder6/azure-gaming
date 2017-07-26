@@ -11,7 +11,6 @@ function Disable-InternetExplorerESC {
     $UserKey = "HKLM:\SOFTWARE\Microsoft\Active Setup\Installed Components\{A509B1A8-37EF-4b3f-8CFC-4F3A74704073}"
     Set-ItemProperty -Path $AdminKey -Name "IsInstalled" -Value 0 -Force
     Set-ItemProperty -Path $UserKey -Name "IsInstalled" -Value 0 -Force
-    Stop-Process -Name Explorer -Force
     Write-Host "IE Enhanced Security Configuration (ESC) has been disabled." -ForegroundColor Green
 }
 
@@ -52,11 +51,6 @@ function Disable-ScheduledTasks {
     Disable-ScheduledTask -TaskName 'Windows Defender Cleanup' -TaskPath '\Microsoft\Windows\Windows Defender'
     Disable-ScheduledTask -TaskName 'Windows Defender Scheduled Scan' -TaskPath '\Microsoft\Windows\Windows Defender'
     Disable-ScheduledTask -TaskName 'Windows Defender Verification' -TaskPath '\Microsoft\Windows\Windows Defender'
-}
-
-function Edit-VisualEffectsRegistry {
-    Write-Host "Adjust performance options in registry"
-    Set-ItemProperty -Path "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\VisualEffects" -Name "VisualFXSetting" -Value 2
 }
 
 function Install-NvidiaDriver {
@@ -160,17 +154,15 @@ function Set-Steam($steam_username, $steam_password) {
     $steam = "C:\Program Files (x86)\Steam\Steam.exe"
     if ($steam_username.length -gt 0) {
         Write-Host "Editing registry to log into steam at startup"
-        Set-ItemProperty -Path "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Run" -Name "Steam" -Value "$steam -login $steam_username $steam_password -silent"
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Run" -Name "Steam" -Value "$steam -login $steam_username $steam_password -silent"
     }
 }
-
 
 workflow Set-Computer($network, $steam_username, $steam_password) {
     Disable-InternetExplorerESC
     Update-Firewall
     Disable-Defender
     Disable-ScheduledTasks
-    Edit-VisualEffectsRegistry
     Enable-Audio
     if ($windows_update) {
         Update-Windows
@@ -182,8 +174,7 @@ workflow Set-Computer($network, $steam_username, $steam_password) {
     Join-Network($network)
     Install-Steam
     Set-Steam($steam_username, $steam_password)
-    Restart-Computer -Wait
-    Disable-Devices
+    Restart-Computer
 }
 
 Set-Computer($network, $steam_username, $steam_password) -JobName SetComputer
