@@ -1,3 +1,6 @@
+$network=$args[0]
+$steam_username = $args[1]
+$steam_password = $args[2]
 
 function Update-Windows {
     # Source: https://gallery.technet.microsoft.com/scriptcenter/Execute-Windows-Update-fc6acb16
@@ -64,9 +67,63 @@ function Disable-Devices {
     Get-Device | Where-Object -Property Name -Like "Microsoft Hyper-V Video" | Disable-Device -Confirm:$false
 }
 
-function main {
-    # TODO: UNCOMMENT commands
+function Enable-Audio {
+    Write-Host "Enabling Audio Service"
+    Set-Service -Name "Audiosrv" -StartupType Automatic
+    Start-Service Audiosrv
+}
 
+function Install-VirtualAudio {
+    # TODO. CURRENTLY NOT POSSIBLE TO SILENT INSTALL. 
+
+    # Write-Host "Downloading Virtual Audio Driver"
+    # (New-Object System.Net.WebClient).DownloadFile("http://vbaudio.jcedeveloppement.com/Download_CABLE/VBCABLE_Driver_Pack43.zip", "$PSScriptRoot\$compressed_file")
+
+    # Write-Host "Extracting Virtual Audio Driver"
+    # Expand-Archive "$PSScriptRoot\$compressed_file" -DestinationPath "$PSScriptRoot\$driver_folder" -Force
+    
+    # Write-Host "Installing Virtual Audio Driver from file $PSScriptRoot\$driver_folder\$driver_executable"
+    # Start-Process -FilePath "$PSScriptRoot\$driver_folder\$driver_executable" -ArgumentList "/s", "/v`"/qn`"" "/noeula" -Wait
+}
+
+function Install-Chocolatey {
+    Write-Host "Installing Chocolatey"
+    iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))
+    chocolatey feature enable -n allowGlobalConfirmation
+}
+
+function Install-VPN {
+    Write-Host "Installing ZeroTier"
+    choco install zerotier-one --force
+    $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine")
+}
+
+function Join-Network {
+    Write-Host "Joining network $network"
+    zerotier-cli join $network
+}
+
+function Install-Steam {
+    $steam_exe = "steam.exe"
+    Write-Host "Downloading steam into path $PSScriptRoot\$steam_exe"
+    (New-Object System.Net.WebClient).DownloadFile("https://steamcdn-a.akamaihd.net/client/installer/SteamSetup.exe", "$PSScriptRoot\$steam_exe")
+    Write-Host "Installing steam"
+    Start-Process -FilePath "$PSScriptRoot\$steam_exe" -ArgumentList "/S" -Wait
+
+    Write-Host "Cleaning up steam installation file"
+    Remove-Item -Path $PSScriptRoot\$steam_exe -Confirm:$false
+}
+
+function Set-Steam {
+    $steam = "C:\Program Files (x86)\Steam\Steam.exe"
+    Write-Host "Logging into steam"
+    Start-Process -FilePath $steam -ArgumentList "-login $steam_username $steam_password", "-silent"
+
+    Write-Host "Editing registry to log into steam at startup"
+    Set-ItemProperty -Path "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Run" -Name "Steam" -Value "$steam -login $steam_username $steam_password -silent"
+}
+
+function main {
     Update-Windows
     Update-Firewall
     Disable-Defender
@@ -74,6 +131,13 @@ function main {
     Edit-VisualEffectsRegistry
     Install-NvidiaDriver
     Disable-Devices
+    Enable-Audio
+    Install-VirtualAudio
+    Install-Chocolatey
+    Install-VPN
+    Join-Network
+    Install-Steam
+    Set-Steam
 }
 
 main
