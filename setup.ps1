@@ -89,6 +89,7 @@ function Install-VirtualAudio {
 function Install-Chocolatey {
     Write-Host "Installing Chocolatey"
     iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))
+    $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine")
     chocolatey feature enable -n allowGlobalConfirmation
 }
 
