@@ -1,3 +1,10 @@
+param (
+    [string]$network,
+    [string]$steam_username,
+    [string]$steam_password,
+    [switch]$windows_update = $false
+)
+
 function Disable-InternetExplorerESC {
     # From https://stackoverflow.com/questions/9368305/disable-ie-security-on-windows-server-via-powershell
     $AdminKey = "HKLM:\SOFTWARE\Microsoft\Active Setup\Installed Components\{A509B1A7-37EF-4b3f-8CFC-4F3A74704073}"
@@ -52,11 +59,8 @@ function Edit-VisualEffectsRegistry {
 }
 
 function Install-NvidiaDriver {
-    # Modified from source: https://github.com/lord-carlos/nvidia-update
     Write-Host "Installing Nvidia Driver"
-    $r = Invoke-WebRequest -Uri 'https://www.nvidia.com/Download/processFind.aspx?psid=75&pfid=783&osid=74&lid=1&whql=&lang=en-us&ctk=16' -Method GET
-
-    $version = $r.parsedhtml.GetElementsByClassName("gridItem")[2].innerText
+    $version = 377.35
     $url = "http://us.download.nvidia.com/Windows/Quadro_Certified/$version/$version-tesla-desktop-winserver2016-international-whql.exe"
     $driver_file = "$version-driver.exe"
 
@@ -125,7 +129,6 @@ function Install-VPN {
     (New-Object System.Net.WebClient).DownloadFile($url, "$PSScriptRoot\$cert")
 
     Write-Host "Importing zero tier certificate"
-    Import-Certificate -FilePath "$PSScriptRoot\$cert" -CertStoreLocation "cert:\CurrentUser\TrustedPublisher"
     Import-Certificate -FilePath "$PSScriptRoot\$cert" -CertStoreLocation "cert:\LocalMachine\TrustedPublisher"
 
     Write-Host "Installing ZeroTier"
@@ -157,24 +160,17 @@ function Set-Steam {
 }
 
 function main {
-    param (
-        [string]$network,
-        [string]$steam_username,
-        [string]$steam_password,
-        [switch]$windows_update = $false
-    )
-
     Disable-InternetExplorerESC
-    if ($windows_update) {
-        Update-Windows
-    }
     Update-Firewall
     Disable-Defender
     Disable-ScheduledTasks
     Edit-VisualEffectsRegistry
+    Enable-Audio
+    if ($windows_update) {
+        Update-Windows
+    }
     Install-NvidiaDriver
     Disable-Devices
-    Enable-Audio
     Install-VirtualAudio
     Install-Chocolatey
     Install-VPN
