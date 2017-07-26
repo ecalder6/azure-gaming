@@ -22,6 +22,7 @@ function Update-Windows {
 
     Write-Host "Downloading Windows Update Powershell Script from $url"
     (New-Object System.Net.WebClient).DownloadFile($url, "$PSScriptRoot\$compressed_file")
+    Unblock-File -Path "$PSScriptRoot\$compressed_file"
 
     Write-Host "Extracting Windows Update Powershell Script"
     Expand-Archive "$PSScriptRoot\$compressed_file" -DestinationPath "$PSScriptRoot\" -Force
@@ -59,20 +60,19 @@ function Edit-VisualEffectsRegistry {
 }
 
 function Install-NvidiaDriver {
+    # Modified from source: https://github.com/lord-carlos/nvidia-update
     Write-Host "Installing Nvidia Driver"
-    $version = 377.35
+    $r = Invoke-WebRequest -Uri 'https://www.nvidia.com/Download/processFind.aspx?psid=75&pfid=783&osid=74&lid=1&whql=&lang=en-us&ctk=16' -Method GET
+
+    $version = $r.parsedhtml.GetElementsByClassName("gridItem")[2].innerText
     $url = "http://us.download.nvidia.com/Windows/Quadro_Certified/$version/$version-tesla-desktop-winserver2016-international-whql.exe"
     $driver_file = "$version-driver.exe"
 
-    Write-Host "Downloading Nvidia M60 driver from URL + $url"
+    Write-Host "Downloading Nvidia M60 driver from URL $url"
     (New-Object System.Net.WebClient).DownloadFile($url, "$PSScriptRoot\$driver_file")
 
-    Write-Host "Extracting Nvidia M60 driver from file $PSScriptRoot\$driver_file"
+    Write-Host "Installing Nvidia M60 driver from file $PSScriptRoot\$driver_file"
     Start-Process -FilePath "$PSScriptRoot\$driver_file" -ArgumentList "-s", "-noreboot" -Wait
-
-    $setup_file = "C:\NVIDIA\DisplayDriver\$version\Win10_64\International\setup.exe"
-    Write-Host "Installing Nvidia M60 driver from file $setup_file"
-    Start-Process -FilePath $setup_file -ArgumentList "-s", "-noreboot", "-noeula" -Wait
 
     Write-Host "Cleaning up driver files"
     Remove-Item -Path $PSScriptRoot\$driver_file -Confirm:$false
@@ -86,6 +86,7 @@ function Disable-Devices {
 
     Write-Host "Downloading Device Management Powershell Script from $url"
     (New-Object System.Net.WebClient).DownloadFile($url, "$PSScriptRoot\$compressed_file")
+    Unblock-File -Path "$PSScriptRoot\$compressed_file"
 
     Write-Host "Extracting Device Management Powershell Script"
     Expand-Archive "$PSScriptRoot\$compressed_file" -DestinationPath "$PSScriptRoot\$extract_folder" -Force
@@ -102,16 +103,19 @@ function Enable-Audio {
 }
 
 function Install-VirtualAudio {
-    # TODO. CURRENTLY NOT POSSIBLE TO SILENT INSTALL. 
+    $compressed_file = "VBCABLE_Driver_Pack43.zip"
+    $driver_folder = "VBCABLE_Driver_Pack43"
+    $driver_executable = "VBCABLE_Setup_x64.exe"
 
-    # Write-Host "Downloading Virtual Audio Driver"
-    # (New-Object System.Net.WebClient).DownloadFile("http://vbaudio.jcedeveloppement.com/Download_CABLE/VBCABLE_Driver_Pack43.zip", "$PSScriptRoot\$compressed_file")
+    Write-Host "Downloading Virtual Audio Driver"
+    (New-Object System.Net.WebClient).DownloadFile("http://vbaudio.jcedeveloppement.com/Download_CABLE/VBCABLE_Driver_Pack43.zip", "$PSScriptRoot\$compressed_file")
+    Unblock-File -Path "$PSScriptRoot\$compressed_file"
 
-    # Write-Host "Extracting Virtual Audio Driver"
-    # Expand-Archive "$PSScriptRoot\$compressed_file" -DestinationPath "$PSScriptRoot\$driver_folder" -Force
+    Write-Host "Extracting Virtual Audio Driver"
+    Expand-Archive "$PSScriptRoot\$compressed_file" -DestinationPath "$PSScriptRoot\$driver_folder" -Force
     
-    # Write-Host "Installing Virtual Audio Driver from file $PSScriptRoot\$driver_folder\$driver_executable"
-    # Start-Process -FilePath "$PSScriptRoot\$driver_folder\$driver_executable" -ArgumentList "/s", "/v`"/qn`"" "/noeula" -Wait
+    Write-Host "REQUIRE YOUR ACTION! CLICK ON INSTALL DRIVER. Installing Virtual Audio Driver from file $PSScriptRoot\$driver_folder\$driver_executable"
+    Start-Process -FilePath "$PSScriptRoot\$driver_folder\$driver_executable" -Wait
 }
 
 function Install-Chocolatey {
@@ -154,12 +158,13 @@ function Install-Steam {
 
 function Set-Steam {
     $steam = "C:\Program Files (x86)\Steam\Steam.exe"
-
-    Write-Host "Editing registry to log into steam at startup"
-    Set-ItemProperty -Path "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Run" -Name "Steam" -Value "$steam -login $steam_username $steam_password -silent"
+    if ($steam_username.length -gt 0) {
+        Write-Host "Editing registry to log into steam at startup"
+        Set-ItemProperty -Path "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Run" -Name "Steam" -Value "$steam -login $steam_username $steam_password -silent"
+    }
 }
 
-function main {
+workflow main {
     Disable-InternetExplorerESC
     Update-Firewall
     Disable-Defender
@@ -170,13 +175,14 @@ function main {
         Update-Windows
     }
     Install-NvidiaDriver
-    Disable-Devices
     Install-VirtualAudio
     Install-Chocolatey
     Install-VPN
     Join-Network
     Install-Steam
     Set-Steam
+    Restart-Computer -Wait
+    Disable-Devices
     Restart-Computer
 }
 
