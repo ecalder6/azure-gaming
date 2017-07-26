@@ -1,6 +1,7 @@
 $network=$args[0]
 $steam_username = $args[1]
 $steam_password = $args[2]
+$windows_update = $args[3]
 
 function Update-Windows {
     # Source: https://gallery.technet.microsoft.com/scriptcenter/Execute-Windows-Update-fc6acb16
@@ -129,9 +130,23 @@ function Set-Steam {
 }
 
 function main {
+    if ($windows_update) {
+        Update-Windows
+    }
+    Update-Firewall
+    Disable-Defender
+    Disable-ScheduledTasks
+    Edit-VisualEffectsRegistry
+    Install-NvidiaDriver
+    Disable-Devices
+    Enable-Audio
+    Install-VirtualAudio
     Install-Chocolatey
     Install-VPN
     Join-Network
+    Install-Steam
+    Set-Steam
+    Restart-Computer
 }
 
 main
