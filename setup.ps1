@@ -223,8 +223,6 @@ workflow Set-Computer($network, $steam_username, $steam_password, $manual_instal
     Enable-Audio
     Install-VirtualAudio
     Create_DisconnectShortcut
-
-    Restart-Computer
 }
 
 Set-Computer $network $steam_username $steam_password $manual_install $windows_update -JobName SetComputer
