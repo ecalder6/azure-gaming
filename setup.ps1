@@ -202,6 +202,7 @@ function Create_DisconnectShortcut {
 workflow Set-Computer($network, $steam_username, $steam_password, $manual_install, $windows_update) {
     if ($windows_update) {
         Update-Windows
+        return
     }
     Update-Firewall
     Disable-Defender
