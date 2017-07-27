@@ -184,12 +184,25 @@ function Schedule_Workflow {
     Register-ScheduledTask -TaskName ResumeSetupJobTask -Action $act -Trigger $trig -RunLevel Highest
 }
 
+function Create_DisconnectShortcut {
+    Write-Host "Create disconnect shortcut under C:\disconnect.lnk"
+    $username = $env:USERNAME
+    $session = ((quser /server:$server | ? { $_ -match $username }) -split ' +')[2]
+
+    $WshShell = New-Object -comObject WScript.Shell
+    $Shortcut = $WshShell.CreateShortcut("C:\disconnect.lnk")
+    $Shortcut.TargetPath = "C:\Windows\System32\tscon.exe"
+    $Shortcut.Arguments = "$session /dest:console"
+    $Shortcut.Save()
+}
+
 workflow Set-Computer($network, $steam_username, $steam_password, $manual_install, $windows_update) {
     if ($manual_install) {
         Disable-InternetExplorerESC
         Edit-VisualEffectsRegistry
         Install-VirtualAudio
     }
+    Create_DisconnectShortcut
     Update-Firewall
     Disable-Defender
     Disable-ScheduledTasks
