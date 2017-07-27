@@ -44,11 +44,11 @@ powershell -ExecutionPolicy Unrestricted -File setup.ps1 -network {zero_tier_net
 
 ### Finish up
 After either automatic or manual script execution, a restart will happen. 
-You need then to remote desktop into the VM. You will then see a PowerShell window pop up. Let it run and the window for installing VB-CABLE will show up.
-Click on install, trust publisher, and close the IE window it opens after installation. The PowerShell window should report success soon afterwards. 
-Another restart will happen but after that, you should be all set!
+You then need to remote desktop into the VM. You will see a PowerShell window pop up as soon as you login. Let it run and the window for installing VB-CABLE will show up.
+Click on install, trust publisher, and close the IE window it opens after installation. The PowerShell window should report success soon afterwards. Log into steam now if it's not already logged in.
+Manually restart after steam has finished updating. After that, you should be all set!
 
-Close the remote desktop using the shortcut located in C:\disconnect.lnk and enjoy some cloud gaming!
+Close the remote desktop connection using the shortcut located in C:\disconnect.lnk and enjoy some cloud gaming!
 
 
 ## Q & A
