@@ -2,7 +2,8 @@ param (
     [string]$network,
     [string]$steam_username,
     [string]$steam_password,
-    [switch]$windows_update = $false
+    [switch]$windows_update = $false,
+    [switch]$custom_script = $false
 )
 
 function Disable-InternetExplorerESC {
@@ -59,12 +60,14 @@ function Edit-VisualEffectsRegistry {
     Set-ItemProperty -Path "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\VisualEffects" -Name "VisualFXSetting" -Value 2
 }
 
-function Install-NvidiaDriver {
+function Install-NvidiaDriver ($custom_script) {
     # Modified from source: https://github.com/lord-carlos/nvidia-update
     Write-Host "Installing Nvidia Driver"
-    $r = Invoke-WebRequest -Uri 'https://www.nvidia.com/Download/processFind.aspx?psid=75&pfid=783&osid=74&lid=1&whql=&lang=en-us&ctk=16' -Method GET
-
-    $version = $r.parsedhtml.GetElementsByClassName("gridItem")[2].innerText
+    $version = "377.35"
+    if (!$custom_script) {
+        $r = Invoke-WebRequest -Uri 'https://www.nvidia.com/Download/processFind.aspx?psid=75&pfid=783&osid=74&lid=1&whql=&lang=en-us&ctk=16' -Method GET
+        $version = $r.parsedhtml.GetElementsByClassName("gridItem")[2].innerText
+    }
     $url = "http://us.download.nvidia.com/Windows/Quadro_Certified/$version/$version-tesla-desktop-winserver2016-international-whql.exe"
     $driver_file = "$version-driver.exe"
 
@@ -160,7 +163,7 @@ function Set-Steam($steam_username, $steam_password) {
     $steam = "C:\Program Files (x86)\Steam\Steam.exe"
     if ($steam_username.length -gt 0) {
         Write-Host "Editing registry to log into steam at startup"
-        Set-ItemProperty -Path "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Run" -Name "Steam" -Value "$steam -login $steam_username $steam_password -silent"
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Run" -Name "Steam" -Value "$steam -login $steam_username $steam_password -silent"
     }
 }
 
@@ -180,17 +183,19 @@ function Schedule_Workflow {
 }
 
 workflow Set-Computer($network, $steam_username, $steam_password) {
-    Disable-InternetExplorerESC
+    if (!$custom_script) {
+        Disable-InternetExplorerESC
+        Edit-VisualEffectsRegistry
+        Install-VirtualAudio
+    }
     Update-Firewall
     Disable-Defender
     Disable-ScheduledTasks
-    Edit-VisualEffectsRegistry
     Enable-Audio
     if ($windows_update) {
         Update-Windows
     }
-    Install-NvidiaDriver
-    Install-VirtualAudio
+    Install-NvidiaDriver $custom_script
     Install-Chocolatey
     Install-VPN
     Join-Network $network
