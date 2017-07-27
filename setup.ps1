@@ -201,8 +201,8 @@ workflow Set-Computer($network, $steam_username, $steam_password, $manual_instal
         Disable-InternetExplorerESC
         Edit-VisualEffectsRegistry
         Install-VirtualAudio
+        Create_DisconnectShortcut
     }
-    Create_DisconnectShortcut
     Update-Firewall
     Disable-Defender
     Disable-ScheduledTasks
