@@ -1,9 +1,8 @@
 # azure-gaming
-Setup an Azure M60 Virtual Machine (VM) for cloud gaming.
 
 ## About
-Powershell scripts that automate the tedious process of setting up an Azure M60 VM for cloud gaming. The goal is to fully automate all
-steps described in this [excellent guide](https://lg.io/2016/10/12/cloudy-gamer-playing-overwatch-on-azures-new-monster-gpu-instances.html).
+This is a set of Powershell scripts that automate the tedious process of setting up a Virtual Machine (VM) for cloud gaming.
+The goal is to fully automate all steps described in this [excellent guide](https://lg.io/2016/10/12/cloudy-gamer-playing-overwatch-on-azures-new-monster-gpu-instances.html).
 
 ## Disclaimer
 There is no gaurantee that the script or the deployment will work. Please submit any issues you see on GitHub. PRs are also welcome!
