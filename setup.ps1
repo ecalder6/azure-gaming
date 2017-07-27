@@ -179,6 +179,7 @@ function Set-ScheduleWorkflow {
 
     Write-Host "Set up scheduled task for resume script"
 
+    # From https://blogs.technet.microsoft.com/heyscriptingguy/2013/01/23/powershell-workflows-restarting-the-computer/
     $actionscript = '-NonInteractive -WindowStyle Normal -NoLogo -NoProfile -NoExit -Command "&''C:\resume.ps1''"'
     $pstart =  "C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe"
     Get-ScheduledTask -TaskName ResumeSetupJobTask | Unregister-ScheduledTask -Confirm:$false
@@ -188,9 +189,10 @@ function Set-ScheduleWorkflow {
 }
 
 function Add-DisconnectShortcut {
+    # From https://stackoverflow.com/questions/9701840/how-to-create-a-shortcut-using-powershell
     Write-Host "Create disconnect shortcut under C:\disconnect.lnk"
     $username = $env:USERNAME
-    $session = ((quser /server:$server | ? { $_ -match $username }) -split ' +')[2]
+    $session = ((quser /server:$server | Where-Object { $_ -match $username }) -split ' +')[2]
 
     $WshShell = New-Object -comObject WScript.Shell
     $Shortcut = $WshShell.CreateShortcut("C:\disconnect.lnk")
