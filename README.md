@@ -44,7 +44,7 @@ powershell -ExecutionPolicy Unrestricted -File setup.ps1 -network {zero_tier_net
 
 ### Finish up
 After either automatic or manual script execution, a restart will happen. 
-You need then to remote desktop into the VM. You will then see a PowerShell window pop up. Let it run and the window for installing VB-CABLE will show up.
+You then need to remote desktop into the VM. You will then see a PowerShell window pop up. Let it run and the window for installing VB-CABLE will show up.
 Click on install, trust publisher, and close the IE window it opens after installation. The PowerShell window should report success soon afterwards. 
 Another restart will happen but after that, you should be all set!
 
