@@ -51,8 +51,8 @@
         "subnetRef": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('virtualNetworkName'), variables('subnetName'))]",
         "vmName": "CloudGaming",
         "virtualNetworkName": "CloudGamingVNET",
-        "publicIPAddressName": "cgPublicIP",
-        "dnsNameForPublicIP": "[uniqueString(resourceGroup().id)]",
+        "publicIPAddressName": "CloudGamingsPublicIP",
+        "dnsNameForPublicIP": "[uniqueString(resourceGroup().id, deployment().name)]",
         "scriptFolder": ".",
         "scriptFileName": "setup.ps1",
         "scriptParameters": "[concat('-network ', parameters('networkID'), '-steam_username ', parameters('steamUsername'), '-steam_password ', parameters('steamPassword'), '-custom_script')]"
