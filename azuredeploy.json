@@ -14,6 +14,13 @@
                 "description": "Password for the Virtual Machine."
             }
         },
+        "scriptLocation": {
+            "type": "string",
+            "metadata": {
+                "description": "Location of the start-up script."
+            },
+            "defaultValue": "https://raw.githubusercontent.com/ecalder6/azure-gaming/master"
+        },
         "networkID": {
             "type": "securestring",
             "metadata": {
@@ -44,7 +51,7 @@
         "subnetRef": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('virtualNetworkName'), variables('subnetName'))]",
         "vmName": "CloudGaming",
         "virtualNetworkName": "CloudGamingVNET",
-        "publicIPAddressName": "cloudGamingPublicIP",
+        "publicIPAddressName": "cgPublicIP",
         "dnsNameForPublicIP": "[uniqueString(resourceGroup().id)]",
         "scriptFolder": ".",
         "scriptFileName": "setup.ps1",
@@ -162,7 +169,7 @@
                         "autoUpgradeMinorVersion": true,
                         "settings": {
                             "fileUris": [
-                                "[concat(parameters('steamUsername'), '/', variables('ScriptFolder'), '/', variables('ScriptFileName'), parameters('steamPassword'))]"
+                                "[concat(parameters('scriptLocation'), '/', variables('ScriptFolder'), '/', variables('ScriptFileName')]"
                             ],
                             "commandToExecute": "[concat('powershell -ExecutionPolicy Unrestricted -File ', variables('scriptFolder'), '/', variables('scriptFileName'), ' ', variables('scriptParameters'))]"
                         }
