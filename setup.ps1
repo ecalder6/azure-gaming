@@ -172,14 +172,16 @@ function Schedule_Workflow {
     $url = "https://raw.githubusercontent.com/ecalder6/azure-gaming/master/$script_name"
 
     Write-Host "Downloading resume script from $url"
-    (New-Object System.Net.WebClient).DownloadFile($url, "$PSScriptRoot\$script_name")
+    (New-Object System.Net.WebClient).DownloadFile($url, "C:\$script_name")
 
     Write-Host "Set up scheduled task for resume script"
-    $resumeActionscript = '-WindowStyle Normal -NoLogo -NoProfile -File "$PSScriptRoot\$script_name"'
-    Get-ScheduledTask -TaskName ResumeJobTask -EA SilentlyContinue | Unregister-ScheduledTask -Confirm:$false
-    $act = New-ScheduledTaskAction -Execute "C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe" -Argument $resumeActionscript
-    $trig = New-ScheduledTaskTrigger -AtLogOn -RandomDelay 00:00:55
-    Register-ScheduledTask -TaskName ResumeJobTask -Action $act -Trigger $trig -RunLevel Highest
+
+    $actionscript = '-NonInteractive -WindowStyle Normal -NoLogo -NoProfile -NoExit -Command "&''C:\resume.ps1''"'
+    $pstart =  "C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe"
+    Get-ScheduledTask -TaskName ResumeSetupJobTask | Unregister-ScheduledTask -Confirm:$false
+    $act = New-ScheduledTaskAction -Execute $pstart -Argument $actionscript
+    $trig = New-ScheduledTaskTrigger -AtLogOn
+    Register-ScheduledTask -TaskName ResumeSetupJobTask -Action $act -Trigger $trig -RunLevel Highest
 }
 
 workflow Set-Computer($network, $steam_username, $steam_password, $custom_script, $windows_update) {
