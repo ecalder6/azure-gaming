@@ -12,9 +12,9 @@ Note down the network id.
   * Alternatively, you could manually log into steam and select remember me
 
 ## Usage
-There are 2 flavors of the setup scripts, setup.ps1 and setup_auto.ps1
-
-setup.ps1 is meant to be executed by the user on the VM, and setup_auto.ps1 is meant to be executed at deployment without user interaction.
+<a href="https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fecalder6%2Fazure-gaming%2Fmaster%2Fazuredeploy.json" target="_blank">
+    <img src="http://azuredeploy.net/deploybutton.png"/>
+</a>
 
 ### Hot to run setup.ps1
 0. Create a M60 VM on Azure
@@ -26,10 +26,5 @@ setup.ps1 is meant to be executed by the user on the VM, and setup_auto.ps1 is m
 powershell -ExecutionPolicy Unrestricted -File setup.ps1 -network {zero_tier_network_id} -steam_username {your steam username} -steam_password {your_steam_password}
 ```
 
-### Hot to run setup_auto.ps1
-0. Create a M60 VM on Azure with **Custom Script Extension**
-1. Upload setup_auto.ps1 from this repo and run it using Custom Script Extension.
-
 ## TODO
-* Automate disabling Hyper-V video after restart
 * Automate installation of virtual audio device
