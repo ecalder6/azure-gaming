@@ -15,10 +15,11 @@ Note down the network id.
 
 ## Usage
 ### Deploy an Azure M60 VM
-You could click the button below to automate most of the deployment or manually deploy through the azure portal(see [this guide](https://lg.io/2016/10/12/cloudy-gamer-playing-overwatch-on-azures-new-monster-gpu-instances.html) for instructions). If you are manually deploying and want to run the script automatically, configure Custom Script Extension (see section below).
 <a href="https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fecalder6%2Fazure-gaming%2Fmaster%2Fazuredeploy.json" target="_blank">
     <img src="http://azuredeploy.net/deploybutton.png"/>
 </a>
+
+You could click the button above to automate most of the deployment or manually deploy through the azure portal(see [this guide](https://lg.io/2016/10/12/cloudy-gamer-playing-overwatch-on-azures-new-monster-gpu-instances.html) for instructions). If you are manually deploying and want to run the script automatically, configure Custom Script Extension (see section below).
 
 Complete the form, check "I agree" for terms, and click on purchase. If you don't disable steam guard, leave steam username and password blank and manually login later.
 
