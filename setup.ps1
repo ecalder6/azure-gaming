@@ -3,7 +3,8 @@ param (
     [string]$steam_username,
     [string]$steam_password,
     [switch]$windows_update = $false,
-    [switch]$manual_install = $false
+    [switch]$manual_install = $false,
+    [switch]$finish_install = $false
 )
 
 function Disable-InternetExplorerESC {
@@ -196,12 +197,15 @@ function Create_DisconnectShortcut {
     $Shortcut.Save()
 }
 
-workflow Set-Computer($network, $steam_username, $steam_password, $manual_install, $windows_update) {
-    if ($manual_install) {
+workflow Set-Computer($network, $steam_username, $steam_password, $manual_install, $windows_update, $finish_install) {
+    if ($manual_install -or $finish_install) {
         Disable-InternetExplorerESC
         Edit-VisualEffectsRegistry
         Install-VirtualAudio
         Create_DisconnectShortcut
+    }
+    if ($finish_install) {
+        return
     }
     Update-Firewall
     Disable-Defender
@@ -221,4 +225,4 @@ workflow Set-Computer($network, $steam_username, $steam_password, $manual_instal
     Disable-Devices
 }
 
-Set-Computer $network $steam_username $steam_password $manual_install $windows_update -JobName SetComputer
+Set-Computer $network $steam_username $steam_password $manual_install $windows_update $finish_install -JobName SetComputer
