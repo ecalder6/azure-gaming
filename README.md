@@ -1,9 +1,8 @@
 # azure-gaming
-Setup an Azure M60 Virtual Machine (VM) for cloud gaming.
 
 ## About
-Powershell scripts that automate the tedious process of setting up an Azure M60 VM for cloud gaming. The goal is to fully automate all
-steps described in this [excellent guide](https://lg.io/2016/10/12/cloudy-gamer-playing-overwatch-on-azures-new-monster-gpu-instances.html).
+This is a set of Powershell scripts that automate the tedious process of setting up a Virtual Machine (VM) for cloud gaming.
+The goal is to fully automate all steps described in this [excellent guide](https://lg.io/2016/10/12/cloudy-gamer-playing-overwatch-on-azures-new-monster-gpu-instances.html).
 
 ## Disclaimer
 There is no gaurantee that the script or the deployment will work. Please submit any issues you see on GitHub. PRs are also welcome!
@@ -22,7 +21,7 @@ Note down the network id.
     <img src="http://azuredeploy.net/deploybutton.png"/>
 </a>
 
-You could click the button above to automate most of the deployment or manually deploy through the azure portal(see [this guide](https://lg.io/2016/10/12/cloudy-gamer-playing-overwatch-on-azures-new-monster-gpu-instances.html) for instructions). If you are manually deploying and want to run the script automatically, configure Custom Script Extension (see section below).
+You could click the button above to automate most of the deployment or manually deploy through the azure portal(see [this guide](https://lg.io/2016/10/12/cloudy-gamer-playing-overwatch-on-azures-new-monster-gpu-instances.html) for instructions). The button will also automatically execute the setup script. If you are manually deploying and want to run the script automatically, configure Custom Script Extension (see section below).
 
 Complete the form, check "I agree" for terms, and click on purchase. If you don't disable steam guard, leave steam username and password blank and manually login later.
 
@@ -70,7 +69,7 @@ You can trigger the update with the following command
 powershell -ExecutionPolicy Unrestricted -File setup.ps1 -windows_update
 ```
 
-I didn't include it as it takes a long time to update. You could also easily update windows yourself by opening Update & Security in Settings.
+It's not used as the update takes a long time to complete. You could also easily update windows yourself by opening Update & Security in Settings.
 
 * Why do I still need to remote desktop into the VM with automatic script execution?
 
