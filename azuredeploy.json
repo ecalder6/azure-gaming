@@ -17,7 +17,7 @@
         "scriptLocation": {
             "type": "string",
             "metadata": {
-                "description": "Location of the start-up script."
+                "description": "Location of the setup script."
             },
             "defaultValue": "https://raw.githubusercontent.com/ecalder6/azure-gaming/master"
         },
@@ -169,7 +169,7 @@
                         "autoUpgradeMinorVersion": true,
                         "settings": {
                             "fileUris": [
-                                "[concat(parameters('scriptLocation'), '/', variables('ScriptFolder'), '/', variables('ScriptFileName')]"
+                                "[concat(parameters('scriptLocation'), '/', variables('ScriptFolder'), '/', variables('ScriptFileName'))]"
                             ],
                             "commandToExecute": "[concat('powershell -ExecutionPolicy Unrestricted -File ', variables('scriptFolder'), '/', variables('scriptFileName'), ' ', variables('scriptParameters'))]"
                         }
