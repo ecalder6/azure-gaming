@@ -164,6 +164,20 @@ function Set-Steam($steam_username, $steam_password) {
     }
 }
 
+function Schedule_Workflow {
+    $script_name = "resume.ps1"
+    $url = "https://raw.githubusercontent.com/ecalder6/azure-gaming/master/$script_name"
+
+    Write-Host "Downloading resume script from $url"
+    (New-Object System.Net.WebClient).DownloadFile($url, "$PSScriptRoot\$script_name")
+
+    Write-Host "Set up scheduled task for resume script"
+    $resumeActionscript = '-WindowStyle Normal -NoLogo -NoProfile -File "$PSScriptRoot\$script_name"'
+    Get-ScheduledTask -TaskName ResumeJobTask -EA SilentlyContinue | Unregister-ScheduledTask -Confirm:$false
+    $act = New-ScheduledTaskAction -Execute "C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe" -Argument $resumeActionscript
+    $trig = New-ScheduledTaskTrigger -AtLogOn -RandomDelay 00:00:55
+    Register-ScheduledTask -TaskName ResumeJobTask -Action $act -Trigger $trig -RunLevel Highest
+}
 
 workflow Set-Computer($network, $steam_username, $steam_password) {
     Disable-InternetExplorerESC
@@ -182,6 +196,7 @@ workflow Set-Computer($network, $steam_username, $steam_password) {
     Join-Network $network
     Install-Steam
     Set-Steam $steam_username $steam_password
+    Schedule_Workflow
     Restart-Computer -Wait
     Disable-Devices
 }
