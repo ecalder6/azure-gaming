@@ -3,8 +3,7 @@ param (
     [string]$steam_username,
     [string]$steam_password,
     [switch]$windows_update = $false,
-    [switch]$manual_install = $false,
-    [switch]$finish_install = $false
+    [switch]$manual_install = $false
 )
 
 function Disable-InternetExplorerESC {
@@ -98,6 +97,9 @@ function Disable-Devices {
     Write-Host "Disabling Hyper-V Video"
     Import-Module "$PSScriptRoot\$extract_folder\DeviceManagement.psd1"
     Get-Device | Where-Object -Property Name -Like "Microsoft Hyper-V Video" | Disable-Device -Confirm:$false
+
+    Write-Host "Disabling all monitors except for Nvidia M60 monitor"
+    Get-Device | Where-Object {$_.Name -Like "Generic PnP Monitor" -and $_.InstanceId -NotMatch "NVD"} | Disable-Device -Confirm:$false
 }
 
 function Enable-Audio {
@@ -197,32 +199,31 @@ function Create_DisconnectShortcut {
     $Shortcut.Save()
 }
 
-workflow Set-Computer($network, $steam_username, $steam_password, $manual_install, $windows_update, $finish_install) {
-    if ($manual_install -or $finish_install) {
-        Disable-InternetExplorerESC
-        Edit-VisualEffectsRegistry
-        Install-VirtualAudio
-        Create_DisconnectShortcut
-    }
-    if ($finish_install) {
-        return
+workflow Set-Computer($network, $steam_username, $steam_password, $manual_install, $windows_update) {
+    if ($windows_update) {
+        Update-Windows
     }
     Update-Firewall
     Disable-Defender
     Disable-ScheduledTasks
-    Enable-Audio
-    if ($windows_update) {
-        Update-Windows
-    }
     Install-NvidiaDriver $manual_install
     Install-Chocolatey
     Install-VPN
     Join-Network $network
     Install-Steam
     Set-Steam $steam_username $steam_password
+
     Schedule_Workflow
     Restart-Computer -Wait
+
     Disable-Devices
+    Disable-InternetExplorerESC
+    Edit-VisualEffectsRegistry
+    Enable-Audio
+    Install-VirtualAudio
+    Create_DisconnectShortcut
+
+    Restart-Computer
 }
 
-Set-Computer $network $steam_username $steam_password $manual_install $windows_update $finish_install -JobName SetComputer
+Set-Computer $network $steam_username $steam_password $manual_install $windows_update -JobName SetComputer
