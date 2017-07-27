@@ -182,7 +182,7 @@ function Schedule_Workflow {
     Register-ScheduledTask -TaskName ResumeJobTask -Action $act -Trigger $trig -RunLevel Highest
 }
 
-workflow Set-Computer($network, $steam_username, $steam_password) {
+workflow Set-Computer($network, $steam_username, $steam_password, $custom_script, $windows_update) {
     if (!$custom_script) {
         Disable-InternetExplorerESC
         Edit-VisualEffectsRegistry
@@ -206,4 +206,4 @@ workflow Set-Computer($network, $steam_username, $steam_password) {
     Disable-Devices
 }
 
-Set-Computer $network $steam_username $steam_password -JobName SetComputer
+Set-Computer $network $steam_username $steam_password $custom_script $windows_update -JobName SetComputer
