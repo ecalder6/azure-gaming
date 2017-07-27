@@ -170,7 +170,7 @@ function Set-Steam($steam_username, $steam_password) {
     }
 }
 
-function Schedule_Workflow {
+function Set-ScheduleWorkflow {
     $script_name = "resume.ps1"
     $url = "https://raw.githubusercontent.com/ecalder6/azure-gaming/master/$script_name"
 
@@ -187,7 +187,7 @@ function Schedule_Workflow {
     Register-ScheduledTask -TaskName ResumeSetupJobTask -Action $act -Trigger $trig -RunLevel Highest
 }
 
-function Create_DisconnectShortcut {
+function Add-DisconnectShortcut {
     Write-Host "Create disconnect shortcut under C:\disconnect.lnk"
     $username = $env:USERNAME
     $session = ((quser /server:$server | ? { $_ -match $username }) -split ' +')[2]
@@ -214,7 +214,7 @@ workflow Set-Computer($network, $steam_username, $steam_password, $manual_instal
     Install-Steam
     Set-Steam $steam_username $steam_password
 
-    Schedule_Workflow
+    Set-ScheduleWorkflow
     Restart-Computer -Wait
 
     Disable-Devices
@@ -222,7 +222,7 @@ workflow Set-Computer($network, $steam_username, $steam_password, $manual_instal
     Edit-VisualEffectsRegistry
     Enable-Audio
     Install-VirtualAudio
-    Create_DisconnectShortcut
+    Add-DisconnectShortcut
 }
 
 Set-Computer $network $steam_username $steam_password $manual_install $windows_update -JobName SetComputer
