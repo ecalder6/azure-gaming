@@ -56,9 +56,15 @@ Close the remote desktop connection using the shortcut located in C:\disconnect.
 
 ## Q & A
 * How do I install steam games onto the VM?
+
 In your steam on your computer (not the VM), you should see a drop-down arrow. Click on that and click on install on {your_vm_name}.
 
+* Can't stream/install games because the screen is locked on the VM?
+
+Use the disconnect shortcut.
+
 * Why is Windows update included in the script but not used?
+
 You can trigger the update with the following command
 ```powershell
 powershell -ExecutionPolicy Unrestricted -File setup.ps1 -windows_update
@@ -67,5 +73,6 @@ powershell -ExecutionPolicy Unrestricted -File setup.ps1 -windows_update
 I didn't include it as it takes a long time to update. You could also easily update windows yourself by opening Update & Security in Settings.
 
 * Why do I still need to remote desktop into the VM with automatic script execution?
+
 1. It's not possible to silently install VB-CABLE due to their use of a custom exe installer.
 2. Steam won't start unless a user logs in (not sure why).
