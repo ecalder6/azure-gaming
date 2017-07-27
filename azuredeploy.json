@@ -24,7 +24,7 @@
         "networkID": {
             "type": "securestring",
             "metadata": {
-                "description": "Your steam zero tier network ID."
+                "description": "Your zero tier network ID."
             },
             "defaultValue": ""
         },
