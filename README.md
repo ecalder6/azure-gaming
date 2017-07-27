@@ -5,6 +5,9 @@ Setup an Azure M60 Virtual Machine (VM) for cloud gaming.
 Powershell scripts that automate the tedious process of setting up an Azure M60 VM for cloud gaming. The goal is to fully automate all
 steps described in this [excellent guide](https://lg.io/2016/10/12/cloudy-gamer-playing-overwatch-on-azures-new-monster-gpu-instances.html).
 
+## Disclaimer
+There is no gaurantee that the script or the deployment will work. Please submit any issues you see on GitHub. PRs are also welcome!
+
 ## Requirements
 1. Sign up for an [Paid Azure subscription](https://azure.microsoft.com/en-us/pricing/purchase-options/). You need a paid subscription as I don't think the free account grants you access to GPU VMs.
 2. Sign up for an account on [zero tier](https://www.zerotier.com/) and create a network. Make sure the network is set to **public**.
