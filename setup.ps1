@@ -3,7 +3,7 @@ param (
     [string]$steam_username,
     [string]$steam_password,
     [switch]$windows_update = $false,
-    [switch]$custom_script = $false
+    [switch]$manual_install = $false
 )
 
 function Disable-InternetExplorerESC {
@@ -60,11 +60,11 @@ function Edit-VisualEffectsRegistry {
     Set-ItemProperty -Path "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\VisualEffects" -Name "VisualFXSetting" -Value 2
 }
 
-function Install-NvidiaDriver ($custom_script) {
+function Install-NvidiaDriver ($manual_install) {
     # Modified from source: https://github.com/lord-carlos/nvidia-update
     Write-Host "Installing Nvidia Driver"
     $version = "377.35"
-    if (!$custom_script) {
+    if ($manual_install) {
         $r = Invoke-WebRequest -Uri 'https://www.nvidia.com/Download/processFind.aspx?psid=75&pfid=783&osid=74&lid=1&whql=&lang=en-us&ctk=16' -Method GET
         $version = $r.parsedhtml.GetElementsByClassName("gridItem")[2].innerText
     }
@@ -184,8 +184,8 @@ function Schedule_Workflow {
     Register-ScheduledTask -TaskName ResumeSetupJobTask -Action $act -Trigger $trig -RunLevel Highest
 }
 
-workflow Set-Computer($network, $steam_username, $steam_password, $custom_script, $windows_update) {
-    if (!$custom_script) {
+workflow Set-Computer($network, $steam_username, $steam_password, $manual_install, $windows_update) {
+    if ($manual_install) {
         Disable-InternetExplorerESC
         Edit-VisualEffectsRegistry
         Install-VirtualAudio
@@ -197,7 +197,7 @@ workflow Set-Computer($network, $steam_username, $steam_password, $custom_script
     if ($windows_update) {
         Update-Windows
     }
-    Install-NvidiaDriver $custom_script
+    Install-NvidiaDriver $manual_install
     Install-Chocolatey
     Install-VPN
     Join-Network $network
@@ -208,4 +208,4 @@ workflow Set-Computer($network, $steam_username, $steam_password, $custom_script
     Disable-Devices
 }
 
-Set-Computer $network $steam_username $steam_password $custom_script $windows_update -JobName SetComputer
+Set-Computer $network $steam_username $steam_password $manual_install $windows_update -JobName SetComputer
