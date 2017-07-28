@@ -284,7 +284,7 @@ workflow Set-Computer($network, $steam_username, $steam_password, $manual_instal
         # Install-VPN
         # Join-Network $network
         # Install-NSSM
-        Add-AutoLogin
+        Add-DummyUser
 
         Set-ScheduleWorkflow
         Restart-Computer -Wait
