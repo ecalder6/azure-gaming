@@ -268,7 +268,7 @@ function Add-UnlockVM {
     $shortcut = "C:\disconnect.lnk"
     
     Write-Host "Editing registry to unlock VM at startup"
-    Set-ItemProperty -Path "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Run" -Name "UnlockVM" -Value $shortcut
+    Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Run" -Name "UnlockVM" -Value $shortcut
 }
 
 workflow Set-Computer($network, $steam_username, $steam_password, $manual_install, $windows_update) {
@@ -279,20 +279,15 @@ workflow Set-Computer($network, $steam_username, $steam_password, $manual_instal
         Update-Firewall
         Disable-Defender
         Disable-ScheduledTasks
-        Install-NvidiaDriver $manual_install
         Install-Chocolatey
         Install-VPN
         Join-Network $network
-        # Install-NSSM
-        Add-AutoLogin
+        Install-NvidiaDriver $manual_install
 
         Set-ScheduleWorkflow
         Restart-Computer -Wait
 
-        # Should now be logged in as dummy user
         Disable-Devices
-        Disable-InternetExplorerESC
-        Edit-VisualEffectsRegistry
         Enable-Audio
         # Install-VirtualAudio
         Add-DisconnectShortcut
@@ -303,6 +298,7 @@ workflow Set-Computer($network, $steam_username, $steam_password, $manual_instal
         # Remove workflow scheduled job
         Get-ScheduledTask -TaskName ResumeSetupJobTask | Unregister-ScheduledTask -Confirm:$false
 
+        Add-DummyUser
         Restart-Computer
     }
 }
