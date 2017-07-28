@@ -247,6 +247,16 @@ function Add-DummyUser {
     Set-ItemProperty $registry "DefaultPassword" -Value $password -type String
 }
 
+function Add-AutoLogin {
+    $username = "DummyUser"
+    $password = "P@ssW0rD!"
+    Add-LocalGroupMember -Group Administrators -Member $username
+    Set-ItemProperty $registry "AutoAdminLogon" -Value "1" -type String
+    Set-ItemProperty $registry "DefaultDomainName" -Value "$env:computername" -type String
+    Set-ItemProperty $registry "DefaultUsername" -Value $username -type String
+    Set-ItemProperty $registry "DefaultPassword" -Value $password -type String
+}
+
 function Add-UnlockVM {
     $shortcut = "C:\disconnect.lnk"
     
@@ -266,7 +276,7 @@ workflow Set-Computer($network, $steam_username, $steam_password, $manual_instal
     Install-VPN
     Join-Network $network
     Install-NSSM
-    Add-DummyUser
+    Add-AutoLogin
 
     Set-ScheduleWorkflow
     Restart-Computer -Wait
