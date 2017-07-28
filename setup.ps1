@@ -285,7 +285,7 @@ workflow Set-Computer($network, $steam_username, $steam_password, $manual_instal
         # Install-NSSM
 
         Set-ScheduleWorkflow
-        # Restart-Computer -Wait
+        Restart-Computer -Wait
 
         # Should now be logged in as dummy user
         # Disable-Devices
@@ -302,7 +302,7 @@ workflow Set-Computer($network, $steam_username, $steam_password, $manual_instal
         # # Remove workflow scheduled job
         # Get-ScheduledTask -TaskName ResumeSetupJobTask | Unregister-ScheduledTask -Confirm:$false
 
-        # Restart-Computer
+        Restart-Computer
     }
 }
 
