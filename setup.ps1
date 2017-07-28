@@ -1,7 +1,7 @@
 param (
-    [string]$network,
-    [string]$steam_username,
-    [string]$steam_password,
+    [string]$network = "",
+    [string]$steam_username = "",
+    [string]$steam_password = "",
     [switch]$windows_update = $false,
     [switch]$manual_install = $false
 )
@@ -246,7 +246,6 @@ function Add-DummyUser {
 
     Write-Host "Creating a dummy user and set it to login at startup"
     New-LocalUser -Name $username -Password $password -Description "Dummy account used to launch games."
-    Add-LocalGroupMember -Group Administrators -Member $username
     Set-ItemProperty $registry "AutoAdminLogon" -Value "1" -type String
     Set-ItemProperty $registry "DefaultDomainName" -Value "$env:computername" -type String
     Set-ItemProperty $registry "DefaultUsername" -Value $username -type String
@@ -273,10 +272,10 @@ function Add-UnlockVM {
 
 workflow Set-Computer($network, $steam_username, $steam_password, $manual_install, $windows_update) {
     sequence {
-        # if ($windows_update) {
-        #     Update-Windows
-        # }
-        # Update-Firewall
+        if ($windows_update) {
+            Update-Windows
+        }
+        Update-Firewall
         # Disable-Defender
         # Disable-ScheduledTasks
         # Install-NvidiaDriver $manual_install
@@ -284,10 +283,9 @@ workflow Set-Computer($network, $steam_username, $steam_password, $manual_instal
         # Install-VPN
         # Join-Network $network
         # Install-NSSM
-        Add-DummyUser
 
         Set-ScheduleWorkflow
-        Restart-Computer -Wait
+        # Restart-Computer -Wait
 
         # Should now be logged in as dummy user
         # Disable-Devices
@@ -297,8 +295,9 @@ workflow Set-Computer($network, $steam_username, $steam_password, $manual_instal
         # Install-VirtualAudio
         # Add-DisconnectShortcut
         # Add-UnlockVM
-        # Install-Steam
-        # Set-Steam $steam_username $steam_password
+        Install-Steam
+        Set-Steam $steam_username $steam_password
+        Add-DummyUser
 
         # # Remove workflow scheduled job
         # Get-ScheduledTask -TaskName ResumeSetupJobTask | Unregister-ScheduledTask -Confirm:$false
