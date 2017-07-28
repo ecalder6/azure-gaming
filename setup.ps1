@@ -111,7 +111,7 @@ function Enable-Audio {
 function Install-VirtualAudio {
     $compressed_file = "VBCABLE_Driver_Pack43.zip"
     $driver_folder = "VBCABLE_Driver_Pack43"
-    $driver_executable = "VBCABLE_Setup_x64.exe"
+    $driver_inf= "vbMmeCable64_win7.inf"
 
     Write-Host "Downloading Virtual Audio Driver"
     (New-Object System.Net.WebClient).DownloadFile("http://vbaudio.jcedeveloppement.com/Download_CABLE/VBCABLE_Driver_Pack43.zip", "$PSScriptRoot\$compressed_file")
@@ -120,8 +120,8 @@ function Install-VirtualAudio {
     Write-Host "Extracting Virtual Audio Driver"
     Expand-Archive "$PSScriptRoot\$compressed_file" -DestinationPath "$PSScriptRoot\$driver_folder" -Force
     
-    Write-Host "REQUIRE YOUR ACTION! CLICK ON INSTALL DRIVER. Installing Virtual Audio Driver from file $PSScriptRoot\$driver_folder\$driver_executable"
-    Start-Process -FilePath "$PSScriptRoot\$driver_folder\$driver_executable" -Wait
+    Write-Host "Installing Virtual Audio Driver"
+    pnputil.exe /add-driver "$PSScriptRoot\$driver_folder\$driver_inf" /install
 }
 
 function Install-Chocolatey {
@@ -162,11 +162,19 @@ function Install-Steam {
     Remove-Item -Path $PSScriptRoot\$steam_exe -Confirm:$false
 }
 
+function Install-NSSM {
+    Write-Host "Installing NSSM to auto-start steam.exe"
+    choco install nssm --force
+}
+
 function Set-Steam($steam_username, $steam_password) {
+    Write-Host "Start Steam as a service using nssm"
     $steam = "C:\Program Files (x86)\Steam\Steam.exe"
+    $service_name = "SteamAutoStart"
     if ($steam_username.length -gt 0) {
-        Write-Host "Editing registry to log into steam at startup"
-        Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Run" -Name "Steam" -Value "$steam -login $steam_username $steam_password -silent"
+        Write-Host "Creating a service $service_name to log into steam at startup"
+        nssm install $service_name $steam "-login $steam_username $steam_password -silent"
+        nssm set $service_name Start SERVICE_AUTO_START
     }
 }
 
@@ -201,6 +209,31 @@ function Add-DisconnectShortcut {
     $Shortcut.Save()
 }
 
+function Add-UnlockVMService {
+    # $service_name = "UnlockVM"
+    # $shortcut = "C:\disconnect.lnk"
+
+    # Write-Host "Creating a service $service_name to unlock screen"
+    # nssm install $service_name $shortcut
+    # nssm set $service_name Start SERVICE_AUTO_START
+
+    $script_name = "unlock.ps1"
+    $url = "https://raw.githubusercontent.com/ecalder6/azure-gaming/master/$script_name"
+
+    Write-Host "Downloading unlock script from $url"
+    (New-Object System.Net.WebClient).DownloadFile($url, "C:\$script_name")
+
+    Write-Host "Set up scheduled task for unlock script"
+
+    # From https://blogs.technet.microsoft.com/heyscriptingguy/2013/01/23/powershell-workflows-restarting-the-computer/
+    $actionscript = '-NonInteractive -WindowStyle Normal -NoLogo -NoProfile -NoExit -Command "&''C:\unlock.ps1''"'
+    $pstart =  "C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe"
+    Get-ScheduledTask -TaskName UnlockScreenJobTask | Unregister-ScheduledTask -Confirm:$false
+    $act = New-ScheduledTaskAction -Execute $pstart -Argument $actionscript
+    $trig = New-ScheduledTaskTrigger -AtLogOn
+    Register-ScheduledTask -TaskName UnlockScreenJobTask -Action $act -Trigger $trig -RunLevel Highest
+}
+
 workflow Set-Computer($network, $steam_username, $steam_password, $manual_install, $windows_update) {
     if ($windows_update) {
         Update-Windows
@@ -214,7 +247,10 @@ workflow Set-Computer($network, $steam_username, $steam_password, $manual_instal
     Install-VPN
     Join-Network $network
     Install-Steam
+    Install-NSSM
     Set-Steam $steam_username $steam_password
+    Add-DisconnectShortcut
+    Add-UnlockVMService
 
     Set-ScheduleWorkflow
     Restart-Computer -Wait
@@ -224,7 +260,6 @@ workflow Set-Computer($network, $steam_username, $steam_password, $manual_instal
     Edit-VisualEffectsRegistry
     Enable-Audio
     Install-VirtualAudio
-    Add-DisconnectShortcut
 }
 
 Set-Computer $network $steam_username $steam_password $manual_install $windows_update -JobName SetComputer
