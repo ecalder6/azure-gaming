@@ -15,4 +15,5 @@ Enable-Audio
 Add-DisconnectShortcut
 Install-Steam
 Set-Steam $steam_username $steam_password
+Add-DummyUser
 Restart-Computer

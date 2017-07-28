@@ -31,8 +31,5 @@ Join-Network $network
 Install-NSSM
 
 Install-NvidiaDriver $manual_install
-
-Add-DummyUser
-
 Set-ScheduleWorkflow
 Restart-Computer
