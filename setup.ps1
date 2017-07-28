@@ -249,7 +249,7 @@ function Add-DummyUser {
 
 function Add-AutoLogin {
     $username = "DummyUser"
-    $password = "P@ssW0rD!"
+    $password = "P@ssW0rD!123123"
     Add-LocalGroupMember -Group Administrators -Member $username
     Set-ItemProperty $registry "AutoAdminLogon" -Value "1" -type String
     Set-ItemProperty $registry "DefaultDomainName" -Value "$env:computername" -type String
