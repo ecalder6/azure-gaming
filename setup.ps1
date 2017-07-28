@@ -285,7 +285,7 @@ workflow Set-Computer($network, $steam_username, $steam_password, $manual_instal
         # Install-Chocolatey
         # Install-VPN
         # Join-Network $network
-        # Install-NSSM
+        Install-NSSM
 
         Set-ScheduleWorkflow
         Restart-Computer
