@@ -123,6 +123,12 @@ function Install-Chocolatey {
     chocolatey feature enable -n allowGlobalConfirmation
 }
 
+function Disable-IPv6To4 {
+    Set-Net6to4Configuration -State disabled
+    Set-NetTeredoConfiguration -Type disabled
+    Set-NetIsatapConfiguration -State disabled
+}
+
 function Install-VPN {
     $url = "https://github.com/ecalder6/azure-gaming/raw/master/zerotier_cert.cer"
     $cert = "zerotier_cert.cer"
@@ -251,10 +257,10 @@ function Add-UnlockVMService {
 function Add-DummyUser {
     $registry = "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon"
     $username = "DummyUser"
-    $password = ConvertTo-SecureString "P@ssW0rD!" -AsPlainText -Force
-
+    $password = "P@ssW0rD!"
+    $password_secure = ConvertTo-SecureString $password -AsPlainText -Force
     Write-Host "Creating a dummy user and set it to login at startup"
-    New-LocalUser -Name $username -Password $password -Description "Dummy account used to launch games."
+    New-LocalUser -Name $username -Password $password_secure -Description "Dummy account used to launch games."
     Set-ItemProperty $registry "AutoAdminLogon" -Value "1" -type String
     Set-ItemProperty $registry "DefaultDomainName" -Value "$env:computername" -type String
     Set-ItemProperty $registry "DefaultUsername" -Value $username -type String
