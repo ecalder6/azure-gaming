@@ -198,7 +198,7 @@ function Set-ScheduleWorkflow {
     $pstart =  "C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe"
     $act = New-ScheduledTaskAction -Execute $pstart -Argument $actionscript
     $trig = New-ScheduledTaskTrigger -AtLogOn
-    Register-ScheduledTask -TaskName ResumeSetupJobTask -Action $act -Trigger $trig -RunLevel Highest
+    Register-ScheduledTask -TaskName ResumeSetupJobTask -Action $act -Trigger $trig -RunLevel Highest -User "DummyUser" -Password "P@ssW0rD!123123"
 }
 
 function Add-DisconnectShortcut {
@@ -268,7 +268,7 @@ function Add-UnlockVM {
     $shortcut = "C:\disconnect.lnk"
     
     Write-Host "Editing registry to unlock VM at startup"
-    Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Run" -Name "UnlockVM" -Value $shortcut
+    Set-ItemProperty -Path "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Run" -Name "UnlockVM" -Value $shortcut
 }
 
 workflow Set-Computer($network, $steam_username, $steam_password, $manual_install, $windows_update) {
@@ -279,15 +279,20 @@ workflow Set-Computer($network, $steam_username, $steam_password, $manual_instal
         Update-Firewall
         Disable-Defender
         Disable-ScheduledTasks
+        Install-NvidiaDriver $manual_install
         Install-Chocolatey
         Install-VPN
         Join-Network $network
-        Install-NvidiaDriver $manual_install
+        # Install-NSSM
+        Add-AutoLogin
 
         Set-ScheduleWorkflow
         Restart-Computer -Wait
 
+        # Should now be logged in as dummy user
         Disable-Devices
+        Disable-InternetExplorerESC
+        Edit-VisualEffectsRegistry
         Enable-Audio
         # Install-VirtualAudio
         Add-DisconnectShortcut
@@ -298,7 +303,6 @@ workflow Set-Computer($network, $steam_username, $steam_password, $manual_instal
         # Remove workflow scheduled job
         Get-ScheduledTask -TaskName ResumeSetupJobTask | Unregister-ScheduledTask -Confirm:$false
 
-        Add-DummyUser
         Restart-Computer
     }
 }
