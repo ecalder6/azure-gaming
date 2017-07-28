@@ -1,14 +1,21 @@
-Get-UtilsScript
-Disable-ScheduleWorkflow
+param (
+    [string]$network = "",
+    [string]$steam_username = "",
+    [string]$steam_password = "",
+    [switch]$windows_update = $false,
+    [switch]$manual_install = $false
+)
 
+$script_name = "utils.ps1"
+. "C:\$script_name"
+
+Disable-ScheduleWorkflow
 Install-Steam
 Disable-Devices
 Disable-InternetExplorerESC
 Edit-VisualEffectsRegistry
 Enable-Audio
-Install-VirtualAudio
 Add-DisconnectShortcut
-Add-UnlockVM
 Install-Steam
 Set-Steam $steam_username $steam_password
 Restart-Computer
