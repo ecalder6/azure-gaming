@@ -234,10 +234,30 @@ function Add-UnlockVMService {
     Register-ScheduledTask -TaskName UnlockScreenJobTask -Action $act -Trigger $trig -RunLevel Highest
 }
 
+function Add-DummyUser {
+    $registry = "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon"
+    $username = "DummyUser"
+    $password = ConvertTo-SecureString "P@ssW0rD!" -AsPlainText -Force
+
+    Write-Host "Creating a dummy user and set it to login at startup"
+    New-LocalUser -Name $username -Password $password -Description "Dummy account used to launch games."
+    Add-LocalGroupMember -Group Administrators -Member $username
+    Set-ItemProperty $registry "AutoAdminLogon" -Value "1" -type String
+    Set-ItemProperty $registry "DefaultDomainName" -Value "$env:computername" -type String
+    Set-ItemProperty $registry "DefaultUsername" -Value $username -type String
+    Set-ItemProperty $registry "DefaultPassword" -Value $password -type String
+}
+
+function Add-UnlockVM {
+    $shortcut = "C:\disconnect.lnk"
+    
+    Write-Host "Editing registry to unlock VM at startup"
+    Set-ItemProperty -Path "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Run" -Name "UnlockVM" -Value $shortcut
+}
+
 workflow Set-Computer($network, $steam_username, $steam_password, $manual_install, $windows_update) {
     if ($windows_update) {
         Update-Windows
-        return
     }
     Update-Firewall
     Disable-Defender
@@ -246,20 +266,24 @@ workflow Set-Computer($network, $steam_username, $steam_password, $manual_instal
     Install-Chocolatey
     Install-VPN
     Join-Network $network
-    Install-Steam
     Install-NSSM
-    Set-Steam $steam_username $steam_password
     Add-DisconnectShortcut
-    Add-UnlockVMService
+    Add-DummyUser
 
     Set-ScheduleWorkflow
     Restart-Computer -Wait
 
+    # Should now be logged in as dummy user
     Disable-Devices
     Disable-InternetExplorerESC
     Edit-VisualEffectsRegistry
     Enable-Audio
-    Install-VirtualAudio
+    # Install-VirtualAudio
+    Add-UnlockVM
+    Install-Steam
+    Set-Steam $steam_username $steam_password
+
+    Restart-Computer
 }
 
 Set-Computer $network $steam_username $steam_password $manual_install $windows_update -JobName SetComputer
