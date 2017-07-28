@@ -198,7 +198,7 @@ function Set-ScheduleWorkflow {
     $pstart =  "C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe"
     $act = New-ScheduledTaskAction -Execute $pstart -Argument $actionscript
     $trig = New-ScheduledTaskTrigger -AtLogOn
-    Register-ScheduledTask -TaskName ResumeSetupJobTask -Action $act -Trigger $trig -RunLevel Highest -User "$env:computername\DummyUser" -Password "P@ssW0rD!123123"
+    Register-ScheduledTask -TaskName ResumeSetupJobTask -Action $act -Trigger $trig -RunLevel Highest
 }
 
 function Add-DisconnectShortcut {
