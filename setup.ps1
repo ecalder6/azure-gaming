@@ -151,16 +151,7 @@ function Join-Network ($network) {
     zerotier-cli join $network
 }
 
-function Install-Steam {
-    $steam_exe = "steam.exe"
-    Write-Host "Downloading steam into path $PSScriptRoot\$steam_exe"
-    (New-Object System.Net.WebClient).DownloadFile("https://steamcdn-a.akamaihd.net/client/installer/SteamSetup.exe", "$PSScriptRoot\$steam_exe")
-    Write-Host "Installing steam"
-    Start-Process -FilePath "$PSScriptRoot\$steam_exe" -ArgumentList "/S" -Wait
 
-    Write-Host "Cleaning up steam installation file"
-    Remove-Item -Path $PSScriptRoot\$steam_exe -Confirm:$false
-}
 
 function Install-NSSM {
     Write-Host "Installing NSSM to auto-start steam.exe"
@@ -185,20 +176,32 @@ function Set-Steam($steam_username, $steam_password) {
 }
 
 function Set-ScheduleWorkflow {
-    $script_name = "resume.ps1"
+    # $script_name = "resume.ps1"
+    # $url = "https://raw.githubusercontent.com/ecalder6/azure-gaming/master/$script_name"
+
+    # Write-Host "Downloading resume script from $url"
+    # (New-Object System.Net.WebClient).DownloadFile($url, "C:\$script_name")
+
+    # Write-Host "Set up scheduled task for resume script"
+
+    # # From https://blogs.technet.microsoft.com/heyscriptingguy/2013/01/23/powershell-workflows-restarting-the-computer/
+    # $actionscript = '-NonInteractive -WindowStyle Normal -NoLogo -NoProfile -NoExit -Command "&''C:\resume.ps1''"'
+    # $pstart =  "C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe"
+    # $act = New-ScheduledTaskAction -Execute $pstart -Argument $actionscript
+    # $trig = New-ScheduledTaskTrigger -AtLogOn
+    # Register-ScheduledTask -TaskName ResumeSetupJobTask -Action $act -Trigger $trig -RunLevel Highes
+    
+    $script_name = "setup2.ps1"
     $url = "https://raw.githubusercontent.com/ecalder6/azure-gaming/master/$script_name"
 
     Write-Host "Downloading resume script from $url"
     (New-Object System.Net.WebClient).DownloadFile($url, "C:\$script_name")
 
-    Write-Host "Set up scheduled task for resume script"
-
-    # From https://blogs.technet.microsoft.com/heyscriptingguy/2013/01/23/powershell-workflows-restarting-the-computer/
-    $actionscript = '-NonInteractive -WindowStyle Normal -NoLogo -NoProfile -NoExit -Command "&''C:\resume.ps1''"'
-    $pstart =  "C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe"
-    $act = New-ScheduledTaskAction -Execute $pstart -Argument $actionscript
-    $trig = New-ScheduledTaskTrigger -AtLogOn
-    Register-ScheduledTask -TaskName ResumeSetupJobTask -Action $act -Trigger $trig -RunLevel Highest
+    $powershell = "C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe"
+    $service_name = "SetupSecondStage"
+    Write-Host "Creating a service $service_name to finish setting up"
+    nssm install $service_name $powershell "C:\$script_name"
+    nssm set $service_name Start SERVICE_AUTO_START
 }
 
 function Add-DisconnectShortcut {
@@ -279,30 +282,30 @@ workflow Set-Computer($network, $steam_username, $steam_password, $manual_instal
         # Disable-Defender
         # Disable-ScheduledTasks
         # Install-NvidiaDriver $manual_install
-        Install-Chocolatey
-        Install-VPN
-        Join-Network $network
+        # Install-Chocolatey
+        # Install-VPN
+        # Join-Network $network
         # Install-NSSM
 
         Set-ScheduleWorkflow
-        Restart-Computer -Wait
+        Restart-Computer
 
         # Should now be logged in as dummy user
         # Disable-Devices
         # Disable-InternetExplorerESC
         # Edit-VisualEffectsRegistry
-        Enable-Audio
+        # Enable-Audio
         # Install-VirtualAudio
         # Add-DisconnectShortcut
         # Add-UnlockVM
-        Install-Steam
-        Set-Steam $steam_username $steam_password
-        Add-DummyUser
+        # Install-Steam
+        # Set-Steam $steam_username $steam_password
+        # Add-DummyUser
 
         # # Remove workflow scheduled job
         # Get-ScheduledTask -TaskName ResumeSetupJobTask | Unregister-ScheduledTask -Confirm:$false
 
-        Restart-Computer
+        # Restart-Computer
     }
 }
 
