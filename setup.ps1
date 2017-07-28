@@ -248,9 +248,10 @@ function Add-DummyUser {
 }
 
 function Add-AutoLogin {
+    $registry = "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon"
     $username = "DummyUser"
     $password = "P@ssW0rD!123123"
-    Add-LocalGroupMember -Group Administrators -Member $username
+
     Set-ItemProperty $registry "AutoAdminLogon" -Value "1" -type String
     Set-ItemProperty $registry "DefaultDomainName" -Value "$env:computername" -type String
     Set-ItemProperty $registry "DefaultUsername" -Value $username -type String
@@ -264,46 +265,40 @@ function Add-UnlockVM {
     Set-ItemProperty -Path "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Run" -Name "UnlockVM" -Value $shortcut
 }
 
-function Invoke_InitialSetup($network, $steam_username, $steam_password, $manual_install, $windows_update) {
-    if ($windows_update) {
-        Update-Windows
-    }
-    Update-Firewall
-    Disable-Defender
-    Disable-ScheduledTasks
-    Install-NvidiaDriver $manual_install
-    Install-Chocolatey
-    Install-VPN
-    Join-Network $network
-    Install-NSSM
-    Add-AutoLogin
-}
-
-function Invoke-EndSetup ($network, $steam_username, $steam_password, $manual_install, $windows_update) {
-    # Should now be logged in as dummy user
-    Disable-Devices
-    Disable-InternetExplorerESC
-    Edit-VisualEffectsRegistry
-    Enable-Audio
-    # Install-VirtualAudio
-    Add-DisconnectShortcut
-    Add-UnlockVM
-    Install-Steam
-    Set-Steam $steam_username $steam_password
-
-    # Remove workflow scheduled job
-    Get-ScheduledTask -TaskName ResumeSetupJobTask | Unregister-ScheduledTask -Confirm:$false
-
-    Restart-Computer
-}
-
 workflow Set-Computer($network, $steam_username, $steam_password, $manual_install, $windows_update) {
-    Invoke_InitialSetup $network $steam_username $steam_password $manual_install $windows_update
+    sequence {
+        if ($windows_update) {
+            Update-Windows
+        }
+        Update-Firewall
+        Disable-Defender
+        Disable-ScheduledTasks
+        Install-NvidiaDriver $manual_install
+        Install-Chocolatey
+        Install-VPN
+        Join-Network $network
+        Install-NSSM
+        Add-AutoLogin
 
-    Set-ScheduleWorkflow
-    Restart-Computer -Wait
+        Set-ScheduleWorkflow
+        Restart-Computer -Wait
 
-    Invoke-EndSetup
+        # Should now be logged in as dummy user
+        Disable-Devices
+        Disable-InternetExplorerESC
+        Edit-VisualEffectsRegistry
+        Enable-Audio
+        # Install-VirtualAudio
+        Add-DisconnectShortcut
+        Add-UnlockVM
+        Install-Steam
+        Set-Steam $steam_username $steam_password
+
+        # Remove workflow scheduled job
+        Get-ScheduledTask -TaskName ResumeSetupJobTask | Unregister-ScheduledTask -Confirm:$false
+
+        Restart-Computer
+    }
 }
 
 Set-Computer $network $steam_username $steam_password $manual_install $windows_update -JobName SetComputer
