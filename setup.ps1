@@ -282,9 +282,9 @@ workflow Set-Computer($network, $steam_username, $steam_password, $manual_instal
         # Disable-Defender
         # Disable-ScheduledTasks
         # Install-NvidiaDriver $manual_install
-        # Install-Chocolatey
-        # Install-VPN
-        # Join-Network $network
+        Install-Chocolatey
+        Install-VPN
+        Join-Network $network
         Install-NSSM
 
         Set-ScheduleWorkflow
