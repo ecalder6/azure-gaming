@@ -273,16 +273,16 @@ function Add-UnlockVM {
 
 workflow Set-Computer($network, $steam_username, $steam_password, $manual_install, $windows_update) {
     sequence {
-        if ($windows_update) {
-            Update-Windows
-        }
-        Update-Firewall
-        Disable-Defender
-        Disable-ScheduledTasks
-        Install-NvidiaDriver $manual_install
-        Install-Chocolatey
-        Install-VPN
-        Join-Network $network
+        # if ($windows_update) {
+        #     Update-Windows
+        # }
+        # Update-Firewall
+        # Disable-Defender
+        # Disable-ScheduledTasks
+        # Install-NvidiaDriver $manual_install
+        # Install-Chocolatey
+        # Install-VPN
+        # Join-Network $network
         # Install-NSSM
         Add-AutoLogin
 
@@ -290,20 +290,20 @@ workflow Set-Computer($network, $steam_username, $steam_password, $manual_instal
         Restart-Computer -Wait
 
         # Should now be logged in as dummy user
-        Disable-Devices
-        Disable-InternetExplorerESC
-        Edit-VisualEffectsRegistry
+        # Disable-Devices
+        # Disable-InternetExplorerESC
+        # Edit-VisualEffectsRegistry
         Enable-Audio
         # Install-VirtualAudio
-        Add-DisconnectShortcut
-        Add-UnlockVM
-        Install-Steam
-        Set-Steam $steam_username $steam_password
+        # Add-DisconnectShortcut
+        # Add-UnlockVM
+        # Install-Steam
+        # Set-Steam $steam_username $steam_password
 
-        # Remove workflow scheduled job
-        Get-ScheduledTask -TaskName ResumeSetupJobTask | Unregister-ScheduledTask -Confirm:$false
+        # # Remove workflow scheduled job
+        # Get-ScheduledTask -TaskName ResumeSetupJobTask | Unregister-ScheduledTask -Confirm:$false
 
-        Restart-Computer
+        # Restart-Computer
     }
 }
 
