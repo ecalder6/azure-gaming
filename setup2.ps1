@@ -9,4 +9,6 @@ function Install-Steam {
     Remove-Item -Path $PSScriptRoot\$steam_exe -Confirm:$false
 }
 
+$service_name = "SetupSecondStage"
 Install-Steam
+nssm remove $service_name
