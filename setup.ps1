@@ -190,7 +190,6 @@ function Set-ScheduleWorkflow {
     # From https://blogs.technet.microsoft.com/heyscriptingguy/2013/01/23/powershell-workflows-restarting-the-computer/
     $actionscript = '-NonInteractive -WindowStyle Normal -NoLogo -NoProfile -NoExit -Command "&''C:\resume.ps1''"'
     $pstart =  "C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe"
-    Get-ScheduledTask -TaskName ResumeSetupJobTask | Unregister-ScheduledTask -Confirm:$false
     $act = New-ScheduledTaskAction -Execute $pstart -Argument $actionscript
     $trig = New-ScheduledTaskTrigger -AtLogOn
     Register-ScheduledTask -TaskName ResumeSetupJobTask -Action $act -Trigger $trig -RunLevel Highest
@@ -267,7 +266,6 @@ workflow Set-Computer($network, $steam_username, $steam_password, $manual_instal
     Install-VPN
     Join-Network $network
     Install-NSSM
-    Add-DisconnectShortcut
     Add-DummyUser
 
     Set-ScheduleWorkflow
@@ -279,9 +277,13 @@ workflow Set-Computer($network, $steam_username, $steam_password, $manual_instal
     Edit-VisualEffectsRegistry
     Enable-Audio
     # Install-VirtualAudio
+    Add-DisconnectShortcut
     Add-UnlockVM
     Install-Steam
     Set-Steam $steam_username $steam_password
+
+    # Remove workflow scheduled job
+    Get-ScheduledTask -TaskName ResumeSetupJobTask | Unregister-ScheduledTask -Confirm:$false
 
     Restart-Computer
 }
