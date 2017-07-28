@@ -23,7 +23,7 @@ if ($windows_update) {
 Update-Firewall
 Disable-Defender
 Disable-ScheduledTasks
-# Disable-IPv6To4
+Disable-IPv6To4
 
 Install-Chocolatey
 Install-VPN

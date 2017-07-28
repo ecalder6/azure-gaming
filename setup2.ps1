@@ -11,7 +11,7 @@ $script_name = "utils.ps1"
 
 Disable-ScheduleWorkflow
 Install-Steam
-Disable-Devices
+# Disable-Devices
 Disable-InternetExplorerESC
 Edit-VisualEffectsRegistry
 Enable-Audio
