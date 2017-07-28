@@ -168,13 +168,19 @@ function Install-NSSM {
 }
 
 function Set-Steam($steam_username, $steam_password) {
-    Write-Host "Start Steam as a service using nssm"
+    # Write-Host "Start Steam as a service using nssm"
+    # $steam = "C:\Program Files (x86)\Steam\Steam.exe"
+    # $service_name = "SteamAutoStart"
+    # if ($steam_username.length -gt 0) {
+    #     Write-Host "Creating a service $service_name to log into steam at startup"
+    #     nssm install $service_name $steam "-login $steam_username $steam_password -silent"
+    #     nssm set $service_name Start SERVICE_AUTO_START
+    # }
+
     $steam = "C:\Program Files (x86)\Steam\Steam.exe"
-    $service_name = "SteamAutoStart"
     if ($steam_username.length -gt 0) {
-        Write-Host "Creating a service $service_name to log into steam at startup"
-        nssm install $service_name $steam "-login $steam_username $steam_password -silent"
-        nssm set $service_name Start SERVICE_AUTO_START
+        Write-Host "Editing registry to log into steam at startup"
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Run" -Name "Steam" -Value "$steam -login $steam_username $steam_password -silent"
     }
 }
 
@@ -277,7 +283,7 @@ workflow Set-Computer($network, $steam_username, $steam_password, $manual_instal
         Install-Chocolatey
         Install-VPN
         Join-Network $network
-        Install-NSSM
+        # Install-NSSM
         Add-AutoLogin
 
         Set-ScheduleWorkflow
