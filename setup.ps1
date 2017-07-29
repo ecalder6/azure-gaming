@@ -18,12 +18,16 @@ Get-UtilsScript $script_name
 . "C:\$script_name"
 
 if ($windows_update) {
-    InlineScript {Update-Windows}
+    Update-Windows
 }
 Update-Firewall
 Disable-Defender
 Disable-ScheduledTasks
 Disable-IPv6To4
+if ($manual_install) {
+    Disable-InternetExplorerESC
+    Edit-VisualEffectsRegistry
+}
 
 Install-Chocolatey
 Install-VPN
@@ -31,5 +35,5 @@ Join-Network $network
 Install-NSSM
 
 Install-NvidiaDriver $manual_install
-Set-ScheduleWorkflow $steam_username $steam_password
+Set-ScheduleWorkflow $steam_username $steam_password $manual_install
 Restart-Computer

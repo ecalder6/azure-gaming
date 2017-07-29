@@ -1,7 +1,6 @@
 param (
     [string]$steam_username = "",
     [string]$steam_password = "",
-    [switch]$windows_update = $false,
     [switch]$manual_install = $false
 )
 
@@ -14,6 +13,8 @@ Enable-Audio
 Install-VirtualAudio
 Add-DisconnectShortcut
 Install-Steam
-Set-Steam $steam_username $steam_password
+if (!$manual_install) {
+    Set-Steam $steam_username $steam_password
+}
 Add-DummyUser
 Restart-Computer

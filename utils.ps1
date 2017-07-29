@@ -201,7 +201,7 @@ function Set-Steam($steam_username, $steam_password) {
     }
 }
 
-function Set-ScheduleWorkflow ($steam_username, $steam_password) {
+function Set-ScheduleWorkflow ($steam_username, $steam_password, $manual_install) {
     # $script_name = "resume.ps1"
     # $url = "https://raw.githubusercontent.com/ecalder6/azure-gaming/master/$script_name"
 
@@ -220,13 +220,17 @@ function Set-ScheduleWorkflow ($steam_username, $steam_password) {
     $script_name = "setup2.ps1"
     $url = "https://raw.githubusercontent.com/ecalder6/azure-gaming/master/$script_name"
 
-    Write-Host "Downloading resume script from $url"
+    Write-Host "Downloading second stage setup script from $url"
     (New-Object System.Net.WebClient).DownloadFile($url, "C:\$script_name")
 
     $powershell = "C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe"
     $service_name = "SetupSecondStage"
     Write-Host "Creating a service $service_name to finish setting up"
-    nssm install $service_name $powershell "C:\$script_name -steam_username $steam_username -steam_password $steam_password"
+    if ($manual_install) {
+        nssm install $service_name $powershell "C:\$script_name -manual_install"
+    } else {
+        nssm install $service_name $powershell "C:\$script_name -steam_username $steam_username -steam_password $steam_password"
+    }
     nssm set $service_name Start SERVICE_AUTO_START
 }
 
