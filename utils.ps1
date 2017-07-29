@@ -254,42 +254,10 @@ function Add-DisconnectShortcut {
     $Shortcut.Save()
 }
 
-function Add-UnlockVMService {
-    # $service_name = "UnlockVM"
-    # $shortcut = "C:\disconnect.lnk"
-
-    # Write-Host "Creating a service $service_name to unlock screen"
-    # nssm install $service_name $shortcut
-    # nssm set $service_name Start SERVICE_AUTO_START
-
-    $script_name = "unlock.ps1"
-    $url = "https://raw.githubusercontent.com/ecalder6/azure-gaming/master/$script_name"
-
-    Write-Host "Downloading unlock script from $url"
-    (New-Object System.Net.WebClient).DownloadFile($url, "C:\$script_name")
-
-    Write-Host "Set up scheduled task for unlock script"
-
-    # From https://blogs.technet.microsoft.com/heyscriptingguy/2013/01/23/powershell-workflows-restarting-the-computer/
-    $actionscript = '-NonInteractive -WindowStyle Normal -NoLogo -NoProfile -NoExit -Command "&''C:\unlock.ps1''"'
-    $pstart =  "C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe"
-    Get-ScheduledTask -TaskName UnlockScreenJobTask | Unregister-ScheduledTask -Confirm:$false
-    $act = New-ScheduledTaskAction -Execute $pstart -Argument $actionscript
-    $trig = New-ScheduledTaskTrigger -AtLogOn
-    Register-ScheduledTask -TaskName UnlockScreenJobTask -Action $act -Trigger $trig -RunLevel Highest
-}
-
 function Add-AutoLogin ($admin_username, $admin_password) {
     $registry = "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon"
     Set-ItemProperty $registry "AutoAdminLogon" -Value "1" -type String
     Set-ItemProperty $registry "DefaultDomainName" -Value "$env:computername" -type String
     Set-ItemProperty $registry "DefaultUsername" -Value $admin_username -type String
     Set-ItemProperty $registry "DefaultPassword" -Value $admin_password -type String
-}
-
-function Add-UnlockVM {
-    $shortcut = "C:\disconnect.lnk"
-    
-    Write-Host "Editing registry to unlock VM at startup"
-    Set-ItemProperty -Path "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Run" -Name "UnlockVM" -Value $shortcut
 }
