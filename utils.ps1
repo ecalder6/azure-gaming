@@ -261,6 +261,7 @@ function Add-DummyUser {
     $password_secure = ConvertTo-SecureString $password -AsPlainText -Force
     Write-Host "Creating a dummy user and set it to login at startup"
     New-LocalUser -Name $username -Password $password_secure -Description "Dummy account used to launch games."
+    Add-LocalGroupMember -Group Administrators -Member $username
     Set-ItemProperty $registry "AutoAdminLogon" -Value "1" -type String
     Set-ItemProperty $registry "DefaultDomainName" -Value "$env:computername" -type String
     Set-ItemProperty $registry "DefaultUsername" -Value $username -type String
