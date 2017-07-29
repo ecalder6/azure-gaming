@@ -31,5 +31,5 @@ Join-Network $network
 Install-NSSM
 
 Install-NvidiaDriver $manual_install
-Set-ScheduleWorkflow
+Set-ScheduleWorkflow $steam_username $steam_password
 Restart-Computer
