@@ -15,7 +15,7 @@ Note down the network id.
 3. For the one-click setup to work, you need to disable steam guard.
     * This is because you need to manually type the second-factor code into steam client, which requires you to login to the VM.
     Blizzard's phone authenticator handles this much better with ability to approve on the phone.
-    * If you do not wish to disable steam guard, please follow the manual instructions provided below:
+    * If you do not wish to disable steam guard, please follow the manual instructions provided below.
 
 ## Pricing
 Use [this calculator](https://azure.microsoft.com/en-us/pricing/calculator/) to estimate your price. Remember to pick NV6 size VM and some network bandwidth.
@@ -46,6 +46,9 @@ Close the remote desktop connection using the shortcut located in C:\disconnect.
 
 ### Steam client setup
 Make sure to limit the bandwidth of your local steam client to 30 MBits. You can do so through settings -> In-Home Streaming -> Advanced client options.
+
+## Contribution
+Contributions are welcome! Please submit an issue and a PR for your change.
 
 ## Q & A
 * How do I install steam games onto the VM?
