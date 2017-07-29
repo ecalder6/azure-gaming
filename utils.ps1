@@ -169,7 +169,7 @@ function Join-Network ($network) {
 }
 
 function Install-NSSM {
-    Write-Host "Installing NSSM to auto-start steam.exe"
+    Write-Host "Installing NSSM for launching services that run apps at startup"
     choco install nssm --force
 }
 
@@ -185,15 +185,6 @@ function Install-Steam {
 }
 
 function Set-Steam($steam_username, $steam_password) {
-    # Write-Host "Start Steam as a service using nssm"
-    # $steam = "C:\Program Files (x86)\Steam\Steam.exe"
-    # $service_name = "SteamAutoStart"
-    # if ($steam_username.length -gt 0) {
-    #     Write-Host "Creating a service $service_name to log into steam at startup"
-    #     nssm install $service_name $steam "-login $steam_username $steam_password -silent"
-    #     nssm set $service_name Start SERVICE_AUTO_START
-    # }
-
     $steam = "C:\Program Files (x86)\Steam\Steam.exe"
     if ($steam_username.length -gt 0) {
         Write-Host "Editing registry to log into steam at startup"
@@ -202,21 +193,6 @@ function Set-Steam($steam_username, $steam_password) {
 }
 
 function Set-ScheduleWorkflow ($steam_username, $steam_password, $admin_username, $admin_password, $manual_install) {
-    # $script_name = "resume.ps1"
-    # $url = "https://raw.githubusercontent.com/ecalder6/azure-gaming/master/$script_name"
-
-    # Write-Host "Downloading resume script from $url"
-    # (New-Object System.Net.WebClient).DownloadFile($url, "C:\$script_name")
-
-    # Write-Host "Set up scheduled task for resume script"
-
-    # # From https://blogs.technet.microsoft.com/heyscriptingguy/2013/01/23/powershell-workflows-restarting-the-computer/
-    # $actionscript = '-NonInteractive -WindowStyle Normal -NoLogo -NoProfile -NoExit -Command "&''C:\resume.ps1''"'
-    # $pstart =  "C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe"
-    # $act = New-ScheduledTaskAction -Execute $pstart -Argument $actionscript
-    # $trig = New-ScheduledTaskTrigger -AtLogOn
-    # Register-ScheduledTask -TaskName ResumeSetupJobTask -Action $act -Trigger $trig -RunLevel Highes
-    
     $script_name = "setup2.ps1"
     $url = "https://raw.githubusercontent.com/ecalder6/azure-gaming/master/$script_name"
 
@@ -244,13 +220,11 @@ function Disable-ScheduleWorkflow {
 function Add-DisconnectShortcut {
     # From https://stackoverflow.com/questions/9701840/how-to-create-a-shortcut-using-powershell
     Write-Host "Create disconnect shortcut under C:\disconnect.lnk"
-    # $username = $env:USERNAME
-    # $session = ((quser /server:$server | Where-Object { $_ -match $username }) -split ' +')[2]
 
     $WshShell = New-Object -comObject WScript.Shell
     $Shortcut = $WshShell.CreateShortcut("C:\disconnect.lnk")
     $Shortcut.TargetPath = "C:\Windows\System32\tscon.exe"
-    $Shortcut.Arguments = "2 /dest:console"
+    $Shortcut.Arguments = "1 /dest:console"
     $Shortcut.Save()
 }
 
