@@ -1,5 +1,4 @@
 param (
-    [string]$network = "",
     [string]$steam_username = "",
     [string]$steam_password = "",
     [switch]$windows_update = $false,
