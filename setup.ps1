@@ -14,9 +14,9 @@ function Get-UtilsScript ($script_name) {
     (New-Object System.Net.WebClient).DownloadFile($url, "C:\$script_name")
 }
 
-$script_name = "utils.ps1"
+$script_name = "utils.psm1"
 Get-UtilsScript $script_name
-. "C:\$script_name"
+Import-Module "C:\$script_name"
 
 if ($windows_update) {
     Update-Windows
@@ -29,11 +29,15 @@ if ($manual_install) {
     Disable-InternetExplorerESC
     Edit-VisualEffectsRegistry
 }
+Add-DisconnectShortcut
 
 Install-Chocolatey
 Install-VPN
 Join-Network $network
 Install-NSSM
+
+Enable-Audio
+Install-VirtualAudio
 
 Install-NvidiaDriver $manual_install
 Set-ScheduleWorkflow $steam_username $steam_password $admin_username $admin_password $manual_install
