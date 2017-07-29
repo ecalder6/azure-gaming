@@ -226,6 +226,10 @@ function Add-DisconnectShortcut {
 }
 
 function Add-AutoLogin ($admin_username, $admin_password) {
+    Write-Host "Make the password and account of admin user never expire."
+    Set-LocalUser -Name $admin_username -PasswordNeverExpires $true -AccountNeverExpires
+
+    Write-Host "Make the admin login at startup."
     $registry = "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon"
     Set-ItemProperty $registry "AutoAdminLogon" -Value "1" -type String
     Set-ItemProperty $registry "DefaultDomainName" -Value "$env:computername" -type String
