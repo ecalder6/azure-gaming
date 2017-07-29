@@ -68,18 +68,6 @@ Contributions are welcome! Please submit an issue and a PR for your change.
 
     This should only happen if you manually launched the script. Use the disconnect shortcut in C:\.
 
-* Why is Windows update included in the script but not used?
-
-    You can trigger the update with the following command
-    ```powershell
-    powershell -ExecutionPolicy Unrestricted -File setup.ps1 -windows_update
-    ```
-    It's not used as the update takes a long time to complete. You could also easily update windows yourself by opening Update & Security in Settings.
-
-* Why do I still need to remote desktop into the VM with automatic script execution?
-    1. It's not possible to silently install VB-CABLE due to their use of a custom exe installer.
-    2. Steam won't start unless a user logs in (not sure why).
-
 * My question is not listed
 
     Submit an issue on GitHub.
