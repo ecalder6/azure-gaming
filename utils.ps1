@@ -89,9 +89,6 @@ function Disable-Devices {
     Write-Host "Disabling Hyper-V Video"
     Import-Module "$PSScriptRoot\$extract_folder\DeviceManagement.psd1"
     Get-Device | Where-Object -Property Name -Like "Microsoft Hyper-V Video" | Disable-Device -Confirm:$false
-
-    Write-Host "Disabling all monitors except for Nvidia M60 monitor"
-    Get-Device | Where-Object {$_.Name -Like "Generic PnP Monitor" -and $_.InstanceId -NotMatch "NVD"} | Disable-Device -Confirm:$false
 }
 
 function Enable-Audio {
