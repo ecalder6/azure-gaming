@@ -164,7 +164,7 @@
                 {
                     "condition": "[equals(parameters('windowsUpdate'), bool('false') )]",
                     "type": "extensions",
-                    "name": "CustomScriptExtension",
+                    "name": "SetupWithoutWindowsUpdate",
                     "apiVersion": "2015-06-15",
                     "location": "[resourceGroup().location]",
                     "dependsOn": [
@@ -186,7 +186,7 @@
                 {
                     "condition": "[equals(parameters('windowsUpdate'), bool('true') )]",
                     "type": "extensions",
-                    "name": "CustomScriptExtension",
+                    "name": "SetupWithWindowsUpdate",
                     "apiVersion": "2015-06-15",
                     "location": "[resourceGroup().location]",
                     "dependsOn": [
