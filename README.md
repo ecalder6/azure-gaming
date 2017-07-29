@@ -51,6 +51,15 @@ Make sure to limit the bandwidth of your local steam client to 30 MBits. You can
 Contributions are welcome! Please submit an issue and a PR for your change.
 
 ## Q & A
+* How secure are my credentials?
+
+    Your admin username, admin password, steam username, and steam password you provide in the Azure form will be stored as plain text in 2 instances:
+    1. While the script is executing, they will be stored as plain-text in memory.
+    2. To faciliate auto-login for the VM and for steam, the credentials will be stored as plain-text in registry.
+
+    So you are safe as long as no malicious thrid-party is reading the VM memory during script exeuction or your registry. Now since the only way to
+    remote desktop into your VM is through the admin account, the credentials should be pretty safe. 
+
 * How do I install steam games onto the VM?
 
     In your steam on your computer (not the VM), you should see a drop-down arrow. Click on that and click on install on {your_vm_name}.
