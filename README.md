@@ -35,7 +35,7 @@ Just click on the button above and fill out the form! A VM will be automatically
 3. Download https://github.com/ecalder6/azure-gaming/blob/master/setup.ps1. You could download this onto your local machine and paste it through remote desktop.
 4. Navigate to the directory containing setup.ps1 in PowerShell and execute
 ```powershell
-powershell -ExecutionPolicy Unrestricted -File setup.ps1 -network {zero_tier_network_id} -manual_install
+powershell -ExecutionPolicy Unrestricted -File setup.ps1 -network {zero_tier_network_id} -admin_username {username_set_in_portal} -admin_password {password_set_in_portal} -manual_install
 ```
 5. After sometime, the script will restart your VM, at which point your remote desktop session will end.
 6. Wait for approximately 15 minutes and then remote desktop into your VM again.
