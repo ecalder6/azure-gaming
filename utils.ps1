@@ -103,7 +103,8 @@ function Enable-Audio {
 function Install-VirtualAudio {
     $compressed_file = "VBCABLE_Driver_Pack43.zip"
     $driver_folder = "VBCABLE_Driver_Pack43"
-    $driver_inf= "vbMmeCable64_win7.inf"
+    $driver_inf = "vbMmeCable64_win7.inf"
+    $hardward_id = "VBAudioVACWDM"
 
     Write-Host "Downloading Virtual Audio Driver"
     (New-Object System.Net.WebClient).DownloadFile("http://vbaudio.jcedeveloppement.com/Download_CABLE/VBCABLE_Driver_Pack43.zip", "$PSScriptRoot\$compressed_file")
@@ -111,9 +112,27 @@ function Install-VirtualAudio {
 
     Write-Host "Extracting Virtual Audio Driver"
     Expand-Archive "$PSScriptRoot\$compressed_file" -DestinationPath "$PSScriptRoot\$driver_folder" -Force
-    
-    Write-Host "Installing Virtual Audio Driver"
-    pnputil.exe /add-driver "$PSScriptRoot\$driver_folder\$driver_inf" /install
+
+    $wdk_installer = "wdksetup.exe"
+    $devcon = "C:\Program Files (x86)\Windows Kits\10\Tools\x64\devcon.exe"
+
+    Write-Host "Downloading Windows Development Kit installer"
+    (New-Object System.Net.WebClient).DownloadFile("http://go.microsoft.com/fwlink/p/?LinkId=526733", "$PSScriptRoot\$wdk_installer")
+
+    Write-Host "Downloading and installing Windows Development Kit"
+    Start-Process -FilePath "$PSScriptRoot\$wdk_installer" -ArgumentList "/S" -Wait
+
+    $cert = "vb_cert.cer"
+    $url = "https://github.com/ecalder6/azure-gaming/raw/master/$cert"
+
+    Write-Host "Downloading vb certificate from $url"
+    (New-Object System.Net.WebClient).DownloadFile($url, "$PSScriptRoot\$cert")
+
+    Write-Host "Importing vb certificate"
+    Import-Certificate -FilePath "$PSScriptRoot\$cert" -CertStoreLocation "cert:\LocalMachine\TrustedPublisher"
+
+    Write-Host "Installing virtual audio driver"
+    Start-Process -FilePath $devcon -ArgumentList "install", "$PSScriptRoot\$driver_folder\$driver_inf", $hardward_id -Wait
 }
 
 function Install-Chocolatey {
@@ -130,8 +149,8 @@ function Disable-IPv6To4 {
 }
 
 function Install-VPN {
-    $url = "https://github.com/ecalder6/azure-gaming/raw/master/zerotier_cert.cer"
     $cert = "zerotier_cert.cer"
+    $url = "https://github.com/ecalder6/azure-gaming/raw/master/$cert"
 
     Write-Host "Downloading zero tier certificate from $url"
     (New-Object System.Net.WebClient).DownloadFile($url, "$PSScriptRoot\$cert")

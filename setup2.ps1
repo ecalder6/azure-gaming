@@ -10,8 +10,8 @@ $script_name = "utils.ps1"
 
 Disable-ScheduleWorkflow
 Disable-Devices
-Install-Steam
 Enable-Audio
+Install-VirtualAudio
 Add-DisconnectShortcut
 Install-Steam
 Set-Steam $steam_username $steam_password
