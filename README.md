@@ -1,11 +1,11 @@
 # Game on the cloud in Azure with one-click
 
 ## About
-This project allows you to stream steam games through Azure cloud with only a single click! There is virtually no setup invovled. In fact, you never have to login to the VM!
+This project allows you to stream steam games through Azure cloud with only a single click! There is virtually no setup involved. In fact, you never have to login to the VM!
 The development of this project is heavily inspired by this [excellent guide](https://lg.io/2016/10/12/cloudy-gamer-playing-overwatch-on-azures-new-monster-gpu-instances.html).
 
 ## Disclaimer
-**This software comes with no warranty of any kind**. USE AT YOUR OWN RISK! If you encounter an issue, please submit them on GitHub.
+**This software comes with no warranty of any kind**. USE AT YOUR OWN RISK! If you encounter an issue, please submit it on GitHub.
 
 ## Do this first
 1. Sign up for an [Paid Azure subscription](https://azure.microsoft.com/en-us/pricing/purchase-options/). You need a paid subscription as I don't think the free account grants you access to GPU VMs.
