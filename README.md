@@ -26,7 +26,23 @@ Use [this calculator](https://azure.microsoft.com/en-us/pricing/calculator/) to 
     <img src="http://azuredeploy.net/deploybutton.png"/>
 </a>
 
-Just click on the button above and fill out the form! A VM will be automatically deployed and configured for you. Note that the setup process will take around 15 minutes. You will know it's ready when your local steam client allows you to install and stream games from the VM.
+Click on the button above and fill out the form. You'll need to fill in:
+* Subscription: your paid subscription
+* Resource group: create a new one and name it anything you like
+* Location: pick the location closest to you. Note that not every location has the VM with M60 graphics card. So far I've tried West US 2 and South Central US.
+* Admin username and password: the login credentials for the local user.
+* Script location: the location of the setup script. Use the default value.
+* Windows Update: whether or not to update windows, which takes around an hour.
+* Network ID: network ID of your zero tier VPN.
+* Steam username and password: your steam login credentials.
+
+**Note: your admin and steam credentials will be stored in plain-text in the VM. See Q & A for more.**
+
+After filling these in, check on I agree the terms and click on purchase. A VM with a M60 graphics card will be automatically deployed and configured for you. Note that the setup process will take around 15 minutes (1 hour + if you choose to update Windows). 
+
+You can monitor the progress of the deployment using the notification button (bell icon) on the top right. You will know it's ready when your local steam client allows you to install and stream games from the VM. 
+
+You can also check the status under Virtual Machine -> CloudGaming -> Extensions -> the only entry in the list. If you see an error or failure, submit an issue on GitHub along with what's in detailed status.
 
 ### Manual
 1. Deploy a NV6 size VM through the azure portal(see [this guide](https://lg.io/2016/10/12/cloudy-gamer-playing-overwatch-on-azures-new-monster-gpu-instances.html) for instructions).
@@ -52,6 +68,25 @@ Close the remote desktop connection using the shortcut located in C:\disconnect.
 
 ### Steam client setup
 Make sure to limit the bandwidth of your local steam client to 30 MBits. You can do so through settings -> In-Home Streaming -> Advanced client options.
+
+## Stopping a VM
+After you are done with a gaming session, I recommend you stop (deallocate) the VM **using the Azure portal**. When it's stopped (deallocated), you don't have to pay for the VM. Below are the steps for stopping a VM in portal:
+1. Login to [Azure portal](https://portal.azure.com)
+2. On the left-hand side, click on Virtual Machines.
+3. Click on the VM you've created (for automated, the VM name is CloudGaming)
+4. Click on Delete on the top. 
+
+To start the VM, follow the steps above except that you click on start.
+
+## Removing a VM
+If you no longer want to game on Azure, you could remove everything by:
+1. Login to [Azure portal](https://portal.azure.com)
+2. On the left-hand side, click on Virtual Machines.
+3. Click on the VM you've created (for automated, the VM name is CloudGaming)
+4. Click on Delete on the top. 
+5. After your VM is deleted, click on Resouce Groups on the left hand side
+6. Click on the resource group you've created for the VM
+7. Click on Delete on the top. 
 
 ## Contribution
 Contributions are welcome! Please submit an issue and a PR for your change.
