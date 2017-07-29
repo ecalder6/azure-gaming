@@ -55,7 +55,7 @@
         "dnsNameForPublicIP": "[uniqueString(resourceGroup().id, deployment().name)]",
         "scriptFolder": ".",
         "scriptFileName": "setup.ps1",
-        "scriptParameters": "[concat('-network ', parameters('networkID'), ' -steam_username ', parameters('steamUsername'), ' -steam_password ', parameters('steamPassword'))]"
+        "scriptParameters": "[concat('-network ', parameters('networkID'), ' -steam_username ', parameters('steamUsername'), ' -steam_password ', parameters('steamPassword'), ' -admin_username ', parameters('adminUsername'), ' -admin_password ', parameters('adminPassword'))]"
     },
     "resources": [
         {

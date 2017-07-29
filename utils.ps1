@@ -201,7 +201,7 @@ function Set-Steam($steam_username, $steam_password) {
     }
 }
 
-function Set-ScheduleWorkflow ($steam_username, $steam_password, $manual_install) {
+function Set-ScheduleWorkflow ($steam_username, $steam_password, $admin_username, $admin_password, $manual_install) {
     # $script_name = "resume.ps1"
     # $url = "https://raw.githubusercontent.com/ecalder6/azure-gaming/master/$script_name"
 
@@ -226,11 +226,13 @@ function Set-ScheduleWorkflow ($steam_username, $steam_password, $manual_install
     $powershell = "C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe"
     $service_name = "SetupSecondStage"
     Write-Host "Creating a service $service_name to finish setting up"
+    $cmd = "C:\$script_name -admin_username $admin_username -admin_password $admin_password"
     if ($manual_install) {
-        nssm install $service_name $powershell "C:\$script_name -manual_install"
+        $cmd = -join ($cmd, " -manual_install")
     } else {
-        nssm install $service_name $powershell "C:\$script_name -steam_username $steam_username -steam_password $steam_password"
+        $cmd = -join ($cmd, " -steam_username $steam_username -steam_password $steam_password")
     }
+    nssm install $service_name $powershell $cmd
     nssm set $service_name Start SERVICE_AUTO_START
 }
 
@@ -277,29 +279,12 @@ function Add-UnlockVMService {
     Register-ScheduledTask -TaskName UnlockScreenJobTask -Action $act -Trigger $trig -RunLevel Highest
 }
 
-function Add-DummyUser {
+function Add-AutoLogin ($admin_username, $admin_password) {
     $registry = "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon"
-    $username = "DummyUser"
-    $password = "P@ssW0rD!"
-    $password_secure = ConvertTo-SecureString $password -AsPlainText -Force
-    Write-Host "Creating a dummy user and set it to login at startup"
-    New-LocalUser -Name $username -Password $password_secure -Description "Dummy account used to launch games."
-    Add-LocalGroupMember -Group Administrators -Member $username
     Set-ItemProperty $registry "AutoAdminLogon" -Value "1" -type String
     Set-ItemProperty $registry "DefaultDomainName" -Value "$env:computername" -type String
-    Set-ItemProperty $registry "DefaultUsername" -Value $username -type String
-    Set-ItemProperty $registry "DefaultPassword" -Value $password -type String
-}
-
-function Add-AutoLogin {
-    $registry = "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon"
-    $username = "DummyUser"
-    $password = "P@ssW0rD!123123"
-
-    Set-ItemProperty $registry "AutoAdminLogon" -Value "1" -type String
-    Set-ItemProperty $registry "DefaultDomainName" -Value "$env:computername" -type String
-    Set-ItemProperty $registry "DefaultUsername" -Value $username -type String
-    Set-ItemProperty $registry "DefaultPassword" -Value $password -type String
+    Set-ItemProperty $registry "DefaultUsername" -Value $admin_username -type String
+    Set-ItemProperty $registry "DefaultPassword" -Value $admin_password -type String
 }
 
 function Add-UnlockVM {
