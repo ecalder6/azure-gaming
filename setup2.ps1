@@ -9,6 +9,7 @@ $script_name = "utils.ps1"
 . "C:\$script_name"
 
 Disable-ScheduleWorkflow
+Disable-Devices
 Install-Steam
 Enable-Audio
 Add-DisconnectShortcut
