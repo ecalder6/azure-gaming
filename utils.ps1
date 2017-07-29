@@ -166,20 +166,20 @@ function Install-Steam {
 }
 
 function Set-Steam($steam_username, $steam_password) {
-    Write-Host "Start Steam as a service using nssm"
-    $steam = "C:\Program Files (x86)\Steam\Steam.exe"
-    $service_name = "SteamAutoStart"
-    if ($steam_username.length -gt 0) {
-        Write-Host "Creating a service $service_name to log into steam at startup"
-        nssm install $service_name $steam "-login $steam_username $steam_password -silent"
-        nssm set $service_name Start SERVICE_AUTO_START
-    }
-
+    # Write-Host "Start Steam as a service using nssm"
     # $steam = "C:\Program Files (x86)\Steam\Steam.exe"
+    # $service_name = "SteamAutoStart"
     # if ($steam_username.length -gt 0) {
-    #     Write-Host "Editing registry to log into steam at startup"
-    #     Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Run" -Name "Steam" -Value "$steam -login $steam_username $steam_password -silent"
+    #     Write-Host "Creating a service $service_name to log into steam at startup"
+    #     nssm install $service_name $steam "-login $steam_username $steam_password -silent"
+    #     nssm set $service_name Start SERVICE_AUTO_START
     # }
+
+    $steam = "C:\Program Files (x86)\Steam\Steam.exe"
+    if ($steam_username.length -gt 0) {
+        Write-Host "Editing registry to log into steam at startup"
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Run" -Name "Steam" -Value "$steam -login $steam_username $steam_password -silent"
+    }
 }
 
 function Set-ScheduleWorkflow ($steam_username, $steam_password) {
@@ -219,13 +219,13 @@ function Disable-ScheduleWorkflow {
 function Add-DisconnectShortcut {
     # From https://stackoverflow.com/questions/9701840/how-to-create-a-shortcut-using-powershell
     Write-Host "Create disconnect shortcut under C:\disconnect.lnk"
-    $username = $env:USERNAME
-    $session = ((quser /server:$server | Where-Object { $_ -match $username }) -split ' +')[2]
+    # $username = $env:USERNAME
+    # $session = ((quser /server:$server | Where-Object { $_ -match $username }) -split ' +')[2]
 
     $WshShell = New-Object -comObject WScript.Shell
     $Shortcut = $WshShell.CreateShortcut("C:\disconnect.lnk")
     $Shortcut.TargetPath = "C:\Windows\System32\tscon.exe"
-    $Shortcut.Arguments = "$session /dest:console"
+    $Shortcut.Arguments = "2 /dest:console"
     $Shortcut.Save()
 }
 
