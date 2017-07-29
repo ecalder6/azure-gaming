@@ -40,9 +40,10 @@ Click on the button above and fill out the form. You'll need to fill in:
 
 After filling these in, check on I agree the terms and click on purchase. A VM with a M60 graphics card will be automatically deployed and configured for you. Note that the setup process will take around 15 minutes (1 hour + if you choose to update Windows). 
 
-You can monitor the progress of the deployment using the notification button (bell icon) on the top right. You will know it's ready when your local steam client allows you to install and stream games from the VM. 
+You can monitor the progress of the deployment using the notification button (bell icon) on the top right. You can also check the status under Virtual Machine -> CloudGaming -> Extensions -> the only entry in the list. If you see an error or failure, submit an issue on GitHub along with what's in detailed status.
 
-You can also check the status under Virtual Machine -> CloudGaming -> Extensions -> the only entry in the list. If you see an error or failure, submit an issue on GitHub along with what's in detailed status.
+After the deployment is successful, you'll need to wait for the VM to restart and for steam to finish first-launch update. You will know it's ready when your local steam client allows you to install and stream games from the VM. 
+
 
 ### Manual
 1. Deploy a NV6 size VM through the azure portal(see [this guide](https://lg.io/2016/10/12/cloudy-gamer-playing-overwatch-on-azures-new-monster-gpu-instances.html) for instructions).
