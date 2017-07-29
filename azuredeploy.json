@@ -21,6 +21,13 @@
             },
             "defaultValue": "https://raw.githubusercontent.com/ecalder6/azure-gaming/master"
         },
+        "windowsUpdate": {
+            "type": "bool",
+            "metadata": {
+                "description": "Whether to update Windows (takes around 30 minutes to complete)"
+            },
+            "defaultValue": false
+        },
         "networkID": {
             "type": "securestring",
             "metadata": {
@@ -155,6 +162,7 @@
             },
             "resources": [
                 {
+                    "condition": "[equals(parameters('windowsUpdate'), bool('false') )]",
                     "type": "extensions",
                     "name": "CustomScriptExtension",
                     "apiVersion": "2015-06-15",
@@ -172,6 +180,28 @@
                                 "[concat(parameters('scriptLocation'), '/', variables('ScriptFolder'), '/', variables('ScriptFileName'))]"
                             ],
                             "commandToExecute": "[concat('powershell -ExecutionPolicy Unrestricted -File ', variables('scriptFolder'), '/', variables('scriptFileName'), ' ', variables('scriptParameters'))]"
+                        }
+                    }
+                },
+                {
+                    "condition": "[equals(parameters('windowsUpdate'), bool('true') )]",
+                    "type": "extensions",
+                    "name": "CustomScriptExtension",
+                    "apiVersion": "2015-06-15",
+                    "location": "[resourceGroup().location]",
+                    "dependsOn": [
+                        "[variables('vmName')]"
+                    ],
+                    "properties": {
+                        "publisher": "Microsoft.Compute",
+                        "type": "CustomScriptExtension",
+                        "typeHandlerVersion": "1.8",
+                        "autoUpgradeMinorVersion": true,
+                        "settings": {
+                            "fileUris": [
+                                "[concat(parameters('scriptLocation'), '/', variables('ScriptFolder'), '/', variables('ScriptFileName'))]"
+                            ],
+                            "commandToExecute": "[concat('powershell -ExecutionPolicy Unrestricted -File ', variables('scriptFolder'), '/', variables('scriptFileName'), ' ', variables('scriptParameters'), ' -windows_update')]"
                         }
                     }
                 }
