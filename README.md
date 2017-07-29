@@ -74,7 +74,7 @@ After you are done with a gaming session, I recommend you stop (deallocate) the 
 1. Login to [Azure portal](https://portal.azure.com)
 2. On the left-hand side, click on Virtual Machines.
 3. Click on the VM you've created (for automated, the VM name is CloudGaming)
-4. Click on Delete on the top. 
+4. Click on Stop on the top. 
 
 To start the VM, follow the steps above except that you click on start.
 
