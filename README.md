@@ -1,7 +1,7 @@
-# Game on the cloud in Azure with one-click
+# Cloud Gaming Made Easy
 
 ## About
-This project allows you to stream steam games through Azure cloud with only a single click! There is virtually no setup involved. In fact, you never have to login to the VM!
+This project allows you to stream steam games through Azure cloud with only a few clicks! There is virtually no setup involved. In fact, you never have to login to the VM!
 The development of this project is heavily inspired by this [excellent guide](https://lg.io/2016/10/12/cloudy-gamer-playing-overwatch-on-azures-new-monster-gpu-instances.html).
 
 ## Disclaimer
@@ -18,7 +18,7 @@ Note down the network id.
     * If you do not wish to disable steam guard, please follow the manual instructions provided below.
 
 ## Pricing
-Use [this calculator](https://azure.microsoft.com/en-us/pricing/calculator/) to estimate your price. Remember to pick NV6 size VM and some network bandwidth.
+Use [this calculator](https://azure.microsoft.com/en-us/pricing/calculator/) to estimate your price for using Azure. Remember to pick NV6 size VM and some network bandwidth. The guide above also has an estimated price per hour. 
 
 ## How to use
 ### Automated
