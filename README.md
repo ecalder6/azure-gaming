@@ -38,9 +38,9 @@ Just click on the button above and fill out the form! A VM will be automatically
 powershell -ExecutionPolicy Unrestricted -File setup.ps1 -network {zero_tier_network_id} -admin_username {username_set_in_portal} -admin_password {password_set_in_portal} -manual_install
 ```
     If you want to update windows, append
-    '''powershell
+    ```powershell
     -windows_update
-    '''
+    ```
 5. After sometime, the script will restart your VM, at which point your remote desktop session will end.
 6. Wait for approximately 15 minutes and then remote desktop into your VM again.
 7. Sign in to steam. Use the disconnect shortcut in C:\ to quit remote desktop.
