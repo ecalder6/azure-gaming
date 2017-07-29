@@ -1,57 +1,51 @@
-# azure-gaming
+# Game on the cloud in Azure with one-click
 
 ## About
-This is a set of Powershell scripts that automate the tedious process of setting up a Virtual Machine (VM) for cloud gaming.
-The goal is to fully automate all steps described in this [excellent guide](https://lg.io/2016/10/12/cloudy-gamer-playing-overwatch-on-azures-new-monster-gpu-instances.html).
+This project allows you to stream steam games through Azure cloud with only a single click! There is virtually no setup invovled. In fact, you never have to login to the VM!
+The development of this project is heavily inspired by this [excellent guide](https://lg.io/2016/10/12/cloudy-gamer-playing-overwatch-on-azures-new-monster-gpu-instances.html).
 
 ## Disclaimer
-There is no gaurantee that the script or the deployment will work. Please submit any issues you see on GitHub. PRs are also welcome!
+**This software comes with no warranty of any kind**. USE AT YOUR OWN RISK! If you encounter an issue, please submit them on GitHub.
 
-## Requirements
+## Do this first
 1. Sign up for an [Paid Azure subscription](https://azure.microsoft.com/en-us/pricing/purchase-options/). You need a paid subscription as I don't think the free account grants you access to GPU VMs.
-2. Sign up for an account on [zero tier](https://www.zerotier.com/) and create a network. Make sure the network is set to **public**.
+2. Sign up for an account on [zero tier VPN](https://www.zerotier.com/) and create a network. Make sure the network is set to **public**.
 Note down the network id.
-3. To auto-login to steam without manual interaction, you need to disable steam guard.
-  * This is because you need to manually type the second-factor code into steam client. Blizzard's phone authenticator handles this much better with ability to approve on the phone.
-  * Alternatively, you could manually log into steam and select remember me.
+3. Download and install zero tier VPN on your local machine. Join the network using the network ID noted in the previous step.
+3. For the one-click setup to work, you need to disable steam guard.
+    * This is because you need to manually type the second-factor code into steam client, which requires you to login to the VM.
+    Blizzard's phone authenticator handles this much better with ability to approve on the phone.
+    * If you do not wish to disable steam guard, please follow the manual instructions provided below:
 
-## Usage
-### Deploy an Azure M60 VM
+## Pricing
+Use [this calculator](https://azure.microsoft.com/en-us/pricing/calculator/) to estimate your price. Remember to pick NV6 size VM and some network bandwidth.
+
+## How to use
+### Automated
 <a href="https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fecalder6%2Fazure-gaming%2Fmaster%2Fazuredeploy.json" target="_blank">
     <img src="http://azuredeploy.net/deploybutton.png"/>
 </a>
 
-You could click the button above to automate most of the deployment or manually deploy through the azure portal(see [this guide](https://lg.io/2016/10/12/cloudy-gamer-playing-overwatch-on-azures-new-monster-gpu-instances.html) for instructions). The button will also automatically execute the setup script. If you are manually deploying and want to run the script automatically, configure Custom Script Extension (see section below).
+Just click on the button above and fill out the form! A VM will be automatically deployed and configured for you. Note that the setup process will take around 15 minutes. You will know it's ready when your local steam client allows you to install and stream games from the VM.
 
-Complete the form, check "I agree" for terms, and click on purchase. If you don't disable steam guard, leave steam username and password blank and manually login later.
-
-### Run setup.ps1
-The setup powershell script can either be run manually or automatically through the use of Custom Script Extension
-#### Automatic
-0. If you use the deploy to azure button, you can skip this section.
-1. In Step 3 of create VM, "Configure optional features", click on Extensions.
-2. Click on Add extension, Custom Script Extension, and Create.
-3. In script file field, update setup.ps1.
-4. In Arguments, write "network {zero_tier_network_id} -steam_username {your steam username} -steam_password {your_steam_password}". Leave the steam login info blank if you don't disable steam guard.
-5. Click on OK and create the VM as per instruction in the above guide.
-
-#### Manual
-1. Remote desktop into your Azure VM instance
-2. Click on the Windows key in the bottom-left corner, type "powershell", and click on the app PowerShell.
-3. Move setup.ps1 by either copy/paste from your host machine or download from https://github.com/ecalder6/azure-gaming/blob/master/setup.ps1
+### Manual
+1. Deploy a NV6 size VM through the azure portal(see [this guide](https://lg.io/2016/10/12/cloudy-gamer-playing-overwatch-on-azures-new-monster-gpu-instances.html) for instructions).
+2. Remote desktop into your Azure VM instance.
+3. Launch powershell (click on the Windows key in the bottom-left corner, type "powershell", and click on the app PowerShell).
+3. Download https://github.com/ecalder6/azure-gaming/blob/master/setup.ps1. You could download this onto your local machine and paste it through remote desktop.
 4. Navigate to the directory containing setup.ps1 in PowerShell and execute
 ```powershell
-powershell -ExecutionPolicy Unrestricted -File setup.ps1 -network {zero_tier_network_id} -steam_username {your steam username} -steam_password {your_steam_password} -manual_install
+powershell -ExecutionPolicy Unrestricted -File setup.ps1 -network {zero_tier_network_id} -manual_install
 ```
-
-### Finish up
-After either automatic or manual script execution, a restart will happen. 
-You then need to remote desktop into the VM. You will see a PowerShell window pop up as soon as you login. Let it run and the window for installing VB-CABLE will show up.
-Click on install, trust publisher, and close the IE window it opens after installation. The PowerShell window should report success soon afterwards. Log into steam now if it's not already logged in.
-Manually restart after steam has finished updating. After that, you should be all set!
+5. After sometime, the script will restart your VM, at which point your remote desktop session will end.
+6. Wait for approximately 15 minutes and then remote desktop into your VM again.
+7. Sign in to steam. Use the disconnect shortcut in C:\ to quit remote desktop.
+8. Install and stream games using your local steam client.
 
 Close the remote desktop connection using the shortcut located in C:\disconnect.lnk and enjoy some cloud gaming!
 
+### Steam client setup
+Make sure to limit the bandwidth of your local steam client to 30 MBits. You can do so through settings -> In-Home Streaming -> Advanced client options.
 
 ## Q & A
 * How do I install steam games onto the VM?
@@ -60,7 +54,7 @@ In your steam on your computer (not the VM), you should see a drop-down arrow. C
 
 * Can't stream/install games because the screen is locked on the VM?
 
-Use the disconnect shortcut.
+This should only happen if you manually launched the script. Use the disconnect shortcut in C:\.
 
 * Why is Windows update included in the script but not used?
 
@@ -72,6 +66,9 @@ powershell -ExecutionPolicy Unrestricted -File setup.ps1 -windows_update
 It's not used as the update takes a long time to complete. You could also easily update windows yourself by opening Update & Security in Settings.
 
 * Why do I still need to remote desktop into the VM with automatic script execution?
+    1. It's not possible to silently install VB-CABLE due to their use of a custom exe installer.
+    2. Steam won't start unless a user logs in (not sure why).
 
-1. It's not possible to silently install VB-CABLE due to their use of a custom exe installer.
-2. Steam won't start unless a user logs in (not sure why).
+* My question is not listed
+
+Submit an issue on GitHub.
