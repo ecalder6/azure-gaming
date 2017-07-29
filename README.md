@@ -52,12 +52,15 @@ Contributions are welcome! Please submit an issue and a PR for your change.
 
 ## Q & A
 * How do I install steam games onto the VM?
+
     In your steam on your computer (not the VM), you should see a drop-down arrow. Click on that and click on install on {your_vm_name}.
 
 * Can't stream/install games because the screen is locked on the VM?
+
     This should only happen if you manually launched the script. Use the disconnect shortcut in C:\.
 
 * Why is Windows update included in the script but not used?
+
     You can trigger the update with the following command
     ```powershell
     powershell -ExecutionPolicy Unrestricted -File setup.ps1 -windows_update
@@ -69,4 +72,5 @@ Contributions are welcome! Please submit an issue and a PR for your change.
     2. Steam won't start unless a user logs in (not sure why).
 
 * My question is not listed
+
     Submit an issue on GitHub.
