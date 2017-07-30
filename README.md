@@ -42,7 +42,7 @@ After filling these in, check on I agree the terms and click on purchase. A VM w
 
 You can monitor the progress of the deployment using the notification button (bell icon) on the top right. You can also check the status under Virtual Machine -> CloudGaming -> Extensions -> the only entry in the list. If you see an error or failure, submit an issue on GitHub along with what's in detailed status.
 
-After the deployment is successful, you'll need to wait for the VM to restart and for steam to finish first-launch update. You will know it's ready when your local steam client allows you to install and stream games from the VM. 
+After the deployment is successful, you'll need to wait for the second stage setup to finish, which should take less than 5 minutes. You will know it's ready when your local steam client allows you to install and stream games from the VM. 
 
 
 ### Manual
