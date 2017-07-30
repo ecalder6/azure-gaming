@@ -11,7 +11,7 @@ The development of this project is heavily inspired by this [excellent guide](ht
 1. Sign up for an [Paid Azure subscription](https://azure.microsoft.com/en-us/pricing/purchase-options/). You need a paid subscription as I don't think the free account grants you access to GPU VMs.
 2. Sign up for an account on [zero tier VPN](https://www.zerotier.com/) and create a network. Make sure the network is set to **public**.
 Note down the network id.
-3. Download and install zero tier VPN on your local machine. Join the network using the network ID noted in the previous step.
+3. Download and install zero tier VPN on your local machine. Join the network using the network ID noted in the previous step. **Make sure your local machine connect to the network BEFORE the VM does!**
 3. For the one-click setup to work, you need to disable steam guard.
     * This is because you need to manually type the second-factor code into steam client, which requires you to login to the VM.
     Blizzard's phone authenticator handles this much better with ability to approve on the phone.
@@ -101,6 +101,12 @@ Contributions are welcome! Please submit an issue and a PR for your change.
 
     So you are safe as long as no malicious thrid-party is reading the VM memory during script exeuction or your registry. Now since the only way to
     remote desktop into your VM is through the admin account, the credentials should be pretty safe. 
+    
+* The deployment seems successful but my local steam client can't detect my VM?
+
+    * Try restarting the VM. Follow the same steps as stopping your VM execept you click on restart.
+    * On ZeroTier Central, make sure that both your machine and the VM are connected under the members tab.
+    * Remote desktop into the VM and check if steam is installed/running.
 
 * How do I install steam games onto the VM?
 
