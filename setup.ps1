@@ -37,7 +37,7 @@ Join-Network $network
 Install-NSSM
 
 Enable-Audio
-Install-VirtualAudio
+Install-WDK
 
 Install-NvidiaDriver $manual_install
 Set-ScheduleWorkflow $steam_username $steam_password $admin_username $admin_password $manual_install

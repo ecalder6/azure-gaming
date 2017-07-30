@@ -11,6 +11,7 @@ Import-Module "C:\$script_name"
 
 Disable-ScheduleWorkflow
 Disable-Devices
+Install-VirtualAudio
 Install-Steam
 if (!$manual_install) {
     Set-Steam $steam_username $steam_password
