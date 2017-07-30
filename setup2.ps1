@@ -11,6 +11,7 @@ Import-Module "C:\$script_name"
 
 Disable-ScheduleWorkflow
 Disable-Devices
+Enable-Audio
 Install-VirtualAudio
 Install-Steam
 if (!$manual_install) {
