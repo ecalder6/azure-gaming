@@ -97,16 +97,6 @@ function Enable-Audio {
     Start-Service Audiosrv
 }
 
-function Install-WDK {
-    $wdk_installer = "wdksetup.exe"
-
-    Write-Host "Downloading Windows Development Kit installer"
-    (New-Object System.Net.WebClient).DownloadFile("http://go.microsoft.com/fwlink/p/?LinkId=526733", "$PSScriptRoot\$wdk_installer")
-
-    Write-Host "Downloading and installing Windows Development Kit"
-    Start-Process -FilePath "$PSScriptRoot\$wdk_installer" -ArgumentList "/S" -Wait
-}
-
 function Install-VirtualAudio {
     $compressed_file = "VBCABLE_Driver_Pack43.zip"
     $driver_folder = "VBCABLE_Driver_Pack43"
@@ -120,6 +110,15 @@ function Install-VirtualAudio {
     Write-Host "Extracting Virtual Audio Driver"
     Expand-Archive "$PSScriptRoot\$compressed_file" -DestinationPath "$PSScriptRoot\$driver_folder" -Force
 
+    $wdk_installer = "wdksetup.exe"
+    $devcon = "C:\Program Files (x86)\Windows Kits\10\Tools\x64\devcon.exe"
+
+    Write-Host "Downloading Windows Development Kit installer"
+    (New-Object System.Net.WebClient).DownloadFile("http://go.microsoft.com/fwlink/p/?LinkId=526733", "$PSScriptRoot\$wdk_installer")
+
+    Write-Host "Downloading and installing Windows Development Kit"
+    Start-Process -FilePath "$PSScriptRoot\$wdk_installer" -ArgumentList "/S" -Wait
+
     $cert = "vb_cert.cer"
     $url = "https://github.com/ecalder6/azure-gaming/raw/master/$cert"
 
@@ -129,7 +128,6 @@ function Install-VirtualAudio {
     Write-Host "Importing vb certificate"
     Import-Certificate -FilePath "$PSScriptRoot\$cert" -CertStoreLocation "cert:\LocalMachine\TrustedPublisher"
 
-    $devcon = "C:\Program Files (x86)\Windows Kits\10\Tools\x64\devcon.exe"
     Write-Host "Installing virtual audio driver"
     Start-Process -FilePath $devcon -ArgumentList "install", "$PSScriptRoot\$driver_folder\$driver_inf", $hardward_id -Wait
 }
