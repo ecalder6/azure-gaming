@@ -3,7 +3,7 @@ param (
     [string]$steam_username = "",
     [string]$steam_password_plain = "",
     [string]$admin_username = "",
-    [string]$admin_password = "",
+    [string]$admin_password_plain = "",
     [switch]$windows_update = $false,
     [switch]$manual_install = $false
 )
@@ -14,7 +14,8 @@ function Get-UtilsScript ($script_name) {
     (New-Object System.Net.WebClient).DownloadFile($url, "C:\$script_name")
 }
 
-$steam_password = ConvertTo-SecureString $steam_password_plain  -AsPlainText -Force
+$steam_password = ConvertTo-SecureString $steam_password_plain -AsPlainText -Force
+$admin_password = ConvertTo-SecureString $admin_password_plain -AsPlainText -Force
 
 $script_name = "utils.psm1"
 Get-UtilsScript $script_name

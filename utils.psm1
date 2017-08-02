@@ -209,10 +209,15 @@ function Set-ScheduleWorkflow ($steam_username, $steam_password, $admin_username
     if ($manual_install) {
         $cmd = -join ($cmd, " -manual_install")
     } else {
-        $password_file = "C:\SteamPassword.txt"
-        $secured_password = ConvertFrom-SecureString $steam_password
-        Set-Content "$password_file" $secured_password
-        $cmd = -join ($cmd, " -steam_username $steam_username -password_file $password_file")
+        $steam_password_file = "C:\SteamPassword.txt"
+        $steam_secured_password = ConvertFrom-SecureString $steam_password
+        Set-Content "$steam_password_file" $steam_secured_password
+
+        $admin_password_file = "C:\AdminPassword.txt"
+        $admin_secured_password = ConvertFrom-SecureString $admin_password
+        Set-Content "$admin_password_file" $admin_secured_password
+
+        $cmd = -join ($cmd, " -steam_username $steam_username -steam_password_file $steam_password_file -admin_password_file $admin_password_file")
     }
     nssm install $service_name $powershell $cmd
     nssm set $service_name Start SERVICE_AUTO_START
@@ -235,6 +240,176 @@ function Add-DisconnectShortcut {
 }
 
 function Add-AutoLogin ($admin_username, $admin_password) {
+    # From https://andyarismendi.blogspot.com/2011/10/powershell-set-secureautologon.html
+    Add-Type @"
+        using System;
+        using System.Collections.Generic;
+        using System.Text;
+        using System.Runtime.InteropServices;
+ 
+        namespace ComputerSystem
+        {
+            public class LSAutil
+            {
+                [StructLayout(LayoutKind.Sequential)]
+                private struct LSA_UNICODE_STRING
+                {
+                    public UInt16 Length;
+                    public UInt16 MaximumLength;
+                    public IntPtr Buffer;
+                }
+ 
+                [StructLayout(LayoutKind.Sequential)]
+                private struct LSA_OBJECT_ATTRIBUTES
+                {
+                    public int Length;
+                    public IntPtr RootDirectory;
+                    public LSA_UNICODE_STRING ObjectName;
+                    public uint Attributes;
+                    public IntPtr SecurityDescriptor;
+                    public IntPtr SecurityQualityOfService;
+                }
+ 
+                private enum LSA_AccessPolicy : long
+                {
+                    POLICY_VIEW_LOCAL_INFORMATION = 0x00000001L,
+                    POLICY_VIEW_AUDIT_INFORMATION = 0x00000002L,
+                    POLICY_GET_PRIVATE_INFORMATION = 0x00000004L,
+                    POLICY_TRUST_ADMIN = 0x00000008L,
+                    POLICY_CREATE_ACCOUNT = 0x00000010L,
+                    POLICY_CREATE_SECRET = 0x00000020L,
+                    POLICY_CREATE_PRIVILEGE = 0x00000040L,
+                    POLICY_SET_DEFAULT_QUOTA_LIMITS = 0x00000080L,
+                    POLICY_SET_AUDIT_REQUIREMENTS = 0x00000100L,
+                    POLICY_AUDIT_LOG_ADMIN = 0x00000200L,
+                    POLICY_SERVER_ADMIN = 0x00000400L,
+                    POLICY_LOOKUP_NAMES = 0x00000800L,
+                    POLICY_NOTIFICATION = 0x00001000L
+                }
+ 
+                [DllImport("advapi32.dll", SetLastError = true, PreserveSig = true)]
+                private static extern uint LsaRetrievePrivateData(
+                            IntPtr PolicyHandle,
+                            ref LSA_UNICODE_STRING KeyName,
+                            out IntPtr PrivateData
+                );
+ 
+                [DllImport("advapi32.dll", SetLastError = true, PreserveSig = true)]
+                private static extern uint LsaStorePrivateData(
+                        IntPtr policyHandle,
+                        ref LSA_UNICODE_STRING KeyName,
+                        ref LSA_UNICODE_STRING PrivateData
+                );
+ 
+                [DllImport("advapi32.dll", SetLastError = true, PreserveSig = true)]
+                private static extern uint LsaOpenPolicy(
+                    ref LSA_UNICODE_STRING SystemName,
+                    ref LSA_OBJECT_ATTRIBUTES ObjectAttributes,
+                    uint DesiredAccess,
+                    out IntPtr PolicyHandle
+                );
+ 
+                [DllImport("advapi32.dll", SetLastError = true, PreserveSig = true)]
+                private static extern uint LsaNtStatusToWinError(
+                    uint status
+                );
+ 
+                [DllImport("advapi32.dll", SetLastError = true, PreserveSig = true)]
+                private static extern uint LsaClose(
+                    IntPtr policyHandle
+                );
+ 
+                [DllImport("advapi32.dll", SetLastError = true, PreserveSig = true)]
+                private static extern uint LsaFreeMemory(
+                    IntPtr buffer
+                );
+ 
+                private LSA_OBJECT_ATTRIBUTES objectAttributes;
+                private LSA_UNICODE_STRING localsystem;
+                private LSA_UNICODE_STRING secretName;
+ 
+                public LSAutil(string key)
+                {
+                    if (key.Length == 0)
+                    {
+                        throw new Exception("Key lenght zero");
+                    }
+ 
+                    objectAttributes = new LSA_OBJECT_ATTRIBUTES();
+                    objectAttributes.Length = 0;
+                    objectAttributes.RootDirectory = IntPtr.Zero;
+                    objectAttributes.Attributes = 0;
+                    objectAttributes.SecurityDescriptor = IntPtr.Zero;
+                    objectAttributes.SecurityQualityOfService = IntPtr.Zero;
+ 
+                    localsystem = new LSA_UNICODE_STRING();
+                    localsystem.Buffer = IntPtr.Zero;
+                    localsystem.Length = 0;
+                    localsystem.MaximumLength = 0;
+ 
+                    secretName = new LSA_UNICODE_STRING();
+                    secretName.Buffer = Marshal.StringToHGlobalUni(key);
+                    secretName.Length = (UInt16)(key.Length * UnicodeEncoding.CharSize);
+                    secretName.MaximumLength = (UInt16)((key.Length + 1) * UnicodeEncoding.CharSize);
+                }
+ 
+                private IntPtr GetLsaPolicy(LSA_AccessPolicy access)
+                {
+                    IntPtr LsaPolicyHandle;
+ 
+                    uint ntsResult = LsaOpenPolicy(ref this.localsystem, ref this.objectAttributes, (uint)access, out LsaPolicyHandle);
+ 
+                    uint winErrorCode = LsaNtStatusToWinError(ntsResult);
+                    if (winErrorCode != 0)
+                    {
+                        throw new Exception("LsaOpenPolicy failed: " + winErrorCode);
+                    }
+ 
+                    return LsaPolicyHandle;
+                }
+ 
+                private static void ReleaseLsaPolicy(IntPtr LsaPolicyHandle)
+                {
+                    uint ntsResult = LsaClose(LsaPolicyHandle);
+                    uint winErrorCode = LsaNtStatusToWinError(ntsResult);
+                    if (winErrorCode != 0)
+                    {
+                        throw new Exception("LsaClose failed: " + winErrorCode);
+                    }
+                }
+ 
+                public void SetSecret(string value)
+                {
+                    LSA_UNICODE_STRING lusSecretData = new LSA_UNICODE_STRING();
+ 
+                    if (value.Length > 0)
+                    {
+                        //Create data and key
+                        lusSecretData.Buffer = Marshal.StringToHGlobalUni(value);
+                        lusSecretData.Length = (UInt16)(value.Length * UnicodeEncoding.CharSize);
+                        lusSecretData.MaximumLength = (UInt16)((value.Length + 1) * UnicodeEncoding.CharSize);
+                    }
+                    else
+                    {
+                        //Delete data and key
+                        lusSecretData.Buffer = IntPtr.Zero;
+                        lusSecretData.Length = 0;
+                        lusSecretData.MaximumLength = 0;
+                    }
+ 
+                    IntPtr LsaPolicyHandle = GetLsaPolicy(LSA_AccessPolicy.POLICY_CREATE_SECRET);
+                    uint result = LsaStorePrivateData(LsaPolicyHandle, ref secretName, ref lusSecretData);
+                    ReleaseLsaPolicy(LsaPolicyHandle);
+ 
+                    uint winErrorCode = LsaNtStatusToWinError(result);
+                    if (winErrorCode != 0)
+                    {
+                        throw new Exception("StorePrivateData failed: " + winErrorCode);
+                    }
+                }
+            }
+        }
+"@
     Write-Host "Make the password and account of admin user never expire."
     Set-LocalUser -Name $admin_username -PasswordNeverExpires $true -AccountNeverExpires
 
@@ -243,5 +418,12 @@ function Add-AutoLogin ($admin_username, $admin_password) {
     Set-ItemProperty $registry "AutoAdminLogon" -Value "1" -type String
     Set-ItemProperty $registry "DefaultDomainName" -Value "$env:computername" -type String
     Set-ItemProperty $registry "DefaultUsername" -Value $admin_username -type String
-    Set-ItemProperty $registry "DefaultPassword" -Value $admin_password -type String
+
+    $BSTR = [System.Runtime.InteropServices.Marshal]::SecureStringToBSTR($admin_password)            
+    $PlainPassword = [System.Runtime.InteropServices.Marshal]::PtrToStringAuto($BSTR)
+    $lsaUtil = New-Object ComputerSystem.LSAutil -ArgumentList "DefaultPassword"
+    $lsaUtil.SetSecret($PlainPassword)
 }
+
+
+
