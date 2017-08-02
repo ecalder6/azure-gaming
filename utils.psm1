@@ -181,12 +181,19 @@ function Install-Steam {
     Remove-Item -Path $PSScriptRoot\$steam_exe -Confirm:$false
 }
 
-function Set-Steam($steam_username, $steam_password) {
-    $steam = "C:\Program Files (x86)\Steam\Steam.exe"
-    if ($steam_username.length -gt 0) {
-        Write-Host "Editing registry to log into steam at startup"
-        Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Run" -Name "Steam" -Value "$steam -login $steam_username $steam_password -silent"
+function Set-Steam($steam_username) {
+    if ($steam_username.length -eq 0) {
+        return
     }
+    $password_file = "C:\SteamPassword.txt"
+    $script_name = "steamLogin.ps1"
+    $url = "https://raw.githubusercontent.com/ecalder6/azure-gaming/master/$script_name"
+    Write-Host "Downloading steam login script from $url"
+    (New-Object System.Net.WebClient).DownloadFile($url, "C:\$script_name")
+
+    $powershell = "C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe"
+    Write-Host "Editing registry to run a script that logs into steam at startup"
+    Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Run" -Name "SteamLogin" -Value "powershell -ExecutionPolicy Unrestricted -File C:\$script_name -steam_username $steam_username -password_file $password_file"
 }
 
 function Set-ScheduleWorkflow ($steam_username, $steam_password, $admin_username, $admin_password, $manual_install) {
@@ -203,7 +210,9 @@ function Set-ScheduleWorkflow ($steam_username, $steam_password, $admin_username
     if ($manual_install) {
         $cmd = -join ($cmd, " -manual_install")
     } else {
-        $cmd = -join ($cmd, " -steam_username $steam_username -steam_password $steam_password")
+        $secured_password = ConvertFrom-SecureString $steam_password
+        Set-Content "C:\SteamPassword.txt" $secured_password
+        $cmd = -join ($cmd, " -steam_username $steam_username")
     }
     nssm install $service_name $powershell $cmd
     nssm set $service_name Start SERVICE_AUTO_START
