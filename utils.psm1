@@ -181,11 +181,10 @@ function Install-Steam {
     Remove-Item -Path $PSScriptRoot\$steam_exe -Confirm:$false
 }
 
-function Set-Steam($steam_username) {
+function Set-Steam($steam_username, $password_file) {
     if ($steam_username.length -eq 0) {
         return
     }
-    $password_file = "C:\SteamPassword.txt"
     $script_name = "steamLogin.ps1"
     $url = "https://raw.githubusercontent.com/ecalder6/azure-gaming/master/$script_name"
     Write-Host "Downloading steam login script from $url"
@@ -210,9 +209,10 @@ function Set-ScheduleWorkflow ($steam_username, $steam_password, $admin_username
     if ($manual_install) {
         $cmd = -join ($cmd, " -manual_install")
     } else {
+        $password_file = "C:\SteamPassword.txt"
         $secured_password = ConvertFrom-SecureString $steam_password
-        Set-Content "C:\SteamPassword.txt" $secured_password
-        $cmd = -join ($cmd, " -steam_username $steam_username")
+        Set-Content "$password_file" $secured_password
+        $cmd = -join ($cmd, " -steam_username $steam_username -password_file $password_file")
     }
     nssm install $service_name $powershell $cmd
     nssm set $service_name Start SERVICE_AUTO_START
