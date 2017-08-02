@@ -1,7 +1,7 @@
 param (
     [string]$network = "",
     [string]$steam_username = "",
-    [string]$steam_password = "",
+    [string]$steam_password_plain = "",
     [string]$admin_username = "",
     [string]$admin_password = "",
     [switch]$windows_update = $false,
@@ -13,6 +13,8 @@ function Get-UtilsScript ($script_name) {
     Write-Host "Downloading utils script from $url"
     (New-Object System.Net.WebClient).DownloadFile($url, "C:\$script_name")
 }
+
+$steam_password = ConvertTo-SecureString $steam_password_plain  -AsPlainText -Force
 
 $script_name = "utils.psm1"
 Get-UtilsScript $script_name

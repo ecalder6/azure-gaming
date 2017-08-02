@@ -2,7 +2,7 @@ param (
     [string]$admin_username = "",
     [string]$admin_password = "",
     [string]$steam_username = "",
-    [string]$steam_password = "",
+    [string]$password_file = "",
     [switch]$manual_install = $false
 )
 
@@ -15,7 +15,7 @@ Enable-Audio
 Install-VirtualAudio
 Install-Steam
 if (!$manual_install) {
-    Set-Steam $steam_username $steam_password
+    Set-Steam $steam_username $password_file
 }
 Add-AutoLogin $admin_username $admin_password
 Restart-Computer
