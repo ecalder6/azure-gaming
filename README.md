@@ -4,11 +4,13 @@
 This project allows you to stream steam games through Azure cloud with only a few clicks! There is virtually no setup involved. In fact, you never have to login to the VM!
 The development of this project is heavily inspired by this [excellent guide](https://lg.io/2016/10/12/cloudy-gamer-playing-overwatch-on-azures-new-monster-gpu-instances.html).
 
+The automated setup first deploys an Azure NV6 VM with an Nvidia M60 video card and configures the Custom Script Extension to run the setup script. The setup script configures everything that's needed to run steam games on the VM, such as installing the Nvidia driver, connecting to ZeroTier VPN, and setting up auto login for Windows.
+
 ## Disclaimer
 **This software comes with no warranty of any kind**. USE AT YOUR OWN RISK! If you encounter an issue, please submit it on GitHub.
 
 ## Do this first
-1. Sign up for an [Paid Azure subscription](https://azure.microsoft.com/en-us/pricing/purchase-options/). You need a paid subscription as I don't think the free account grants you access to GPU VMs.
+1. Sign up for an [Paid Azure subscription](https://azure.microsoft.com/en-us/pricing/purchase-options/). You need a paid subscription as the free account grants you access to GPU VMs.
 2. Sign up for an account on [zero tier VPN](https://www.zerotier.com/) and create a network. Make sure the network is set to **public**.
 Note down the network id.
 3. Download and install zero tier VPN on your local machine. Join the network using the network ID noted in the previous step. **Make sure your local machine connect to the network BEFORE the VM does!**
@@ -36,7 +38,7 @@ Click on the button above and fill out the form. You'll need to fill in:
 * Network ID: network ID of your zero tier VPN.
 * Steam username and password: your steam login credentials.
 
-**Note: your admin and steam credentials will be stored in plain-text in the VM. See Q & A for more.**
+**Note: your admin and steam credentials will be stored in plain-text in the VM. If you follow the manual instructions below, only your admin credentials will be stored in plain-test. See Q & A for more.**
 
 After filling these in, check on I agree the terms and click on purchase. A VM with a M60 graphics card will be automatically deployed and configured for you. Note that the setup process will take around 15 minutes (1 hour + if you choose to update Windows). 
 
@@ -98,9 +100,10 @@ Contributions are welcome! Please submit an issue and a PR for your change.
     Your admin username, admin password, steam username, and steam password you provide in the Azure form will be stored as plain text in 2 instances:
     1. While the script is executing, they will be stored as plain-text in memory.
     2. To faciliate auto-login for the VM and for steam, the credentials will be stored as plain-text in registry.
+    
+    Note that if you followed the manual installation instructions instead, your steam credentials will not be stored in plain-text (as they are not handled by the setup script at all).
 
-    So you are safe as long as no malicious thrid-party is reading the VM memory during script exeuction or your registry. Now since the only way to
-    remote desktop into your VM is through the admin account, the credentials should be pretty safe. 
+    So you are safe as long as no malicious thrid-party is reading the VM memory during script exeuction or your registry. Now since the only way to remote desktop into your VM is through the admin account, the credentials should be pretty safe. 
     
 * The deployment seems successful but my local steam client can't detect my VM?
 
