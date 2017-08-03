@@ -10,7 +10,7 @@ The automated setup first deploys an Azure NV6 VM with an Nvidia M60 video card 
 **This software comes with no warranty of any kind**. USE AT YOUR OWN RISK! If you encounter an issue, please submit it on GitHub.
 
 ## Do this first
-1. Sign up for an [Paid Azure subscription](https://azure.microsoft.com/en-us/pricing/purchase-options/). You need a paid subscription as the free account grants you access to GPU VMs.
+1. Sign up for an [Paid Azure subscription](https://azure.microsoft.com/en-us/pricing/purchase-options/). You need a paid subscription as the free account does not grant you access to GPU VMs.
 2. Sign up for an account on [zero tier VPN](https://www.zerotier.com/) and create a network. Make sure the network is set to **public**.
 Note down the network id.
 3. Download and install zero tier VPN on your local machine. Join the network using the network ID noted in the previous step. **Make sure your local machine connect to the network BEFORE the VM does!**
