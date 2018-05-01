@@ -14,6 +14,34 @@
                 "description": "Password for the Virtual Machine."
             }
         },
+        "autoShutdownStatus": {
+            "type": "string",
+            "metadata": {
+                "description": "Whether to automatically shutdown the VM daily."
+            },
+            "defaultValue": "Enabled"
+        },
+        "autoShutdownTimeZone": {
+            "type": "string",
+            "metadata": {
+                "description": "The time zone for daily auto-shutdown."
+            },
+            "defaultValue": "Pacific Standard Time"
+        },
+        "autoShutdownTime": {
+            "type": "string",
+            "metadata": {
+                "description": "The time for daily auto-shutdown."
+            },
+            "defaultValue": "23:00"
+        },
+        "autoShutdownNotificationStatus": {
+            "type": "string",
+            "metadata": {
+                "description": "Whether to subscribe for notifications before VM is shutdown."
+            },
+            "defaultValue": "Disabled"
+        },
         "scriptLocation": {
             "type": "string",
             "metadata": {
@@ -123,6 +151,28 @@
                     }
                 ]
             }
+        },
+        {
+            "name": "[concat('shutdown-computevm-', parameters('vmName'))]",
+            "type": "Microsoft.DevTestLab/schedules",
+            "apiVersion": "2017-04-26-preview",
+            "location": "[parameters('location')]",
+            "properties": {
+                "status": "[parameters('autoShutdownStatus')]",
+                "taskType": "ComputeVmShutdownTask",
+                "dailyRecurrence": {
+                    "time": "[parameters('autoShutdownTime')]"
+                },
+                "timeZoneId": "[parameters('autoShutdownTimeZone')]",
+                "targetResourceId": "[resourceId('Microsoft.Compute/virtualMachines', parameters('vmName'))]",
+                "notificationSettings": {
+                    "status": "[parameters('autoShutdownNotificationStatus')]",
+                    "timeInMinutes": "30"
+                }
+            },
+            "dependsOn": [
+                "[concat('Microsoft.Compute/virtualMachines/', parameters('vmName'))]"
+            ]
         },
         {
             "name": "[variables('vmName')]",
