@@ -66,21 +66,21 @@
     },
     "resources": [
         {
-            "apiVersion": "2016-09-01",
-            "type": "Microsoft.Network/publicIPAddresses",
             "name": "[variables('publicIPAddressName')]",
+            "type": "Microsoft.Network/publicIPAddresses",
+            "apiVersion": "2017-08-01",
             "location": "[resourceGroup().location]",
             "properties": {
-                "publicIPAllocationMethod": "Dynamic",
-                "dnsSettings": {
-                    "domainNameLabel": "[variables('dnsNameForPublicIP')]"
-                }
+                "publicIPAllocationMethod": "Dynamic"
+            },
+            "sku": {
+                "name": "Basic"
             }
         },
         {
-            "apiVersion": "2016-09-01",
-            "type": "Microsoft.Network/virtualNetworks",
             "name": "[variables('virtualNetworkName')]",
+            "type": "Microsoft.Network/virtualNetworks",
+            "apiVersion": "2018-02-01",
             "location": "[resourceGroup().location]",
             "properties": {
                 "addressSpace": {
@@ -99,9 +99,9 @@
             }
         },
         {
-            "apiVersion": "2016-09-01",
-            "type": "Microsoft.Network/networkInterfaces",
             "name": "[variables('nicName')]",
+            "type": "Microsoft.Network/networkInterfaces",
+            "apiVersion": "2016-09-01",
             "location": "[resourceGroup().location]",
             "dependsOn": [
                 "[variables('publicIPAddressName')]",
@@ -112,12 +112,12 @@
                     {
                         "name": "ipconfig1",
                         "properties": {
+                            "subnet": {
+                                "id": "[variables('subnetRef')]"
+                            },
                             "privateIPAllocationMethod": "Dynamic",
                             "publicIPAddress": {
                                 "id": "[resourceId('Microsoft.Network/publicIPAddresses',variables('publicIPAddressName'))]"
-                            },
-                            "subnet": {
-                                "id": "[variables('subnetRef')]"
                             }
                         }
                     }
@@ -125,21 +125,24 @@
             }
         },
         {
-            "apiVersion": "2016-04-30-preview",
-            "type": "Microsoft.Compute/virtualMachines",
             "name": "[variables('vmName')]",
+            "type": "Microsoft.Compute/virtualMachines",
+            "apiVersion": "2017-03-30",
             "location": "[resourceGroup().location]",
             "dependsOn": [
                 "[variables('nicName')]"
             ],
             "properties": {
-                "hardwareProfile": {
-                    "vmSize": "Standard_NV6"
-                },
                 "osProfile": {
                     "computerName": "[variables('vmName')]",
                     "adminUsername": "[parameters('adminUsername')]",
-                    "adminPassword": "[parameters('adminPassword')]"
+                    "adminPassword": "[parameters('adminPassword')]",
+                    "windowsConfiguration": {
+                        "provisionVmAgent": "true"
+                    }
+                },
+                "hardwareProfile": {
+                    "vmSize": "Standard_NV6"
                 },
                 "storageProfile": {
                     "imageReference": {
@@ -149,7 +152,10 @@
                         "version": "latest"
                     },
                     "osDisk": {
-                        "createOption": "FromImage"
+                        "createOption": "FromImage",
+                        "managedDisk": {
+                            "storageAccountType": "Standard_LRS"
+                        }
                     }
                 },
                 "networkProfile": {
@@ -207,11 +213,5 @@
                 }
             ]
         }
-    ],
-    "outputs": {
-        "vm-fqdn": {
-            "type": "string",
-            "value": "[reference(variables('publicIPAddressName'), '2016-03-30').dnsSettings.fqdn]"
-        }
-    }
+    ]
 }
