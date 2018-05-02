@@ -60,14 +60,14 @@ function Install-NvidiaDriver ($manual_install, $nvdriver_version) {
     Write-Host "Installing Nvidia Driver"
     if ([string]::IsNullOrEmpty($nvdriver_version) -and $manual_install) {
         $r = Invoke-WebRequest -Uri 'https://www.nvidia.com/Download/processFind.aspx?psid=75&pfid=783&osid=74&lid=1&whql=&lang=en-us&ctk=16' -Method GET
-        $version = $r.parsedhtml.GetElementsByClassName("gridItem")[2].innerText
+        $nvdriver_version = $r.parsedhtml.GetElementsByClassName("gridItem")[2].innerText
     }
     elseif ([string]::IsNullOrEmpty($nvdriver_version)) {
-        $version = "391.29"
+        $nvdriver_version = "391.29"
     }
 
-    $url = "http://us.download.nvidia.com/Windows/Quadro_Certified/$version/$version-tesla-desktop-winserver2016-international-whql.exe"
-    $driver_file = "$version-driver.exe"
+    $url = "http://us.download.nvidia.com/Windows/Quadro_Certified/$nvdriver_version/$nvdriver_version-tesla-desktop-winserver2016-international.exe"
+    $driver_file = "nvidia-driver.exe"
 
     Write-Host "Downloading Nvidia M60 driver from URL $url"
     $webClient.DownloadFile($url, "$PSScriptRoot\$driver_file")
@@ -77,7 +77,7 @@ function Install-NvidiaDriver ($manual_install, $nvdriver_version) {
 
     Write-Host "Cleaning up driver files"
     Remove-Item -Path $PSScriptRoot\$driver_file -Confirm:$false
-    Remove-Item "C:\NVIDIA\DisplayDriver\$version" -Confirm:$false -Recurse
+    Remove-Item "C:\NVIDIA\DisplayDriver\$nvdriver_version" -Confirm:$false -Recurse
 }
 
 function Disable-Devices {
