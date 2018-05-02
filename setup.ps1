@@ -4,6 +4,7 @@ param (
     [string]$steam_password = "",
     [string]$admin_username = "",
     [string]$admin_password = "",
+    [string]$nvdriver_version = "",
     [switch]$windows_update = $false,
     [switch]$manual_install = $false
 )
@@ -36,6 +37,6 @@ Install-VPN
 Join-Network $network
 Install-NSSM
 
-Install-NvidiaDriver $manual_install
+Install-NvidiaDriver $manual_install $nvdriver_version
 Set-ScheduleWorkflow $steam_username $steam_password $admin_username $admin_password $manual_install
 Restart-Computer

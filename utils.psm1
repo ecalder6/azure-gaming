@@ -52,14 +52,17 @@ function Edit-VisualEffectsRegistry {
     Set-ItemProperty -Path "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\VisualEffects" -Name "VisualFXSetting" -Value 2
 }
 
-function Install-NvidiaDriver ($manual_install) {
+function Install-NvidiaDriver ($manual_install, $nvdriver_version) {
     # Modified from source: https://github.com/lord-carlos/nvidia-update
     Write-Host "Installing Nvidia Driver"
-    $version = "377.35"
-    if ($manual_install) {
+    if ([string]::IsNullOrEmpty($nvdriver_version) -and $manual_install) {
         $r = Invoke-WebRequest -Uri 'https://www.nvidia.com/Download/processFind.aspx?psid=75&pfid=783&osid=74&lid=1&whql=&lang=en-us&ctk=16' -Method GET
         $version = $r.parsedhtml.GetElementsByClassName("gridItem")[2].innerText
     }
+    elseif ([string]::IsNullOrEmpty($nvdriver_version)) {
+        $version = "391.29"
+    }
+
     $url = "http://us.download.nvidia.com/Windows/Quadro_Certified/$version/$version-tesla-desktop-winserver2016-international-whql.exe"
     $driver_file = "$version-driver.exe"
 
