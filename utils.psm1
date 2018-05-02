@@ -1,3 +1,6 @@
+[Net.ServicePointManager]::SecurityProtocol = [System.Net.SecurityProtocolType]::Tls12
+$webClient = new-object System.Net.WebClient
+
 function Disable-InternetExplorerESC {
     # From https://stackoverflow.com/questions/9368305/disable-ie-security-on-windows-server-via-powershell
     $AdminKey = "HKLM:\SOFTWARE\Microsoft\Active Setup\Installed Components\{A509B1A7-37EF-4b3f-8CFC-4F3A74704073}"
@@ -14,7 +17,7 @@ function Update-Windows {
     $update_script = "PS_WinUpdate.ps1"
 
     Write-Host "Downloading Windows Update Powershell Script from $url"
-    (New-Object System.Net.WebClient).DownloadFile($url, "$PSScriptRoot\$compressed_file")
+    $webClient.DownloadFile($url, "$PSScriptRoot\$compressed_file")
     Unblock-File -Path "$PSScriptRoot\$compressed_file"
 
     Write-Host "Extracting Windows Update Powershell Script"
@@ -67,7 +70,7 @@ function Install-NvidiaDriver ($manual_install, $nvdriver_version) {
     $driver_file = "$version-driver.exe"
 
     Write-Host "Downloading Nvidia M60 driver from URL $url"
-    (New-Object System.Net.WebClient).DownloadFile($url, "$PSScriptRoot\$driver_file")
+    $webClient.DownloadFile($url, "$PSScriptRoot\$driver_file")
 
     Write-Host "Installing Nvidia M60 driver from file $PSScriptRoot\$driver_file"
     Start-Process -FilePath "$PSScriptRoot\$driver_file" -ArgumentList "-s", "-noreboot" -Wait
@@ -83,7 +86,7 @@ function Disable-Devices {
     $extract_folder = "DeviceManagement"
 
     Write-Host "Downloading Device Management Powershell Script from $url"
-    (New-Object System.Net.WebClient).DownloadFile($url, "$PSScriptRoot\$compressed_file")
+    $webClient.DownloadFile($url, "$PSScriptRoot\$compressed_file")
     Unblock-File -Path "$PSScriptRoot\$compressed_file"
 
     Write-Host "Extracting Device Management Powershell Script"
@@ -107,7 +110,7 @@ function Install-VirtualAudio {
     $hardward_id = "VBAudioVACWDM"
 
     Write-Host "Downloading Virtual Audio Driver"
-    (New-Object System.Net.WebClient).DownloadFile("http://vbaudio.jcedeveloppement.com/Download_CABLE/VBCABLE_Driver_Pack43.zip", "$PSScriptRoot\$compressed_file")
+    $webClient.DownloadFile("http://vbaudio.jcedeveloppement.com/Download_CABLE/VBCABLE_Driver_Pack43.zip", "$PSScriptRoot\$compressed_file")
     Unblock-File -Path "$PSScriptRoot\$compressed_file"
 
     Write-Host "Extracting Virtual Audio Driver"
@@ -117,7 +120,7 @@ function Install-VirtualAudio {
     $devcon = "C:\Program Files (x86)\Windows Kits\10\Tools\x64\devcon.exe"
 
     Write-Host "Downloading Windows Development Kit installer"
-    (New-Object System.Net.WebClient).DownloadFile("http://go.microsoft.com/fwlink/p/?LinkId=526733", "$PSScriptRoot\$wdk_installer")
+    $webClient.DownloadFile("http://go.microsoft.com/fwlink/p/?LinkId=526733", "$PSScriptRoot\$wdk_installer")
 
     Write-Host "Downloading and installing Windows Development Kit"
     Start-Process -FilePath "$PSScriptRoot\$wdk_installer" -ArgumentList "/S" -Wait
@@ -126,7 +129,7 @@ function Install-VirtualAudio {
     $url = "https://github.com/ecalder6/azure-gaming/raw/master/$cert"
 
     Write-Host "Downloading vb certificate from $url"
-    (New-Object System.Net.WebClient).DownloadFile($url, "$PSScriptRoot\$cert")
+    $webClient.DownloadFile($url, "$PSScriptRoot\$cert")
 
     Write-Host "Importing vb certificate"
     Import-Certificate -FilePath "$PSScriptRoot\$cert" -CertStoreLocation "cert:\LocalMachine\TrustedPublisher"
@@ -137,7 +140,7 @@ function Install-VirtualAudio {
 
 function Install-Chocolatey {
     Write-Host "Installing Chocolatey"
-    Invoke-Expression ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))
+    Invoke-Expression ($webClient.DownloadString('https://chocolatey.org/install.ps1'))
     $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine")
     chocolatey feature enable -n allowGlobalConfirmation
 }
@@ -153,7 +156,7 @@ function Install-VPN {
     $url = "https://github.com/ecalder6/azure-gaming/raw/master/$cert"
 
     Write-Host "Downloading zero tier certificate from $url"
-    (New-Object System.Net.WebClient).DownloadFile($url, "$PSScriptRoot\$cert")
+    $webClient.DownloadFile($url, "$PSScriptRoot\$cert")
 
     Write-Host "Importing zero tier certificate"
     Import-Certificate -FilePath "$PSScriptRoot\$cert" -CertStoreLocation "cert:\LocalMachine\TrustedPublisher"
@@ -176,7 +179,7 @@ function Install-NSSM {
 function Install-Steam {
     $steam_exe = "steam.exe"
     Write-Host "Downloading steam into path $PSScriptRoot\$steam_exe"
-    (New-Object System.Net.WebClient).DownloadFile("https://steamcdn-a.akamaihd.net/client/installer/SteamSetup.exe", "$PSScriptRoot\$steam_exe")
+    $webClient.DownloadFile("https://steamcdn-a.akamaihd.net/client/installer/SteamSetup.exe", "$PSScriptRoot\$steam_exe")
     Write-Host "Installing steam"
     Start-Process -FilePath "$PSScriptRoot\$steam_exe" -ArgumentList "/S" -Wait
 
@@ -197,7 +200,7 @@ function Set-ScheduleWorkflow ($steam_username, $steam_password, $admin_username
     $url = "https://raw.githubusercontent.com/ecalder6/azure-gaming/master/$script_name"
 
     Write-Host "Downloading second stage setup script from $url"
-    (New-Object System.Net.WebClient).DownloadFile($url, "C:\$script_name")
+    $webClient.DownloadFile($url, "C:\$script_name")
 
     $powershell = "C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe"
     $service_name = "SetupSecondStage"

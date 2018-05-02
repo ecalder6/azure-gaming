@@ -12,7 +12,10 @@ param (
 function Get-UtilsScript ($script_name) {
     $url = "https://raw.githubusercontent.com/ecalder6/azure-gaming/master/$script_name"
     Write-Host "Downloading utils script from $url"
-    (New-Object System.Net.WebClient).DownloadFile($url, "C:\$script_name")
+    [Net.ServicePointManager]::SecurityProtocol = [System.Net.SecurityProtocolType]::Tls12
+
+    $webClient = new-object System.Net.WebClient
+    $webClient.DownloadFile($url, "C:\$script_name")
 }
 
 $script_name = "utils.psm1"
