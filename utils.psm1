@@ -8,7 +8,7 @@ function Disable-InternetExplorerESC {
     Set-ItemProperty -Path $AdminKey -Name "IsInstalled" -Value 0 -Force
     Set-ItemProperty -Path $UserKey -Name "IsInstalled" -Value 0 -Force
     Stop-Process -Name Explorer -Force
-    Write-Host "IE Enhanced Security Configuration (ESC) has been disabled." -ForegroundColor Green
+    Write-Output "IE Enhanced Security Configuration (ESC) has been disabled." -ForegroundColor Green
 }
 
 function Update-Windows {
@@ -16,29 +16,29 @@ function Update-Windows {
     $compressed_file = "PS_WinUpdate.zip"
     $update_script = "PS_WinUpdate.ps1"
 
-    Write-Host "Downloading Windows Update Powershell Script from $url"
+    Write-Output "Downloading Windows Update Powershell Script from $url"
     $webClient.DownloadFile($url, "$PSScriptRoot\$compressed_file")
     Unblock-File -Path "$PSScriptRoot\$compressed_file"
 
-    Write-Host "Extracting Windows Update Powershell Script"
+    Write-Output "Extracting Windows Update Powershell Script"
     Expand-Archive "$PSScriptRoot\$compressed_file" -DestinationPath "$PSScriptRoot\" -Force
 
-    Write-Host "Running Windows Update"
+    Write-Output "Running Windows Update"
     Invoke-Expression $PSScriptRoot\$update_script
 }
 
 function Update-Firewall {
-    Write-Host "Enable ICMP Ping in Firewall."
+    Write-Output "Enable ICMP Ping in Firewall."
     Set-NetFirewallRule -DisplayName "File and Printer Sharing (Echo Request - ICMPv4-In)" -Enabled True
 }
 
 function Disable-Defender {
-    Write-Host "Disable Windows Defender real-time protection."
+    Write-Output "Disable Windows Defender real-time protection."
     Set-MpPreference -DisableRealtimeMonitoring $true
 }
 
 function Disable-ScheduledTasks {
-    Write-Host "Disable unnecessary scheduled tasks"
+    Write-Output "Disable unnecessary scheduled tasks"
     Disable-ScheduledTask -TaskName 'ScheduledDefrag' -TaskPath '\Microsoft\Windows\Defrag'
     Disable-ScheduledTask -TaskName 'ProactiveScan' -TaskPath '\Microsoft\Windows\Chkdsk'
     Disable-ScheduledTask -TaskName 'Scheduled' -TaskPath '\Microsoft\Windows\Diagnosis'
@@ -51,13 +51,13 @@ function Disable-ScheduledTasks {
 }
 
 function Edit-VisualEffectsRegistry {
-    Write-Host "Adjust performance options in registry"
+    Write-Output "Adjust performance options in registry"
     Set-ItemProperty -Path "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\VisualEffects" -Name "VisualFXSetting" -Value 2
 }
 
 function Install-NvidiaDriver ($manual_install, $nvdriver_version) {
     # Modified from source: https://github.com/lord-carlos/nvidia-update
-    Write-Host "Installing Nvidia Driver"
+    Write-Output "Installing Nvidia Driver"
     if ([string]::IsNullOrEmpty($nvdriver_version) -and $manual_install) {
         $r = Invoke-WebRequest -Uri 'https://www.nvidia.com/Download/processFind.aspx?psid=75&pfid=783&osid=74&lid=1&whql=&lang=en-us&ctk=16' -Method GET
         $nvdriver_version = $r.parsedhtml.GetElementsByClassName("gridItem")[2].innerText
@@ -69,13 +69,13 @@ function Install-NvidiaDriver ($manual_install, $nvdriver_version) {
     $url = "http://us.download.nvidia.com/Windows/Quadro_Certified/$nvdriver_version/$nvdriver_version-tesla-desktop-winserver2016-international.exe"
     $driver_file = "nvidia-driver.exe"
 
-    Write-Host "Downloading Nvidia M60 driver from URL $url"
+    Write-Output "Downloading Nvidia M60 driver from URL $url"
     $webClient.DownloadFile($url, "$PSScriptRoot\$driver_file")
 
-    Write-Host "Installing Nvidia M60 driver from file $PSScriptRoot\$driver_file"
+    Write-Output "Installing Nvidia M60 driver from file $PSScriptRoot\$driver_file"
     Start-Process -FilePath "$PSScriptRoot\$driver_file" -ArgumentList "-s", "-noreboot" -Wait
 
-    Write-Host "Cleaning up driver files"
+    Write-Output "Cleaning up driver files"
     Remove-Item -Path $PSScriptRoot\$driver_file -Confirm:$false
     Remove-Item "C:\NVIDIA\DisplayDriver\$nvdriver_version" -Confirm:$false -Recurse
 }
@@ -85,20 +85,20 @@ function Disable-Devices {
     $compressed_file = "DeviceManagement.zip"
     $extract_folder = "DeviceManagement"
 
-    Write-Host "Downloading Device Management Powershell Script from $url"
+    Write-Output "Downloading Device Management Powershell Script from $url"
     $webClient.DownloadFile($url, "$PSScriptRoot\$compressed_file")
     Unblock-File -Path "$PSScriptRoot\$compressed_file"
 
-    Write-Host "Extracting Device Management Powershell Script"
+    Write-Output "Extracting Device Management Powershell Script"
     Expand-Archive "$PSScriptRoot\$compressed_file" -DestinationPath "$PSScriptRoot\$extract_folder" -Force
 
-    Write-Host "Disabling Hyper-V Video"
+    Write-Output "Disabling Hyper-V Video"
     Import-Module "$PSScriptRoot\$extract_folder\DeviceManagement.psd1"
     Get-Device | Where-Object -Property Name -Like "Microsoft Hyper-V Video" | Disable-Device -Confirm:$false
 }
 
 function Enable-Audio {
-    Write-Host "Enabling Audio Service"
+    Write-Output "Enabling Audio Service"
     Set-Service -Name "Audiosrv" -StartupType Automatic
     Start-Service Audiosrv
 }
@@ -109,37 +109,37 @@ function Install-VirtualAudio {
     $driver_inf = "vbMmeCable64_win7.inf"
     $hardward_id = "VBAudioVACWDM"
 
-    Write-Host "Downloading Virtual Audio Driver"
+    Write-Output "Downloading Virtual Audio Driver"
     $webClient.DownloadFile("http://vbaudio.jcedeveloppement.com/Download_CABLE/VBCABLE_Driver_Pack43.zip", "$PSScriptRoot\$compressed_file")
     Unblock-File -Path "$PSScriptRoot\$compressed_file"
 
-    Write-Host "Extracting Virtual Audio Driver"
+    Write-Output "Extracting Virtual Audio Driver"
     Expand-Archive "$PSScriptRoot\$compressed_file" -DestinationPath "$PSScriptRoot\$driver_folder" -Force
 
     $wdk_installer = "wdksetup.exe"
     $devcon = "C:\Program Files (x86)\Windows Kits\10\Tools\x64\devcon.exe"
 
-    Write-Host "Downloading Windows Development Kit installer"
+    Write-Output "Downloading Windows Development Kit installer"
     $webClient.DownloadFile("http://go.microsoft.com/fwlink/p/?LinkId=526733", "$PSScriptRoot\$wdk_installer")
 
-    Write-Host "Downloading and installing Windows Development Kit"
+    Write-Output "Downloading and installing Windows Development Kit"
     Start-Process -FilePath "$PSScriptRoot\$wdk_installer" -ArgumentList "/S" -Wait
 
     $cert = "vb_cert.cer"
     $url = "https://github.com/ecalder6/azure-gaming/raw/master/$cert"
 
-    Write-Host "Downloading vb certificate from $url"
+    Write-Output "Downloading vb certificate from $url"
     $webClient.DownloadFile($url, "$PSScriptRoot\$cert")
 
-    Write-Host "Importing vb certificate"
+    Write-Output "Importing vb certificate"
     Import-Certificate -FilePath "$PSScriptRoot\$cert" -CertStoreLocation "cert:\LocalMachine\TrustedPublisher"
 
-    Write-Host "Installing virtual audio driver"
+    Write-Output "Installing virtual audio driver"
     Start-Process -FilePath $devcon -ArgumentList "install", "$PSScriptRoot\$driver_folder\$driver_inf", $hardward_id -Wait
 }
 
 function Install-Chocolatey {
-    Write-Host "Installing Chocolatey"
+    Write-Output "Installing Chocolatey"
     Invoke-Expression ($webClient.DownloadString('https://chocolatey.org/install.ps1'))
     $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine")
     chocolatey feature enable -n allowGlobalConfirmation
@@ -155,42 +155,42 @@ function Install-VPN {
     $cert = "zerotier_cert.cer"
     $url = "https://github.com/ecalder6/azure-gaming/raw/master/$cert"
 
-    Write-Host "Downloading zero tier certificate from $url"
+    Write-Output "Downloading zero tier certificate from $url"
     $webClient.DownloadFile($url, "$PSScriptRoot\$cert")
 
-    Write-Host "Importing zero tier certificate"
+    Write-Output "Importing zero tier certificate"
     Import-Certificate -FilePath "$PSScriptRoot\$cert" -CertStoreLocation "cert:\LocalMachine\TrustedPublisher"
 
-    Write-Host "Installing ZeroTier"
+    Write-Output "Installing ZeroTier"
     choco install zerotier-one --force
     $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine")
 }
 
 function Join-Network ($network) {
-    Write-Host "Joining network $network"
+    Write-Output "Joining network $network"
     zerotier-cli join $network
 }
 
 function Install-NSSM {
-    Write-Host "Installing NSSM for launching services that run apps at startup"
+    Write-Output "Installing NSSM for launching services that run apps at startup"
     choco install nssm --force
 }
 
 function Install-Steam {
     $steam_exe = "steam.exe"
-    Write-Host "Downloading steam into path $PSScriptRoot\$steam_exe"
+    Write-Output "Downloading steam into path $PSScriptRoot\$steam_exe"
     $webClient.DownloadFile("https://steamcdn-a.akamaihd.net/client/installer/SteamSetup.exe", "$PSScriptRoot\$steam_exe")
-    Write-Host "Installing steam"
+    Write-Output "Installing steam"
     Start-Process -FilePath "$PSScriptRoot\$steam_exe" -ArgumentList "/S" -Wait
 
-    Write-Host "Cleaning up steam installation file"
+    Write-Output "Cleaning up steam installation file"
     Remove-Item -Path $PSScriptRoot\$steam_exe -Confirm:$false
 }
 
 function Set-Steam($steam_username, $steam_password) {
     $steam = "C:\Program Files (x86)\Steam\Steam.exe"
     if ($steam_username.length -gt 0) {
-        Write-Host "Editing registry to log into steam at startup"
+        Write-Output "Editing registry to log into steam at startup"
         Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Run" -Name "Steam" -Value "$steam -login $steam_username $steam_password -silent"
     }
 }
@@ -199,17 +199,17 @@ function Set-ScheduleWorkflow ($steam_username, $steam_password, $admin_username
     $script_name = "setup2.ps1"
     $url = "https://raw.githubusercontent.com/ecalder6/azure-gaming/master/$script_name"
 
-    Write-Host "Downloading second stage setup script from $url"
+    Write-Output "Downloading second stage setup script from $url"
     $webClient.DownloadFile($url, "C:\$script_name")
 
     $powershell = "C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe"
     $service_name = "SetupSecondStage"
-    Write-Host "Creating a service $service_name to finish setting up"
-    $cmd = "C:\$script_name -admin_username $admin_username -admin_password $admin_password"
+    Write-Output "Creating a service $service_name to finish setting up"
+    $cmd = "-ExecutionPolicy Unrestricted -NoProfile -File C:\$script_name -admin_username \`"$admin_username\`" -admin_password \`"$admin_password\`""
     if ($manual_install) {
         $cmd = -join ($cmd, " -manual_install")
     } else {
-        $cmd = -join ($cmd, " -steam_username $steam_username -steam_password $steam_password")
+        $cmd = -join ($cmd, " -steam_username \`"$steam_username\`" -steam_password \`"$steam_password\`"")
     }
     nssm install $service_name $powershell $cmd
     nssm set $service_name Start SERVICE_AUTO_START
@@ -222,7 +222,7 @@ function Disable-ScheduleWorkflow {
 
 function Add-DisconnectShortcut {
     # From https://stackoverflow.com/questions/9701840/how-to-create-a-shortcut-using-powershell
-    Write-Host "Create disconnect shortcut under C:\disconnect.lnk"
+    Write-Output "Create disconnect shortcut under C:\disconnect.lnk"
 
     $WshShell = New-Object -comObject WScript.Shell
     $Shortcut = $WshShell.CreateShortcut("C:\disconnect.lnk")
@@ -232,10 +232,10 @@ function Add-DisconnectShortcut {
 }
 
 function Add-AutoLogin ($admin_username, $admin_password) {
-    Write-Host "Make the password and account of admin user never expire."
+    Write-Output "Make the password and account of admin user never expire."
     Set-LocalUser -Name $admin_username -PasswordNeverExpires $true -AccountNeverExpires
 
-    Write-Host "Make the admin login at startup."
+    Write-Output "Make the admin login at startup."
     $registry = "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon"
     Set-ItemProperty $registry "AutoAdminLogon" -Value "1" -type String
     Set-ItemProperty $registry "DefaultDomainName" -Value "$env:computername" -type String
