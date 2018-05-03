@@ -213,6 +213,7 @@ function Set-ScheduleWorkflow ($steam_username, $steam_password, $admin_username
     }
     nssm install $service_name $powershell $cmd
     nssm set $service_name Start SERVICE_AUTO_START
+    nssm set $service_name AppExit 0 Exit
 }
 
 function Disable-ScheduleWorkflow {
