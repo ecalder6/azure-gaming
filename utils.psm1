@@ -205,11 +205,11 @@ function Set-ScheduleWorkflow ($steam_username, $steam_password, $admin_username
     $powershell = "C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe"
     $service_name = "SetupSecondStage"
     Write-Output "Creating a service $service_name to finish setting up"
-    $cmd = "-ExecutionPolicy Unrestricted -NoProfile -File C:\$script_name -admin_username \`"$admin_username\`" -admin_password \`"$admin_password\`""
+    $cmd = "-ExecutionPolicy Unrestricted -NoProfile -File C:\$script_name -admin_username `"$admin_username`" -admin_password `"$admin_password`""
     if ($manual_install) {
         $cmd = -join ($cmd, " -manual_install")
     } else {
-        $cmd = -join ($cmd, " -steam_username \`"$steam_username\`" -steam_password \`"$steam_password\`"")
+        $cmd = -join ($cmd, " -steam_username `"$steam_username`" -steam_password `"$steam_password`"")
     }
     nssm install $service_name $powershell $cmd
     nssm set $service_name Start SERVICE_AUTO_START
