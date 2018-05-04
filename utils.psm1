@@ -191,7 +191,7 @@ function Set-Steam($steam_username, $steam_password) {
     $steam = "C:\Program Files (x86)\Steam\Steam.exe"
     if ($steam_username.length -gt 0) {
         Write-Output "Editing registry to log into steam at startup"
-        Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Run" -Name "Steam" -Value "$steam -login $steam_username $steam_password -silent"
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Run" -Name "Steam" -Value "$steam -login $steam_username $steam_password -silent -skipstreamingdrivers"
     }
 }
 
