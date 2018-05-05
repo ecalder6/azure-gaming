@@ -77,9 +77,7 @@
         "dnsNameForPublicIP": "[concat('cgp', uniqueString(resourceGroup().id, deployment().name))]",
         "scriptFolder": ".",
         "scriptFileName": "setup.ps1",
-        "scriptParameters": "[concat('-network \"', parameters('networkID'), '\" -admin_username \"', parameters('adminUsername'), '\" -admin_password \"', parameters('adminPassword'), '\"')]",
-        "commandToExecuteNoUpdate": "[concat('powershell -ExecutionPolicy Unrestricted -File ', variables('scriptFolder'), '/', variables('scriptFileName'), ' ', variables('scriptParameters'))]",
-        "commandToExecuteUpdate": "[concat('powershell -ExecutionPolicy Unrestricted -File ', variables('scriptFolder'), '/', variables('scriptFileName'), ' ', variables('scriptParameters'), ' -windows_update')]"
+        "scriptParameters": "[concat('-network \"', parameters('networkID'), '\" -admin_username \"', parameters('adminUsername'), '\" -admin_password \"', parameters('adminPassword'), '\"')]"
     },
     "resources": [
         {
@@ -207,8 +205,9 @@
             },
             "resources": [
                 {
+                    "condition": "[equals(parameters('windowsUpdate'), bool('false') )]",
                     "type": "extensions",
-                    "name": "Setup",
+                    "name": "SetupWithoutWindowsUpdate",
                     "apiVersion": "2015-06-15",
                     "location": "[resourceGroup().location]",
                     "dependsOn": [
@@ -223,7 +222,29 @@
                             "fileUris": [
                                 "[concat(parameters('scriptLocation'), '/', variables('ScriptFolder'), '/', variables('ScriptFileName'))]"
                             ],
-                            "commandToExecute": "[if(equals(parameters('windowsUpdate'), true), variables('commandToExecuteUpdate'), variables('commandToExecuteNoUpdate'))]"
+                            "commandToExecute": "[concat('powershell -ExecutionPolicy Unrestricted -File ', variables('scriptFolder'), '/', variables('scriptFileName'), ' ', variables('scriptParameters'))]"
+                        }
+                    }
+                },
+                {
+                    "condition": "[equals(parameters('windowsUpdate'), bool('true') )]",
+                    "type": "extensions",
+                    "name": "SetupWithWindowsUpdate",
+                    "apiVersion": "2015-06-15",
+                    "location": "[resourceGroup().location]",
+                    "dependsOn": [
+                        "[variables('vmName')]"
+                    ],
+                    "properties": {
+                        "publisher": "Microsoft.Compute",
+                        "type": "CustomScriptExtension",
+                        "typeHandlerVersion": "1.8",
+                        "autoUpgradeMinorVersion": true,
+                        "settings": {
+                            "fileUris": [
+                                "[concat(parameters('scriptLocation'), '/', variables('ScriptFolder'), '/', variables('ScriptFileName'))]"
+                            ],
+                            "commandToExecute": "[concat('powershell -ExecutionPolicy Unrestricted -File ', variables('scriptFolder'), '/', variables('scriptFileName'), ' ', variables('scriptParameters'), ' -windows_update')]"
                         }
                     }
                 }
