@@ -75,7 +75,6 @@
         "virtualNetworkName": "CloudGamingVNET",
         "publicIPAddressName": "CloudGamingsPublicIP",
         "dnsNameForPublicIP": "[concat('cgp', uniqueString(resourceGroup().id, deployment().name))]",
-        "windowsUpdateVar": "[if(equals(parameters('windowsUpdate'), true), ' -windows_update', '')]",
         "scriptFolder": ".",
         "scriptFileName": "setup.ps1",
         "scriptParameters": "[concat('-network \"', parameters('networkID'), '\" -admin_username \"', parameters('adminUsername'), '\" -admin_password \"', parameters('adminPassword'), '\"')]",
