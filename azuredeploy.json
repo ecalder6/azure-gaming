@@ -75,6 +75,7 @@
         "virtualNetworkName": "CloudGamingVNET",
         "publicIPAddressName": "CloudGamingsPublicIP",
         "dnsNameForPublicIP": "[concat('cgp', uniqueString(resourceGroup().id, deployment().name))]",
+        "windowsUpdateVar": "[if(equals(parameters('windowsUpdate'), true), ' -windows_update', '')]",
         "scriptFolder": ".",
         "scriptFileName": "setup.ps1",
         "scriptParameters": "[concat('-network \"', parameters('networkID'), '\" -admin_username \"', parameters('adminUsername'), '\" -admin_password \"', parameters('adminPassword'), '\"')]"
@@ -205,9 +206,8 @@
             },
             "resources": [
                 {
-                    "condition": "[equals(parameters('windowsUpdate'), bool('false') )]",
                     "type": "extensions",
-                    "name": "SetupWithoutWindowsUpdate",
+                    "name": "Setup",
                     "apiVersion": "2015-06-15",
                     "location": "[resourceGroup().location]",
                     "dependsOn": [
@@ -222,29 +222,7 @@
                             "fileUris": [
                                 "[concat(parameters('scriptLocation'), '/', variables('ScriptFolder'), '/', variables('ScriptFileName'))]"
                             ],
-                            "commandToExecute": "[concat('powershell -ExecutionPolicy Unrestricted -File ', variables('scriptFolder'), '/', variables('scriptFileName'), ' ', variables('scriptParameters'))]"
-                        }
-                    }
-                },
-                {
-                    "condition": "[equals(parameters('windowsUpdate'), bool('true') )]",
-                    "type": "extensions",
-                    "name": "SetupWithWindowsUpdate",
-                    "apiVersion": "2015-06-15",
-                    "location": "[resourceGroup().location]",
-                    "dependsOn": [
-                        "[variables('vmName')]"
-                    ],
-                    "properties": {
-                        "publisher": "Microsoft.Compute",
-                        "type": "CustomScriptExtension",
-                        "typeHandlerVersion": "1.8",
-                        "autoUpgradeMinorVersion": true,
-                        "settings": {
-                            "fileUris": [
-                                "[concat(parameters('scriptLocation'), '/', variables('ScriptFolder'), '/', variables('ScriptFileName'))]"
-                            ],
-                            "commandToExecute": "[concat('powershell -ExecutionPolicy Unrestricted -File ', variables('scriptFolder'), '/', variables('scriptFileName'), ' ', variables('scriptParameters'), ' -windows_update')]"
+                            "commandToExecute": "[concat('powershell -ExecutionPolicy Unrestricted -File ', variables('scriptFolder'), '/', variables('scriptFileName'), ' ', variables('scriptParameters'), variables('windowsUpdateVar'))]"
                         }
                     }
                 }
