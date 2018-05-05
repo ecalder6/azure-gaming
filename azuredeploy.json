@@ -16,6 +16,10 @@
         },
         "autoShutdownStatus": {
             "type": "string",
+            "allowedValues": [
+                "Enabled",
+                "Disabled"
+            ],
             "metadata": {
                 "description": "Whether to automatically shutdown the VM daily."
             },
@@ -35,13 +39,6 @@
             },
             "defaultValue": "23:00"
         },
-        "autoShutdownNotificationStatus": {
-            "type": "string",
-            "metadata": {
-                "description": "Whether to subscribe for notifications before VM is shutdown."
-            },
-            "defaultValue": "Disabled"
-        },
         "scriptLocation": {
             "type": "string",
             "metadata": {
@@ -51,6 +48,10 @@
         },
         "windowsUpdate": {
             "type": "bool",
+            "allowedValues": [
+                true,
+                false
+            ],
             "metadata": {
                 "description": "Whether to update Windows (takes around 30 minutes to complete)"
             },
