@@ -78,7 +78,9 @@
         "windowsUpdateVar": "[if(equals(parameters('windowsUpdate'), true), ' -windows_update', '')]",
         "scriptFolder": ".",
         "scriptFileName": "setup.ps1",
-        "scriptParameters": "[concat('-network \"', parameters('networkID'), '\" -admin_username \"', parameters('adminUsername'), '\" -admin_password \"', parameters('adminPassword'), '\"')]"
+        "scriptParameters": "[concat('-network \"', parameters('networkID'), '\" -admin_username \"', parameters('adminUsername'), '\" -admin_password \"', parameters('adminPassword'), '\"')]",
+        "commandToExecuteNoUpdate": "[concat('powershell -ExecutionPolicy Unrestricted -File ', variables('scriptFolder'), '/', variables('scriptFileName'), ' ', variables('scriptParameters'))]",
+        "commandToExecuteUpdate": "[concat('powershell -ExecutionPolicy Unrestricted -File ', variables('scriptFolder'), '/', variables('scriptFileName'), ' ', variables('scriptParameters'), ' -windows_update')]"
     },
     "resources": [
         {
@@ -222,7 +224,7 @@
                             "fileUris": [
                                 "[concat(parameters('scriptLocation'), '/', variables('ScriptFolder'), '/', variables('ScriptFileName'))]"
                             ],
-                            "commandToExecute": "[concat('powershell -ExecutionPolicy Unrestricted -File ', variables('scriptFolder'), '/', variables('scriptFileName'), ' ', variables('scriptParameters'), variables('windowsUpdateVar'))]"
+                            "commandToExecute": "[if(equals(parameters('windowsUpdate'), true), variables('commandToExecuteUpdate'), variables('commandToExecuteNoUpdate'))]"
                         }
                     }
                 }
