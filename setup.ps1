@@ -1,7 +1,5 @@
 param (
     [string]$network = "",
-    [string]$steam_username = "",
-    [string]$steam_password = "",
     [string]$admin_username = "",
     [string]$admin_password = "",
     [switch]$windows_update = $false,
@@ -40,5 +38,5 @@ Join-Network $network
 Install-NSSM
 
 Install-NvidiaDriver $manual_install
-Set-ScheduleWorkflow $steam_username $steam_password $admin_username $admin_password $manual_install
+Set-ScheduleWorkflow $admin_username $admin_password $manual_install
 Restart-Computer

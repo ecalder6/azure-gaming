@@ -62,20 +62,6 @@
                 "description": "Your zero tier network ID."
             },
             "defaultValue": ""
-        },
-        "steamUsername": {
-            "type": "string",
-            "metadata": {
-                "description": "Your steam account username."
-            },
-            "defaultValue": ""
-        },
-        "steamPassword": {
-            "type": "securestring",
-            "metadata": {
-                "description": "Your steam account password."
-            },
-            "defaultValue": ""
         }
     },
     "variables": {
@@ -90,7 +76,7 @@
         "dnsNameForPublicIP": "[concat('cgp', uniqueString(resourceGroup().id, deployment().name))]",
         "scriptFolder": ".",
         "scriptFileName": "setup.ps1",
-        "scriptParameters": "[concat('-network \"', parameters('networkID'), '\" -steam_username \"', parameters('steamUsername'), '\" -steam_password \"', parameters('steamPassword'), '\" -admin_username \"', parameters('adminUsername'), '\" -admin_password \"', parameters('adminPassword'), '\"')]"
+        "scriptParameters": "[concat('-network \"', parameters('networkID'), '\" -admin_username \"', parameters('adminUsername'), '\" -admin_password \"', parameters('adminPassword'), '\"')]"
     },
     "resources": [
         {

@@ -179,15 +179,7 @@ function Install-Steam {
     Remove-Item -Path $PSScriptRoot\$steam_exe -Confirm:$false
 }
 
-function Set-Steam($steam_username, $steam_password) {
-    $steam = "C:\Program Files (x86)\Steam\Steam.exe"
-    if ($steam_username.length -gt 0) {
-        Write-Output "Editing registry to log into steam at startup"
-        Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Run" -Name "Steam" -Value "$steam -login $steam_username $steam_password -silent -skipstreamingdrivers"
-    }
-}
-
-function Set-ScheduleWorkflow ($steam_username, $steam_password, $admin_username, $admin_password, $manual_install) {
+function Set-ScheduleWorkflow ($admin_username, $admin_password, $manual_install) {
     $script_name = "setup2.ps1"
     $url = "https://raw.githubusercontent.com/ecalder6/azure-gaming/master/$script_name"
 
@@ -200,9 +192,8 @@ function Set-ScheduleWorkflow ($steam_username, $steam_password, $admin_username
     $cmd = "-ExecutionPolicy Unrestricted -NoProfile -File C:\$script_name -admin_username `"$admin_username`" -admin_password `"$admin_password`""
     if ($manual_install) {
         $cmd = -join ($cmd, " -manual_install")
-    } else {
-        $cmd = -join ($cmd, " -steam_username `"$steam_username`" -steam_password `"$steam_password`"")
     }
+
     nssm install $service_name $powershell $cmd
     nssm set $service_name Start SERVICE_AUTO_START
     nssm set $service_name AppExit 0 Exit
