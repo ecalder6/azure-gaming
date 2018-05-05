@@ -55,18 +55,10 @@ function Edit-VisualEffectsRegistry {
     Set-ItemProperty -Path "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\VisualEffects" -Name "VisualFXSetting" -Value 2
 }
 
-function Install-NvidiaDriver ($manual_install, $nvdriver_version) {
+function Install-NvidiaDriver ($manual_install) {
     # Modified from source: https://github.com/lord-carlos/nvidia-update
     Write-Output "Installing Nvidia Driver"
-    if ([string]::IsNullOrEmpty($nvdriver_version) -and $manual_install) {
-        $r = Invoke-WebRequest -Uri 'https://www.nvidia.com/Download/processFind.aspx?psid=75&pfid=783&osid=74&lid=1&whql=&lang=en-us&ctk=16' -Method GET
-        $nvdriver_version = $r.parsedhtml.GetElementsByClassName("gridItem")[2].innerText
-    }
-    elseif ([string]::IsNullOrEmpty($nvdriver_version)) {
-        $nvdriver_version = "391.29"
-    }
-
-    $url = "http://us.download.nvidia.com/Windows/Quadro_Certified/$nvdriver_version/$nvdriver_version-tesla-desktop-winserver2016-international.exe"
+    $url = "https://go.microsoft.com/fwlink/?linkid=836843"
     $driver_file = "nvidia-driver.exe"
 
     Write-Output "Downloading Nvidia M60 driver from URL $url"
@@ -77,7 +69,7 @@ function Install-NvidiaDriver ($manual_install, $nvdriver_version) {
 
     Write-Output "Cleaning up driver files"
     Remove-Item -Path $PSScriptRoot\$driver_file -Confirm:$false
-    Remove-Item "C:\NVIDIA\DisplayDriver\$nvdriver_version" -Confirm:$false -Recurse
+    Remove-Item "C:\NVIDIA\DisplayDriver\" -Confirm:$false -Recurse
 }
 
 function Disable-Devices {
