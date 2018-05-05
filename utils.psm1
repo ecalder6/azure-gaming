@@ -66,10 +66,6 @@ function Install-NvidiaDriver ($manual_install) {
 
     Write-Output "Installing Nvidia M60 driver from file $PSScriptRoot\$driver_file"
     Start-Process -FilePath "$PSScriptRoot\$driver_file" -ArgumentList "-s", "-noreboot" -Wait
-
-    Write-Output "Cleaning up driver files"
-    Remove-Item -Path $PSScriptRoot\$driver_file -Confirm:$false
-    Remove-Item "C:\NVIDIA\DisplayDriver\" -Confirm:$false -Recurse
 }
 
 function Disable-Devices {
