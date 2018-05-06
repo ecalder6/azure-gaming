@@ -23,8 +23,13 @@ Note down the network id.
 Use [this calculator](https://azure.microsoft.com/en-us/pricing/calculator/) to estimate your price for using Azure. Remember to pick NV6 size VM and some network bandwidth. The guide above also has an estimated price per hour. 
 
 ## How to use
-### Automated
-<a href="https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fecalder6%2Fazure-gaming%2Fmaster%2Fazuredeploy.json" target="_blank">
+### Automated Standard
+<a href="https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fecalder6%2Fazure-gaming%2Fmaster%2FStandard.json" target="_blank">
+    <img src="http://azuredeploy.net/deploybutton.png"/>
+</a>
+
+### Automated Low Priority
+<a href="https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fecalder6%2Fazure-gaming%2FLowPri%2FLowPri.json" target="_blank">
     <img src="http://azuredeploy.net/deploybutton.png"/>
 </a>
 
