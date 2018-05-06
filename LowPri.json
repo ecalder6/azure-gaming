@@ -130,6 +130,12 @@
                             "subnet": {
                                 "id": "[variables('subnetRef')]"
                             },
+                            "publicipaddressconfiguration": {
+                                "name": "pub1",
+                                "properties": {
+                                  "idleTimeoutInMinutes": 15
+                                }
+                            },
                             "privateIPAllocationMethod": "Dynamic",
                             "publicIPAddress": {
                                 "id": "[resourceId('Microsoft.Network/publicIPAddresses',variables('publicIPAddressName'))]"
