@@ -71,7 +71,7 @@
         "subnetName": "Subnet",
         "subnetPrefix": "10.0.0.0/24",
         "subnetRef": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('virtualNetworkName'), variables('subnetName'))]",
-        "vmName": "CloudGaming",
+        "vmssName": "CloudGaming",
         "virtualNetworkName": "CloudGamingVNET",
         "publicIPAddressName": "CloudGamingsPublicIP",
         "publicIPAddressID": "[resourceId('Microsoft.Network/publicIPAddresses',variables('publicIPAddressName'))]",
@@ -122,7 +122,7 @@
             }
         },
         {
-            "name": "[concat('shutdown-computevm-', variables('vmName'))]",
+            "name": "[concat('shutdown-computevm-', variables('vmssName'))]",
             "type": "Microsoft.DevTestLab/schedules",
             "apiVersion": "2017-04-26-preview",
             "location": "[resourceGroup().location]",
@@ -133,14 +133,14 @@
                     "time": "[parameters('autoShutdownTime')]"
                 },
                 "timeZoneId": "[parameters('autoShutdownTimeZone')]",
-                "targetResourceId": "[resourceId('Microsoft.Compute/virtualMachines', variables('vmName'))]",
+                "targetResourceId": "[resourceId('Microsoft.Compute/virtualMachines', variables('vmssName'))]",
                 "notificationSettings": {
                     "status": "[parameters('autoShutdownNotificationStatus')]",
                     "timeInMinutes": "30"
                 }
             },
             "dependsOn": [
-                "[concat('Microsoft.Compute/virtualMachineScaleSets/', variables('vmName'))]"
+                "[concat('Microsoft.Compute/virtualMachineScaleSets/', variables('vmssName'))]"
             ]
         },
         {
@@ -184,7 +184,7 @@
             }
         },
         {
-            "name": "[variables('vmName')]",
+            "name": "[variables('vmssName')]",
             "type": "Microsoft.Compute/virtualMachineScaleSets",
             "apiVersion": "2017-12-01",
             "location": "[resourceGroup().location]",
@@ -217,7 +217,7 @@
                         }
                     },
                     "osProfile": {
-                        "computerName": "[variables('vmName')]",
+                        "computerName": "[variables('vmssName')]",
                         "adminUsername": "[parameters('adminUsername')]",
                         "adminPassword": "[parameters('adminPassword')]"
                     },
