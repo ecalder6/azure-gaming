@@ -204,9 +204,6 @@
                                 "id": "[resourceId('Microsoft.Network/networkInterfaces',variables('nicName'))]"
                             }
                         ]
-                    },      
-                    "hardwareProfile": {
-                        "vmSize": "Standard_NV6"
                     },
                     "extensionProfile": {
                         "extensions": [
