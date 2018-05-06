@@ -158,7 +158,7 @@
                 }
             },
             "dependsOn": [
-                "[concat('Microsoft.Compute/virtualMachines/', variables('vmName'))]"
+                "[concat('Microsoft.Compute/virtualMachineScaleSets/', variables('vmName'))]"
             ]
         },
         {
