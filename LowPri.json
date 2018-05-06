@@ -14,48 +14,12 @@
                 "description": "Password for the Virtual Machine."
             }
         },
-        "autoShutdownStatus": {
-            "type": "string",
-            "allowedValues": [
-                "Enabled",
-                "Disabled"
-            ],
-            "metadata": {
-                "description": "Whether to automatically shutdown the VM daily."
-            },
-            "defaultValue": "Enabled"
-        },
-        "autoShutdownTimeZone": {
-            "type": "string",
-            "metadata": {
-                "description": "The time zone for daily auto-shutdown."
-            },
-            "defaultValue": "Pacific Standard Time"
-        },
-        "autoShutdownTime": {
-            "type": "string",
-            "metadata": {
-                "description": "The time for daily auto-shutdown."
-            },
-            "defaultValue": "23:00"
-        },
         "scriptLocation": {
             "type": "string",
             "metadata": {
                 "description": "Location of the setup script."
             },
             "defaultValue": "https://raw.githubusercontent.com/ecalder6/azure-gaming/master"
-        },
-        "windowsUpdate": {
-            "type": "bool",
-            "allowedValues": [
-                true,
-                false
-            ],
-            "metadata": {
-                "description": "Whether to update Windows (takes around 30 minutes to complete)"
-            },
-            "defaultValue": false
         },
         "networkID": {
             "type": "securestring",
@@ -121,28 +85,6 @@
                     }
                 ]
             }
-        },
-        {
-            "name": "[concat('shutdown-computevm-', variables('vmssName'))]",
-            "type": "Microsoft.DevTestLab/schedules",
-            "apiVersion": "2017-04-26-preview",
-            "location": "[resourceGroup().location]",
-            "properties": {
-                "status": "[parameters('autoShutdownStatus')]",
-                "taskType": "ComputeVmShutdownTask",
-                "dailyRecurrence": {
-                    "time": "[parameters('autoShutdownTime')]"
-                },
-                "timeZoneId": "[parameters('autoShutdownTimeZone')]",
-                "targetResourceId": "[resourceId('Microsoft.Compute/virtualMachines', variables('vmssName'))]",
-                "notificationSettings": {
-                    "status": "[parameters('autoShutdownNotificationStatus')]",
-                    "timeInMinutes": "30"
-                }
-            },
-            "dependsOn": [
-                "[concat('Microsoft.Compute/virtualMachineScaleSets/', variables('vmssName'))]"
-            ]
         },
         {
             "type": "Microsoft.Network/loadBalancers",
@@ -261,7 +203,7 @@
                     "extensionProfile": {
                         "extensions": [
                         {
-                            "name": "SetupWithoutWindowsUpdate",
+                            "name": "Setup",
                             "properties": {
                                 "publisher": "Microsoft.Compute",
                                 "type": "CustomScriptExtension",
