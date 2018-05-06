@@ -74,7 +74,15 @@
         "vmName": "CloudGaming",
         "virtualNetworkName": "CloudGamingVNET",
         "publicIPAddressName": "CloudGamingsPublicIP",
+        "publicIPAddressID": "[resourceId('Microsoft.Network/publicIPAddresses',variables('publicIPAddressName'))]",
         "dnsNameForPublicIP": "[concat('cgp', uniqueString(resourceGroup().id, deployment().name))]",
+        "loadBalancerName": "[concat(parameters('vmssName'), 'lb')]",
+        "natPoolName": "[concat(parameters('vmssName'), 'natpool')]",
+        "bePoolName": "[concat(parameters('vmssName'), 'bepool')]",
+        "natStartPort": 50000,
+        "natEndPort": 50120,
+        "natBackendPort": 22,
+        "frontEndIPConfigID": "[concat(variables('lbID'),'/frontendIPConfigurations/loadBalancerFrontEnd')]",
         "scriptFolder": ".",
         "scriptFileName": "setup.ps1",
         "scriptParameters": "[concat('-network \"', parameters('networkID'), '\" -admin_username \"', parameters('adminUsername'), '\" -admin_password \"', parameters('adminPassword'), '\"')]"
@@ -136,6 +144,46 @@
             ]
         },
         {
+            "type": "Microsoft.Network/loadBalancers",
+            "name": "[variables('loadBalancerName')]",
+            "location": "[resourceGroup().location]",
+            "apiVersion": "2017-04-01",
+            "dependsOn": [
+              "[concat('Microsoft.Network/publicIPAddresses/', variables('publicIPAddressName'))]"
+            ],
+            "properties": {
+              "frontendIPConfigurations": [
+                {
+                  "name": "LoadBalancerFrontEnd",
+                  "properties": {
+                    "publicIPAddress": {
+                      "id": "[variables('publicIPAddressID')]"
+                    }
+                  }
+                }
+              ],
+              "backendAddressPools": [
+                {
+                  "name": "[variables('bePoolName')]"
+                }
+              ],
+              "inboundNatPools": [
+                {
+                  "name": "[variables('natPoolName')]",
+                  "properties": {
+                    "frontendIPConfiguration": {
+                      "id": "[variables('frontEndIPConfigID')]"
+                    },
+                    "protocol": "tcp",
+                    "frontendPortRangeStart": "[variables('natStartPort')]",
+                    "frontendPortRangeEnd": "[variables('natEndPort')]",
+                    "backendPort": "[variables('natBackendPort')]"
+                  }
+                }
+              ]
+            }
+        },
+        {
             "name": "[variables('vmName')]",
             "type": "Microsoft.Compute/virtualMachineScaleSets",
             "apiVersion": "2017-12-01",
@@ -192,9 +240,16 @@
                                         "idleTimeoutInMinutes": 15
                                       }
                                     },
-                                    "publicIPAddress": {
-                                        "id": "[resourceId('Microsoft.Network/publicIPAddresses',variables('publicIPAddressName'))]"
-                                    }
+                                    "loadBalancerBackendAddressPools": [
+                                        {
+                                          "id": "[concat('/subscriptions/', subscription().subscriptionId,'/resourceGroups/', resourceGroup().name, '/providers/Microsoft.Network/loadBalancers/', variables('loadBalancerName'), '/backendAddressPools/', variables('bePoolName'))]"
+                                        }
+                                      ],
+                                      "loadBalancerInboundNatPools": [
+                                        {
+                                          "id": "[concat('/subscriptions/', subscription().subscriptionId,'/resourceGroups/', resourceGroup().name, '/providers/Microsoft.Network/loadBalancers/', variables('loadBalancerName'), '/inboundNatPools/', variables('natPoolName'))]"
+                                        }
+                                    ]
                                   }
                                 }
                               ]
