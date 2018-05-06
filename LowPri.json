@@ -114,38 +114,6 @@
             }
         },
         {
-            "name": "[variables('nicName')]",
-            "type": "Microsoft.Network/networkInterfaces",
-            "apiVersion": "2016-09-01",
-            "location": "[resourceGroup().location]",
-            "dependsOn": [
-                "[variables('publicIPAddressName')]",
-                "[variables('virtualNetworkName')]"
-            ],
-            "properties": {
-                "ipConfigurations": [
-                    {
-                        "name": "ipconfig1",
-                        "properties": {
-                            "subnet": {
-                                "id": "[variables('subnetRef')]"
-                            },
-                            "publicipaddressconfiguration": {
-                                "name": "pub1",
-                                "properties": {
-                                  "idleTimeoutInMinutes": 15
-                                }
-                            },
-                            "privateIPAllocationMethod": "Dynamic",
-                            "publicIPAddress": {
-                                "id": "[resourceId('Microsoft.Network/publicIPAddresses',variables('publicIPAddressName'))]"
-                            }
-                        }
-                    }
-                ]
-            }
-        },
-        {
             "name": "[concat('shutdown-computevm-', variables('vmName'))]",
             "type": "Microsoft.DevTestLab/schedules",
             "apiVersion": "2017-04-26-preview",
@@ -173,7 +141,8 @@
             "apiVersion": "2017-12-01",
             "location": "[resourceGroup().location]",
             "dependsOn": [
-                "[variables('nicName')]"
+                "[variables('publicIPAddressName')]",
+                "[variables('virtualNetworkName')]"
             ],
             "sku": {
                 "name": "Standard_NV6",
@@ -205,10 +174,32 @@
                         "adminPassword": "[parameters('adminPassword')]"
                     },
                     "networkProfile": {
-                        "networkInterfaces": [
-                            {
-                                "id": "[resourceId('Microsoft.Network/networkInterfaces',variables('nicName'))]"
+                        "networkInterfaceConfigurations": [
+                          {
+                            "name": "[variables('nicName')]",
+                            "properties": {
+                              "primary": true,
+                              "ipConfigurations": [
+                                {
+                                  "name": "ipconfig1",
+                                  "properties": {
+                                    "subnet": {
+                                        "id": "[variables('subnetRef')]"
+                                    },
+                                    "publicipaddressconfiguration": {
+                                      "name": "pub1",
+                                      "properties": {
+                                        "idleTimeoutInMinutes": 15
+                                      }
+                                    },
+                                    "publicIPAddress": {
+                                        "id": "[resourceId('Microsoft.Network/publicIPAddresses',variables('publicIPAddressName'))]"
+                                    }
+                                  }
+                                }
+                              ]
                             }
+                          }
                         ]
                     },
                     "extensionProfile": {
