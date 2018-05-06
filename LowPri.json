@@ -218,7 +218,7 @@
                         }
                     },
                     "osProfile": {
-                        "computerName": "[variables('vmssName')]",
+                        "computerNamePrefix": "[variables('vmssName')]",
                         "adminUsername": "[parameters('adminUsername')]",
                         "adminPassword": "[parameters('adminPassword')]"
                     },
