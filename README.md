@@ -186,6 +186,10 @@ Contributions are welcome! Please submit an issue and a PR for your change.
 
     Use the C:\disconnect.lnk in the VM to close the remote desktop connection.
 
+* Should I install the audio driver update for Steam?
+
+    By default, steam won't stream any game before you install its audio driver on the VM. You should just install it to get rid of the popup. Alternatively, you could launch steam with "-skipstreamingdrivers".
+
 * My question is not listed
 
     Submit an issue on GitHub.
