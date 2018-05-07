@@ -93,7 +93,7 @@ You can log into your VM using Remote Desktop Connection. Note that it's a bit m
     5. Launch Remote Desktop Connection on your local machine and follow the last step for Standard VM.
 
 ### IV. Setup Steam
-Steam is automatically installed and set to launch at startup. Once logged in, install your games through Steam on the VM. Unfortunately, Steam no longer allows interaction-free installation from local machine.
+Steam is automatically installed on your VM. Launch it and log-in with your steam credentials. Once logged in, install your games through Steam on the VM. Unfortunately, Steam no longer allows interaction-free installation from local machine, requring you to do a bit of setup in the VM.
 
 You could either install a game to your system drive (managed disk) or a temporary drive. The temporary drive has faster speeds, but you lose all your data after deallocating a VM. You will have to re-install your games every time you stop and start your VM if you choose to install on the temporary drive. See [Q & A](#q--a) for more.
 
