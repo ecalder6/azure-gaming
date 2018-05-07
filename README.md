@@ -34,15 +34,15 @@ Note down the network id.
 3. Download and install zero tier VPN on your local machine. Join the network using the network ID noted in the previous step. **Make sure your local machine connect to the network BEFORE the VM does!**
 
 ### Setup your Azure VM
-#### Automated Standard
-<a href="https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fecalder6%2Fazure-gaming%2Fmaster%2FStandard.json" target="_blank">
-    <img src="http://azuredeploy.net/deploybutton.png"/>
-</a>
 
-#### Automated Low Priority
-<a href="https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fecalder6%2Fazure-gaming%2Fmaster%2FLowPri.json" target="_blank">
+| VM Type       | Deploy      |
+| ------------- |-------------|
+| Standard      | <a href="https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fecalder6%2Fazure-gaming%2Fmaster%2FStandard.json" target="_blank">
     <img src="http://azuredeploy.net/deploybutton.png"/>
-</a>
+</a> |
+| Low Priority  | <a href="https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fecalder6%2Fazure-gaming%2Fmaster%2FLowPri.json" target="_blank">
+    <img src="http://azuredeploy.net/deploybutton.png"/>
+</a> |
 
 Click on the button above for your desired VM type and fill out the form. You'll need to fill in:
 * Subscription: your paid subscription
