@@ -16,7 +16,7 @@ Your Azure VM and your local machine are connected through ZeroTier VPN. You can
 The bandwidth needed can vary drastically depending on your streaming host/client, game, and resolution. I recommend most people to limit their bandwidth to either 15 or 30 Mbits/sec. If you are streaming at higher than 1080P or just want to have the best possible experience, go with 50 Mbits/sec.
 
 ## Pricing
-To game on the cloud on Azure, you will have to pay for the virtual machine, data bandwidth, and managed disk (See [Q & A](#q--a) for managed disk). 
+To game on the cloud on Azure, you will have to pay for the virtual machine, outgoing data bandwidth from the VM, and managed disk (See [Q & A](#q--a) for managed disk). 
 
 You can pick between 2 kinds of VM: standard and low priority. A low priority VM is around **60%** cheaper than a standard VM. The downside is that a low priority VM can be shutdown at any time.
 
