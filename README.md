@@ -163,19 +163,21 @@ Contributions are welcome! Please submit an issue and a PR for your change.
 
     It's depends on how you shut down your VM. You don't pay for the VM ONLY when it's **deallocated**. Stopping the VM through the portal or the auto-shutdown setting for standard VM should also deallocate the VM. Still, it’s always a good idea to double check your VM status.
 
-* The deployment seems successful, but my local steam client can't detect my VM?
+* The deployment seems successful, but steam isn't installed?
+    * Run
+        ```powershell
+        nssm status SetupSecondStage
+        ```
+      in cmd to check the status of the setup. If it says SERVICE_RUNNING, wait for a few minutes. Once it says the service no longer exists, restart the VM.
+    * To restart the VM. Follow the same steps as stopping your VM except you click on restart. You could also restart from the start menu in the VM.
 
-    * Try restarting the VM. Follow the same steps as stopping your VM except you click on restart.
+* Steam on my local machine does not have the option to stream from VM?
+    * Make sure steam is installed and running on the VM.
     * On ZeroTier Central, make sure that both your machine and the VM are connected under the members tab.
-    * Remote desktop into the VM and check if steam is installed/running.
 
-* How do I install steam games onto the VM?
+* Can't stream games because the screen is locked on the VM?
 
-    In your steam on your computer (not the VM), you should see a drop-down arrow. Click on that and click on install on {your_vm_name}.
-
-* Can't stream/install games because the screen is locked on the VM?
-
-    This should only happen if you manually launched the script. Use the disconnect shortcut in C:\.
+    Use the C:\disconnect.lnk in the VM to close the remote desktop connection.
 
 * My question is not listed
 
