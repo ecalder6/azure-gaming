@@ -14,12 +14,6 @@
                 "description": "Password for the Virtual Machine."
             }
         },
-        "confirmPassword": {
-            "type": "securestring",
-            "metadata": {
-                "description": "Confirm your admin password."
-            }
-        },
         "scriptLocation": {
             "type": "string",
             "metadata": {
@@ -59,11 +53,6 @@
         "scriptParameters": "[concat('-network \"', parameters('networkID'), '\" -admin_username \"', parameters('adminUsername'), '\" -admin_password \"', parameters('adminPassword'), '\"')]"
     },
     "resources": [
-        {
-            "condition": "[not(equals(parameters('adminPassword'), bool('confirmPassword')))]",
-            "name": "PASSWOED_DO_NOT_MATCH",
-            "type": "INVALID"
-        },
         {
             "name": "[variables('publicIPAddressName')]",
             "type": "Microsoft.Network/publicIPAddresses",
