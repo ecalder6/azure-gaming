@@ -105,7 +105,7 @@ Close the remote desktop connection using the shortcut C:\disconnect.lnk and enj
 You can toggle streaming stats display with F6.
 
 #### I Want to Manually Deploy My VM
-You could manually deploy your VM through Azure portal, PowerShell, or Azure CLI. Note that a low priority VM has exist in a virtual machine scale set.
+You could manually deploy your VM through Azure portal, PowerShell, or Azure CLI. Note that a low priority VM has to exist in a virtual machine scale set, making it a bit more difficult to do manually.
 
 1. Deploy a NV6 size VM through the azure portal(see [this guide](https://lg.io/2016/10/12/cloudy-gamer-playing-overwatch-on-azures-new-monster-gpu-instances.html) for instructions). For low priority VM, checkout [this documentation](https://docs.microsoft.com/en-us/azure/virtual-machine-scale-sets/virtual-machine-scale-sets-use-low-priority) and [this reddit thread](https://www.reddit.com/r/cloudygamer/comments/8fu2d0/azure_pricing_update/).
 2. Remote desktop into your Azure VM instance.
