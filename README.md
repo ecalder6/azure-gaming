@@ -13,11 +13,18 @@ The automated setup first deploys an Azure NV6 virtual machine (VM) with a singl
 Your Azure VM and your local machine are connected through ZeroTier VPN. You can stream games through this connection using Steam In-Home streaming or a third-party streaming software.
 
 ## Pricing
+To game on the cloud on Azure, you will have to pay for the virtual machine, data bandwidth, and managed disk (See [Q & A](#q--a) for managed disk). 
+
 You can pick between 2 kinds of VM: standard and low priority. A low priority VM is around **60%** cheaper than a standard VM. The downside is that a low priority VM can be shutdown at any time.
 
-Use the calculators below to estimate your price. They are prepopulated with a virtual machine and an hour worth of bandwidth at 30 Mbits/second. Note that you should add around $5/month for a managed disk. See the [Q & A](#q--a) for more.
-* [Standard](https://azure.com/e/5c47bbdea31840139ed20d3c6765a4c5)
-* [Low priority](https://azure.com/e/d82eb961223c49678bcf1f4698b1a044)
+The calculators below are prepopulated with an estimated monthly price for playing 35 hours a month. It assumes that you stream at an averge of around 29 Mbits/second (13 GB an hour) and use one 128GB managed disk. You can divide the total by 35 to find the estimated cost per hour.
+
+Azure also charges you for the number of transactions if you choose to pick standard or premium disk. I have no idea how to calculate that for gaming, but I'd suggest going premium if you are planning to game heavily on Azure.
+
+* [Standard](https://azure.com/e/b0f50b3893b84df99d925796c3804612)
+    * As of 05/06/2018, this comes to **$2.57 / hour**
+* [Low priority](https://azure.com/e/53adcd54ea5e43c5a6ae895933c4ab75)
+    * As of 05/06/2018, this comes to **$1.80 / hour**
 
 ## Usage
 ### Setup your local machine
