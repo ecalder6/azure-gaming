@@ -21,10 +21,17 @@ The calculators below are prepopulated with an estimated monthly price for playi
 
 Azure also charges you for the number of transactions on managed disk. The calculator assumes 100k transactions a month (no idea how accurate this is).
 
-* [Standard](https://azure.com/e/c795013876b14359abfe956e7c0644d2)
-    * As of 05/06/2018, this comes to **$2.67 / hour**
+* [Standard](https://azure.com/e/5479babbd37e46b68730b27e9fd1a641)
 * [Low priority](https://azure.com/e/f0e1298bc0984f178ba002d3316d9974)
-    * As of 05/06/2018, this comes to **$1.90 / hour**
+
+| Type          | Bandwidth (Mbits/sec) | Data (GBs)     | Monthly Price* | Hourly Price* |
+| ------------- | --------------------: | -------------: | -------------: | ------------: |
+| Standard      |                    30 |            473 |         $95.11 |         $2.72 |
+| Standard      |                    15 |            236 |         $74.49 |         $2.13 |
+| Low Priority  |                    30 |            473 |         $68.16 |         $1.95 |
+| Standard      |                    15 |            236 |         $47.54 |         $1.36 |
+
+*As of 05/06/2018
 
 ## Usage
 ### I. Setup your local machine
