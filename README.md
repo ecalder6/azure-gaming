@@ -32,7 +32,7 @@ Azure also charges you for the number of transactions on managed disk. The calcu
 | Standard      |                    30 |            473 |         $95.11 |         $2.72 |
 | Standard      |                    15 |            236 |         $74.49 |         $2.13 |
 | Low Priority  |                    30 |            473 |         $68.16 |         $1.95 |
-| Standard      |                    15 |            236 |         $47.54 |         $1.36 |
+| Low Priority  |                    15 |            236 |         $47.54 |         $1.36 |
 
 *As of 05/06/2018
 
