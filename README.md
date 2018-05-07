@@ -15,7 +15,7 @@ Your Azure VM and your local machine are connected through ZeroTier VPN. You can
 ## Pricing
 You can pick between 2 kinds of VM: standard and low priority. A low priority VM is around **60%** cheaper than a standard VM. The downside is that a low priority VM can be shutdown at anytime.
 
-Use the calculators below to estimate your price. They are prepopulated with a virtual machine and an hour worth of bandwidth at 30 Mbits/second. Note that you should add around $5/month for a managed disk. See the Q & A for more.
+Use the calculators below to estimate your price. They are prepopulated with a virtual machine and an hour worth of bandwidth at 30 Mbits/second. Note that you should add around $5/month for a managed disk. See the [Q & A](#q--a) for more.
 * [Standard](https://azure.com/e/5c47bbdea31840139ed20d3c6765a4c5)
 * [Low priority](https://azure.com/e/d82eb961223c49678bcf1f4698b1a044)
 
@@ -46,9 +46,9 @@ Click on the button above for your desired VM type and fill out the form. You'll
 * Windows Update: whether or not to update windows, which takes around an hour. Recommended to leave as false.
 * Network ID: network ID of your zero tier VPN.
 
-For standard VM, you could specify a time when the VM would automatically shutdown and deallocate. Once it's deallocated, you do not have to pay for the VM. See Q & A for more.
+For standard VM, you could specify a time when the VM would automatically shutdown and deallocate. Once it's deallocated, you do not have to pay for the VM. See [Q & A](#q--a) for more.
 
-**Note: your admin credentials will be stored in plain-text in the VM. See Q & A for more.**
+**Note: your admin credentials will be stored in plain-text in the VM. See [Q & A](#q--a) for more.**
 
 After filling these in, check on I agree the terms and click on purchase. A VM with a M60 GPU will be automatically deployed and configured for you. Note that the setup process will take around 15 minutes (1 hour + if you choose to update Windows). 
 
@@ -78,7 +78,7 @@ You can log into your VM using Remote Desktop Connection. Note that it's a bit m
 ### Setup Steam
 Steam is automatically installed and set to launch at startup. Once logged in, install your games through Steam on the VM. Unfortunately, Steam no longer allows interaction-free installation from local machine.
 
-You could either install a game to your system drive (managed disk) or a temporary drive. The temporary drive has faster speeds, but you lose all your data after deallocating a VM. You will have to re-install your games everytime you stop and start your VM if you choose to install on the temporary drive. See Q & A for more.
+You could either install a game to your system drive (managed disk) or a temporary drive. The temporary drive has faster speeds, but you lose all your data after deallocating a VM. You will have to re-install your games everytime you stop and start your VM if you choose to install on the temporary drive. See [Q & A](#q--a) for more.
 
 Make sure to limit the bandwidth of your local steam client to 30 MBits (50 if you don't mind the extra data cost). You can do so through settings -> In-Home Streaming -> Advanced client options.
 
@@ -90,7 +90,7 @@ You can toggle streaming stats display with F6.
 #### I Want To Manually Deploy My VM
 You could manually deploy your VM through Azure portal, powershell, or Azure CLI. Note that a low prioirty VM has exist in a virtual machine scale set.
 
-1. Deploy a NV6 size VM through the azure portal(see [this guide](https://lg.io/2016/10/12/cloudy-gamer-playing-overwatch-on-azures-new-monster-gpu-instances.html) for instructions). For low priority VM, checkout [this documentation](https://docs.microsoft.com/en-us/azure/virtual-machine-scale-sets/virtual-machine-scale-sets-use-low-priority) and [this reddit thread](https://www.reddit.com/r/cloudygamer/comments/8fu2d0/azure_pricing_update/)
+1. Deploy a NV6 size VM through the azure portal(see [this guide](https://lg.io/2016/10/12/cloudy-gamer-playing-overwatch-on-azures-new-monster-gpu-instances.html) for instructions). For low priority VM, checkout [this documentation](https://docs.microsoft.com/en-us/azure/virtual-machine-scale-sets/virtual-machine-scale-sets-use-low-priority) and [this reddit thread](https://www.reddit.com/r/cloudygamer/comments/8fu2d0/azure_pricing_update/).
 2. Remote desktop into your Azure VM instance.
 3. Launch powershell (click on the Windows key in the bottom-left corner, type "powershell", and click on the app PowerShell).
 3. Download https://github.com/ecalder6/azure-gaming/blob/master/setup.ps1. You could download this onto your local machine and paste it through remote desktop.
@@ -106,7 +106,7 @@ If you want to update windows, append
 
 5. After sometime, the script will restart your VM, at which point your remote desktop session will end.
 6. Wait for approximately 15 minutes (1+ hour if you want to update Windows) and then remote desktop into your VM again.
-7. Follow **Setup Steam** from above.
+7. Follow [Setup Steam](#Setup-Steam) from above.
 
 ## Stopping a VM
 After you are done with a gaming session, I recommend you stop (deallocate) the VM **using the Azure portal**. When it's stopped (deallocated), you don't have to pay for the VM. Below are the steps for stopping a VM in portal:
