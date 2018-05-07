@@ -27,13 +27,13 @@ Azure also charges you for the number of transactions on managed disk. The calcu
     * As of 05/06/2018, this comes to **$1.90 / hour**
 
 ## Usage
-### Setup your local machine
+### I. Setup your local machine
 1. Sign up for a [Paid Azure subscription](https://azure.microsoft.com/en-us/pricing/purchase-options/). You need a paid subscription as the free account does not grant you access to GPU VMs.
 2. Sign up for an account on [zero tier VPN](https://www.zerotier.com/) and create a network. Make sure the network is set to **public**.
 Note down the network id.
 3. Download and install zero tier VPN on your local machine. Join the network using the network ID noted in the previous step. **Make sure your local machine connect to the network BEFORE the VM does!**
 
-### Setup your Azure VM
+### II. Automatically Deploy Your Azure VM
 #### Automated Standard
 <a href="https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fecalder6%2Fazure-gaming%2Fmaster%2FStandard.json" target="_blank">
     <img src="http://azuredeploy.net/deploybutton.png"/>
@@ -63,7 +63,7 @@ You can monitor the progress of the deployment using the notification button (be
 
 After the deployment is successful, you'll need to wait for the second stage setup to finish. Please wait for at least 10 minutes before logging into your VM.
 
-### Log into your VM
+### III. Log into your VM
 You can log into your VM using Remote Desktop Connection. Note that it's a bit more involved if you choose to use a low priority VM.
 
 * Standard VM
@@ -82,14 +82,14 @@ You can log into your VM using Remote Desktop Connection. Note that it's a bit m
     4. Note down the ipAddress.
     5. Launch Remote Desktop Connection on your local machine and follow the last step for Standard VM.
 
-### Setup Steam
+### IV. Setup Steam
 Steam is automatically installed and set to launch at startup. Once logged in, install your games through Steam on the VM. Unfortunately, Steam no longer allows interaction-free installation from local machine.
 
 You could either install a game to your system drive (managed disk) or a temporary drive. The temporary drive has faster speeds, but you lose all your data after deallocating a VM. You will have to re-install your games every time you stop and start your VM if you choose to install on the temporary drive. See [Q & A](#q--a) for more.
 
 Make sure to limit the bandwidth of your local steam client to 30 Mbits (50 if you don't mind the extra data cost). You can do so through settings -> In-Home Streaming -> Advanced client options.
 
-### Game!
+### V. Game!
 Close the remote desktop connection using the shortcut C:\disconnect.lnk and enjoy some cloud gaming!
 
 You can toggle streaming stats display with F6.
