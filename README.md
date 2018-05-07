@@ -20,7 +20,7 @@ To game on the cloud on Azure, you will have to pay for the virtual machine, out
 
 You can pick between 2 kinds of VM: standard and low priority. A low priority VM is around **60%** cheaper than a standard VM. The downside is that a low priority VM can be shutdown at any time.
 
-The calculators below are prepopulated with an estimated monthly price for playing 35 hours a month in West US 2 region. It assumes that you stream at an averge of around 29 Mbits/second (13 GBs an hour) and use one 128GB managed disk. You can divide the total by 35 to find the estimated cost per hour.
+The calculators below are prepopulated with an estimated monthly price for playing 35 hours a month in West US 2 region. It assumes that you stream at an averge of around 30 Mbits/second (13.5 GBs an hour) and use one 128GB managed disk. You can divide the total by 35 to find the estimated cost per hour.
 
 Azure also charges you for the number of transactions on managed disk. The calculator assumes 100k transactions a month (no idea how accurate this is).
 
