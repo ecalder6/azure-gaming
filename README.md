@@ -16,12 +16,12 @@ Your Azure VM and your local machine are connected through ZeroTier VPN. You can
 You can pick between 2 kinds of VM: standard and low priority. A low priority VM is around **60%** cheaper than a standard VM. The downside is that a low priority VM can be shutdown at anytime.
 
 Use the calculators below to estimate your price. They are prepopulated with a virtual machine and an hour worth of bandwidth at 30 Mbits/second. Note that you should add around $5/month for a managed disk. See the Q & A for more.
-[Standard](https://azure.com/e/5c47bbdea31840139ed20d3c6765a4c5)
-[Low priority](https://azure.com/e/d82eb961223c49678bcf1f4698b1a044)
+* [Standard](https://azure.com/e/5c47bbdea31840139ed20d3c6765a4c5)
+* [Low priority](https://azure.com/e/d82eb961223c49678bcf1f4698b1a044)
 
 ## Usage
 ### Setup your local machine
-1. Sign up for an [Paid Azure subscription](https://azure.microsoft.com/en-us/pricing/purchase-options/). You need a paid subscription as the free account does not grant you access to GPU VMs.
+1. Sign up for a [Paid Azure subscription](https://azure.microsoft.com/en-us/pricing/purchase-options/). You need a paid subscription as the free account does not grant you access to GPU VMs.
 2. Sign up for an account on [zero tier VPN](https://www.zerotier.com/) and create a network. Make sure the network is set to **public**.
 Note down the network id.
 3. Download and install zero tier VPN on your local machine. Join the network using the network ID noted in the previous step. **Make sure your local machine connect to the network BEFORE the VM does!**
@@ -37,7 +37,7 @@ Note down the network id.
     <img src="http://azuredeploy.net/deploybutton.png"/>
 </a>
 
-Click on the button above and fill out the form. You'll need to fill in:
+Click on the button above for your desired VM type and fill out the form. You'll need to fill in:
 * Subscription: your paid subscription
 * Resource group: create a new one and name it anything you like
 * Location: pick the location closest to you. Note that not every location has the VM with M60 graphics card. So far I've tried West US 2 and South Central US.
@@ -87,8 +87,10 @@ Close the remote desktop connection using the shortcut C:\disconnect.lnk and enj
 
 You can toggle streaming stats display with F6.
 
-#### Manual
-1. Deploy a NV6 size VM through the azure portal(see [this guide](https://lg.io/2016/10/12/cloudy-gamer-playing-overwatch-on-azures-new-monster-gpu-instances.html) for instructions).
+#### I Want To Manually Deploy My VM
+You could manually deploy your VM through Azure portal, powershell, or Azure CLI. Note that a low prioirty VM has exist in a virtual machine scale set.
+
+1. Deploy a NV6 size VM through the azure portal(see [this guide](https://lg.io/2016/10/12/cloudy-gamer-playing-overwatch-on-azures-new-monster-gpu-instances.html) for instructions). For low priority VM, checkout [this documentation](https://docs.microsoft.com/en-us/azure/virtual-machine-scale-sets/virtual-machine-scale-sets-use-low-priority) and [this reddit thread](https://www.reddit.com/r/cloudygamer/comments/8fu2d0/azure_pricing_update/)
 2. Remote desktop into your Azure VM instance.
 3. Launch powershell (click on the Windows key in the bottom-left corner, type "powershell", and click on the app PowerShell).
 3. Download https://github.com/ecalder6/azure-gaming/blob/master/setup.ps1. You could download this onto your local machine and paste it through remote desktop.
@@ -103,11 +105,8 @@ If you want to update windows, append
 ```
 
 5. After sometime, the script will restart your VM, at which point your remote desktop session will end.
-6. Wait for approximately 15 minutes and then remote desktop into your VM again.
-7. Sign in to steam. Use the disconnect shortcut in C:\ to quit remote desktop.
-8. Install and stream games using your local steam client.
-
-Close the remote desktop connection using the shortcut located in C:\disconnect.lnk and enjoy some cloud gaming!
+6. Wait for approximately 15 minutes (1+ hour if you want to update Windows) and then remote desktop into your VM again.
+7. Follow **Setup Steam** from above.
 
 ## Stopping a VM
 After you are done with a gaming session, I recommend you stop (deallocate) the VM **using the Azure portal**. When it's stopped (deallocated), you don't have to pay for the VM. Below are the steps for stopping a VM in portal:
