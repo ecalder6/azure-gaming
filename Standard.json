@@ -9,7 +9,11 @@
             }
         },
         "adminPassword": {
-            "type": "securestring",
+            "type": "Microsoft.Compute.CredentialsCombo",
+            "label": {
+                "password": "Password",
+                "confirmPassword": "Confirm password"
+            },
             "metadata": {
                 "description": "Password for the Virtual Machine."
             }
@@ -77,7 +81,7 @@
         "dnsNameForPublicIP": "[concat('cgp', uniqueString(resourceGroup().id, deployment().name))]",
         "scriptFolder": ".",
         "scriptFileName": "setup.ps1",
-        "scriptParameters": "[concat('-network \"', parameters('networkID'), '\" -admin_username \"', parameters('adminUsername'), '\" -admin_password \"', parameters('adminPassword'), '\"')]"
+        "scriptParameters": "[concat('-network \"', parameters('networkID'), '\" -admin_username \"', parameters('adminUsername'), '\" -admin_password \"', parameters('adminPassword').password, '\"')]"
     },
     "resources": [
         {
@@ -173,7 +177,7 @@
                 "osProfile": {
                     "computerName": "[variables('vmName')]",
                     "adminUsername": "[parameters('adminUsername')]",
-                    "adminPassword": "[parameters('adminPassword')]",
+                    "adminPassword": "[parameters('adminPassword').password]",
                     "windowsConfiguration": {
                         "provisionVmAgent": "true"
                     }
