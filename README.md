@@ -164,7 +164,7 @@ Contributions are welcome! Please submit an issue and a PR for your change.
 
     Your admin username and password you provide in the Azure portal form will be stored as plain text in 3 instances:
     1. While the script is executing, they will be stored as plain-text in memory.
-    2. To facilitate auto-login for the VM and for steam, the credentials will be stored as plain-text in registry.
+    2. To facilitate auto-login for the VM, the credentials will be stored as plain-text in registry.
     3. NSSM will log these credentials in Windows logs.
     
     You are safe if no malicious third-party can access the memory or disk on your VM. Now since the only way to remote desktop into your VM is through the admin account, the credentials should be safe. Still, you should NOT reuse the admin username and password anywhere else.
