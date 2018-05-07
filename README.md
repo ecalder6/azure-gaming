@@ -12,6 +12,9 @@ The automated setup first deploys an Azure NV6 virtual machine (VM) with a singl
 ## How Do I Stream Games?
 Your Azure VM and your local machine are connected through ZeroTier VPN. You can stream games through this connection using Steam In-Home streaming or a third-party streaming software.
 
+## How Much Bandwidth Does It Take?
+The bandwidth needed can vary drastically depending on your streaming host/client, game, and resolution. I recommend most people to limit their bandwidth to either 15 or 30 Mbits/sec. If you are streaming at higher than 1080P or just want to have the best possible experience, go with 50 Mbits/sec.
+
 ## Pricing
 To game on the cloud on Azure, you will have to pay for the virtual machine, data bandwidth, and managed disk (See [Q & A](#q--a) for managed disk). 
 
