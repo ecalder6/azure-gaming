@@ -1,35 +1,39 @@
 # Cloud Gaming Made Easy
 
 ## About
-This project allows you to stream steam games through Azure cloud with only a few clicks! There is virtually no setup involved. In fact, you never have to login to the VM!
+Effortlessly stream the latest games on Azure. This project automates the set up process for cloud gaming on a Nvidia M60 GPU on Azure. 
 The development of this project is heavily inspired by this [excellent guide](https://lg.io/2016/10/12/cloudy-gamer-playing-overwatch-on-azures-new-monster-gpu-instances.html).
 
-The automated setup first deploys an Azure NV6 VM with an Nvidia M60 video card and configures the Custom Script Extension to run the setup script. The setup script configures everything that's needed to run steam games on the VM, such as installing the Nvidia driver, connecting to ZeroTier VPN, and setting up auto login for Windows.
+The automated setup first deploys an Azure NV6 virtual machine (VM) with a single Nvidia M60 GPU (1/2 of a M60 graphics card) and configures the Custom Script Extension to run the setup script. The setup script configures everything that's needed to run steam games on the VM, such as installing the Nvidia driver, connecting to ZeroTier VPN, and setting up auto login for Windows.
 
 ## Disclaimer
 **This software comes with no warranty of any kind**. USE AT YOUR OWN RISK! If you encounter an issue, please submit it on GitHub.
 
-## Do this first
+## How Do I Stream Games?
+Your Azure VM and your local machine are connected through ZeroTier VPN. You can stream games through this connection using Steam In-Home streaming or a thrid-party streaming software.
+
+## Pricing
+You can pick between 2 kinds of VM: standard and low priority. A low priority VM is around **60%** cheaper than a standard VM. The downside is that a low priority VM can be shutdown at anytime.
+
+Use the calculators below to estimate your price. They are prepopulated with a virtual machine and an hour worth of bandwidth at 30 Mbits/second. Note that you should add around $5/month for a managed disk. See the Q & A for more.
+[Standard](https://azure.com/e/5c47bbdea31840139ed20d3c6765a4c5)
+[Low priority](https://azure.com/e/d82eb961223c49678bcf1f4698b1a044)
+
+## Usage
+### Setup your local machine
 1. Sign up for an [Paid Azure subscription](https://azure.microsoft.com/en-us/pricing/purchase-options/). You need a paid subscription as the free account does not grant you access to GPU VMs.
 2. Sign up for an account on [zero tier VPN](https://www.zerotier.com/) and create a network. Make sure the network is set to **public**.
 Note down the network id.
 3. Download and install zero tier VPN on your local machine. Join the network using the network ID noted in the previous step. **Make sure your local machine connect to the network BEFORE the VM does!**
-3. For the one-click setup to work, you need to disable steam guard.
-    * This is because you need to manually type the second-factor code into steam client, which requires you to login to the VM.
-    Blizzard's phone authenticator handles this much better with ability to approve on the phone.
-    * If you do not wish to disable steam guard, please follow the manual instructions provided below.
 
-## Pricing
-Use [this calculator](https://azure.microsoft.com/en-us/pricing/calculator/) to estimate your price for using Azure. Remember to pick NV6 size VM and some network bandwidth. The guide above also has an estimated price per hour. 
-
-## How to use
-### Automated Standard
+### Setup your Azure VM
+#### Automated Standard
 <a href="https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fecalder6%2Fazure-gaming%2Fmaster%2FStandard.json" target="_blank">
     <img src="http://azuredeploy.net/deploybutton.png"/>
 </a>
 
-### Automated Low Priority
-<a href="https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fecalder6%2Fazure-gaming%2FLowPri%2FLowPri.json" target="_blank">
+#### Automated Low Priority
+<a href="https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fecalder6%2Fazure-gaming%2Fmaster%2FLowPri.json" target="_blank">
     <img src="http://azuredeploy.net/deploybutton.png"/>
 </a>
 
@@ -39,20 +43,51 @@ Click on the button above and fill out the form. You'll need to fill in:
 * Location: pick the location closest to you. Note that not every location has the VM with M60 graphics card. So far I've tried West US 2 and South Central US.
 * Admin username and password: the login credentials for the local user.
 * Script location: the location of the setup script. Use the default value.
-* Windows Update: whether or not to update windows, which takes around an hour.
+* Windows Update: whether or not to update windows, which takes around an hour. Recommended to leave as false.
 * Network ID: network ID of your zero tier VPN.
-* Steam username and password: your steam login credentials.
 
-**Note: your admin and steam credentials will be stored in plain-text in the VM. If you follow the manual instructions below, only your admin credentials will be stored in plain-test. See Q & A for more.**
+For standard VM, you could specify a time when the VM would automatically shutdown and deallocate. Once it's deallocated, you do not have to pay for the VM. See Q & A for more.
 
-After filling these in, check on I agree the terms and click on purchase. A VM with a M60 graphics card will be automatically deployed and configured for you. Note that the setup process will take around 15 minutes (1 hour + if you choose to update Windows). 
+**Note: your admin credentials will be stored in plain-text in the VM. See Q & A for more.**
+
+After filling these in, check on I agree the terms and click on purchase. A VM with a M60 GPU will be automatically deployed and configured for you. Note that the setup process will take around 15 minutes (1 hour + if you choose to update Windows). 
 
 You can monitor the progress of the deployment using the notification button (bell icon) on the top right. You can also check the status under Virtual Machine -> CloudGaming -> Extensions -> the only entry in the list. If you see an error or failure, submit an issue on GitHub along with what's in detailed status.
 
-After the deployment is successful, you'll need to wait for the second stage setup to finish, which should take less than 5 minutes. You will know it's ready when your local steam client allows you to install and stream games from the VM. 
+After the deployment is successful, you'll need to wait for the second stage setup to finish. Please wait for at least 10 minutes before logging into your VM.
 
+### Log into your VM
+You can log into your VM using Remote Desktop Connection. Note that it's a bit more involved if you choose to use a low priority VM.
 
-### Manual
+* Standard VM
+
+    1. Go to Virtual machines in [Azure Portal](https://portal.azure.com/) and click on CloudGaming
+    2. Click on Connect and then Download RDP File (leave everything as default)
+    3. Open your RDP file. Click on "Don't ask me again" and Connect for RDP popup.
+    4. Enter the username and password you provided. Click on more choices -> "Use a different account" if you can't modify the username.
+    5. Click on "Don't ask me again" and "Yes" for certificate verification popup.
+
+* Low Prioirty VM
+
+    1. Navigate to https://resources.azure.com/
+    2. Click on subscriptions on the left and make sure the subscriptionId matches with your desired subscription. You look up your subscriptions by searching "Subscriptions" on the Azure portal.
+    3. In the left panel, go to Name_of_your_subscription -> resourceGroups -> Name_of_your_resource_group -> providers -> Microsoft.Compute -> virtualMachineScaleSets -> CloudGaming -> publicipaddresses
+    4. Note down the ip address.
+    5. Launch Remote Desktop Connection on your local machine and follow the last step for Standard VM.
+
+### Setup Steam
+Steam is automatically installed and set to launch at startup. Once logged in, install your games through Steam on the VM. Unfortunately, Steam no longer allows interaction-free installation from local machine.
+
+You could either install a game to your system drive (managed disk) or a temporary drive. The temporary drive has faster speeds, but you lose all your data after deallocating a VM. You will have to re-install your games everytime you stop and start your VM if you choose to install on the temporary drive. See Q & A for more.
+
+Make sure to limit the bandwidth of your local steam client to 30 MBits (50 if you don't mind the extra data cost). You can do so through settings -> In-Home Streaming -> Advanced client options.
+
+### Game!
+Close the remote desktop connection using the shortcut C:\disconnect.lnk and enjoy some cloud gaming!
+
+You can toggle streaming stats display with F6.
+
+#### Manual
 1. Deploy a NV6 size VM through the azure portal(see [this guide](https://lg.io/2016/10/12/cloudy-gamer-playing-overwatch-on-azures-new-monster-gpu-instances.html) for instructions).
 2. Remote desktop into your Azure VM instance.
 3. Launch powershell (click on the Windows key in the bottom-left corner, type "powershell", and click on the app PowerShell).
@@ -74,42 +109,43 @@ If you want to update windows, append
 
 Close the remote desktop connection using the shortcut located in C:\disconnect.lnk and enjoy some cloud gaming!
 
-### Steam client setup
-Make sure to limit the bandwidth of your local steam client to 30 MBits. You can do so through settings -> In-Home Streaming -> Advanced client options.
-
 ## Stopping a VM
 After you are done with a gaming session, I recommend you stop (deallocate) the VM **using the Azure portal**. When it's stopped (deallocated), you don't have to pay for the VM. Below are the steps for stopping a VM in portal:
 1. Login to [Azure portal](https://portal.azure.com)
-2. On the left-hand side, click on Virtual Machines.
-3. Click on the VM you've created (for automated, the VM name is CloudGaming)
-4. Click on Stop on the top. 
+2. On the left-hand side, click on All resources
+3. Click on the VM you've created (for automated, the VM name is CloudGaming). For low priority VM, click on the CloudGaming virtual machine scale set.
+4. Click on Stop on the top (deallocate for low priority).
 
 To start the VM, follow the steps above except that you click on start.
 
 ## Removing a VM
-If you no longer want to game on Azure, you could remove everything by:
+If you no longer wish to game on Azure, you could remove everything by:
 1. Login to [Azure portal](https://portal.azure.com)
-2. On the left-hand side, click on Virtual Machines.
-3. Click on the VM you've created (for automated, the VM name is CloudGaming)
-4. Click on Delete on the top. 
-5. After your VM is deleted, click on Resouce Groups on the left hand side
-6. Click on the resource group you've created for the VM
-7. Click on Delete on the top. 
+2. On the left-hand side, click on Resource Groups.
+3. Click on the resource group you've created.
+4. Click on delete resource group on the top.
 
 ## Contribution
 Contributions are welcome! Please submit an issue and a PR for your change.
 
 ## Q & A
+* What's the difference between a managed disk and a temporary drive?
+
+    A managed disk is a persisted virtual disk drive that costs a few dollars a month. A temporary drive (called temporary storage in the VM) is an actual disk drive that sits on the computer that hosts your VM. Temporary drive is free of charge and is much faster than a managed disk. However, data on temporary drive are not persisted and will be wiped when the VM is deallocated. 
+
 * How secure are my credentials?
 
-    Your admin username, admin password, steam username, and steam password you provide in the Azure form will be stored as plain text in 2 instances:
+    Your admin username and password you provide in the Azure portal form will be stored as plain text in 3 instances:
     1. While the script is executing, they will be stored as plain-text in memory.
     2. To faciliate auto-login for the VM and for steam, the credentials will be stored as plain-text in registry.
+    3. NSSM will log these credentials in Windows logs.
     
-    Note that if you followed the manual installation instructions instead, your steam credentials will not be stored in plain-text (as they are not handled by the setup script at all).
+    You are safe as long as no malicious thrid-party can access the memory or disk on your VM. Now since the only way to remote desktop into your VM is through the admin account, the credentials should be pretty safe. Still, you should NOT reuse the admin username and password anywhere else.
 
-    So you are safe as long as no malicious thrid-party is reading the VM memory during script exeuction or your registry. Now since the only way to remote desktop into your VM is through the admin account, the credentials should be pretty safe. 
-    
+* Do I have to pay for my VM once it's shutdown?
+
+    It's depends on how you shutdown your VM. You don't pay for the VM ONLY when it's **deallocated**. Stopping the VM through the portal or the auto-shutdown setting for standard VM should also deallocate the VM. Still, It's always a good idea to double check your VM status.
+
 * The deployment seems successful but my local steam client can't detect my VM?
 
     * Try restarting the VM. Follow the same steps as stopping your VM execept you click on restart.
