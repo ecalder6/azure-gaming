@@ -102,7 +102,7 @@ Make sure to limit the bandwidth of your local steam client to 30 Mbits (50 if y
 ### V. Game!
 Close the remote desktop connection using the shortcut C:\disconnect.lnk and enjoy some cloud gaming!
 
-You can toggle streaming stats display with F6.
+In Steam in-home streaming, you can toggle streaming stats display with F6.
 
 #### I Want to Manually Deploy My VM
 You could manually deploy your VM through Azure portal, PowerShell, or Azure CLI. Note that a low priority VM has to exist in a virtual machine scale set, making it a bit more difficult to do manually.
