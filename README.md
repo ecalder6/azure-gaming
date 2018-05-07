@@ -77,9 +77,9 @@ You can log into your VM using Remote Desktop Connection. Note that it's a bit m
 * Low Priority VM
 
     1. Navigate to https://resources.azure.com/
-    2. Click on subscriptions on the left and make sure the subscriptionId matches with your desired subscription. You look up your subscriptions by searching "Subscriptions" on the Azure portal.
+    2. Click on the "+" next to subscriptions on the left and make sure the subscriptionId matches with your desired subscription. You look up your subscriptions by searching "Subscriptions" on the Azure portal.
     3. In the left panel, go to Name_of_your_subscription -> resourceGroups -> Name_of_your_resource_group -> providers -> Microsoft.Compute -> virtualMachineScaleSets -> CloudGaming -> publicipaddresses
-    4. Note down the ip address.
+    4. Note down the ipAddress.
     5. Launch Remote Desktop Connection on your local machine and follow the last step for Standard VM.
 
 ### Setup Steam
