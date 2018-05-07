@@ -17,14 +17,14 @@ To game on the cloud on Azure, you will have to pay for the virtual machine, dat
 
 You can pick between 2 kinds of VM: standard and low priority. A low priority VM is around **60%** cheaper than a standard VM. The downside is that a low priority VM can be shutdown at any time.
 
-The calculators below are prepopulated with an estimated monthly price for playing 35 hours a month. It assumes that you stream at an averge of around 29 Mbits/second (13 GB an hour) and use one 128GB managed disk. You can divide the total by 35 to find the estimated cost per hour.
+The calculators below are prepopulated with an estimated monthly price for playing 35 hours a month in West US 2 region. It assumes that you stream at an averge of around 29 Mbits/second (13 GBs an hour) and use one 128GB managed disk. You can divide the total by 35 to find the estimated cost per hour.
 
-Azure also charges you for the number of transactions if you choose to pick standard or premium disk. I have no idea how to calculate that for gaming, but I'd suggest going premium if you are planning to game heavily on Azure.
+Azure also charges you for the number of transactions on managed disk. The calculator assumes 100k transactions a month (no idea how accurate this is).
 
-* [Standard](https://azure.com/e/b0f50b3893b84df99d925796c3804612)
-    * As of 05/06/2018, this comes to **$2.57 / hour**
-* [Low priority](https://azure.com/e/53adcd54ea5e43c5a6ae895933c4ab75)
-    * As of 05/06/2018, this comes to **$1.80 / hour**
+* [Standard](https://azure.com/e/c795013876b14359abfe956e7c0644d2)
+    * As of 05/06/2018, this comes to **$2.67 / hour**
+* [Low priority](https://azure.com/e/f0e1298bc0984f178ba002d3316d9974)
+    * As of 05/06/2018, this comes to **$1.90 / hour**
 
 ## Usage
 ### Setup your local machine
@@ -143,6 +143,8 @@ Contributions are welcome! Please submit an issue and a PR for your change.
 * What's the difference between a managed disk and a temporary drive?
 
     A managed disk is a persisted virtual disk drive that costs a few dollars a month. A temporary drive (called temporary storage in the VM) is an actual disk drive that sits on the computer that hosts your VM. Temporary drive is free of charge and is much faster than a managed disk. However, data on temporary drive are not persisted and will be wiped when the VM is deallocated. 
+
+    There are 2 types of managed disk, standard and premium. Our VM type only supoorts standard disk, which has speeds similar to a typical hard drive.
 
 * What if the game is too big for C:\? I don't want to reinstall it every time I restart the VM.
 
