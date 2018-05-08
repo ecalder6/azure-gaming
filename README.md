@@ -27,12 +27,12 @@ Azure also charges you for the number of transactions on managed disk. The calcu
 * [Price Calculator for Standard](https://azure.com/e/5479babbd37e46b68730b27e9fd1a641)
 * [Price Calculator for Low Priority](https://azure.com/e/f0e1298bc0984f178ba002d3316d9974)
 
-| Type          | Bandwidth (Mbits/sec) | Data (GBs)     | Monthly Price* | Hourly Price* |
-| ------------- | --------------------: | -------------: | -------------: | ------------: |
-| Standard      |                    30 |            473 |         $95.11 |         $2.72 |
-| Standard      |                    15 |            236 |         $74.49 |         $2.13 |
-| Low Priority  |                    30 |            473 |         $68.16 |         $1.95 |
-| Low Priority  |                    15 |            236 |         $47.54 |         $1.36 |
+| Type          | Bandwidth (Mbits/sec) | Monthly Data (GBs) | Monthly Price* | Hourly Price* |
+| ------------- | --------------------: | -----------------: | -------------: | ------------: |
+| Standard      |                    30 |                473 |         $95.11 |         $2.72 |
+| Standard      |                    15 |                236 |         $74.49 |         $2.13 |
+| Low Priority  |                    30 |                473 |         $68.16 |         $1.95 |
+| Low Priority  |                    15 |                236 |         $47.54 |         $1.36 |
 
 *As of 05/06/2018
 
@@ -97,7 +97,7 @@ Steam is automatically installed on your VM. Launch it and log-in with your stea
 
 You could either install a game to your system drive (managed disk) or a temporary drive. The temporary drive has faster speeds, but you lose all your data after deallocating a VM. You will have to re-install your games every time you stop and start your VM if you choose to install on the temporary drive. See [Q & A](#q--a) for more.
 
-Make sure to limit the bandwidth of your local steam client to 30 Mbits (50 if you don't mind the extra data cost). You can do so through settings -> In-Home Streaming -> Advanced client options.
+Make sure to limit the bandwidth of your local steam client to 15 or 30 Mbits (50 if you don't mind the extra data cost). You can do so through settings -> In-Home Streaming -> Advanced client options.
 
 ### V. Game!
 Close the remote desktop connection using the shortcut C:\disconnect.lnk and enjoy some cloud gaming!
@@ -188,6 +188,13 @@ Contributions are welcome! Please submit an issue and a PR for your change.
 * Can't stream games because the screen is locked on the VM?
 
     Use the C:\disconnect.lnk in the VM to close the remote desktop connection.
+
+* Double clicking on C:\disconnect.lnk does nothing?
+
+    Right-click on C:\disconnect.lnk and click Properties. In Target, change the "1" to "2":
+    ```powershell
+        C:\Windows\System32\tscon.exe 2 /dest:console
+    ```
 
 * Should I install the audio driver update for Steam?
 
