@@ -193,7 +193,7 @@ Contributions are welcome! Please submit an issue and a PR for your change.
 
     Right-click on C:\disconnect.lnk and click Properties. In Target, change the "1" to "2":
     ```powershell
-        C:\Windows\System32\tscon.exe 2 /dest:console
+    C:\Windows\System32\tscon.exe 2 /dest:console
     ```
 
 * Should I install the audio driver update for Steam?
