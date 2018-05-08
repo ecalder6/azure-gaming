@@ -18,7 +18,7 @@ The bandwidth needed can vary drastically depending on your streaming host/clien
 ## Pricing
 To game on the cloud on Azure, you will have to pay for the virtual machine, outgoing data bandwidth from the VM, and managed disk (See [Q & A](#q--a) for managed disk). 
 
-You can pick between 2 kinds of VM: standard and low priority. A low priority VM is around **60%** cheaper than a standard VM. The downside is that a low priority VM can be shutdown at any time.
+You can pick between 2 kinds of VM: standard and low priority. A low priority VM is around **60%** cheaper than a standard VM. The downside is that a low priority VM can be shutdown or removed at any time. See [Q & A](#q--a) for how to add back a low priority VM once it's removed.
 
 The calculators below are prepopulated with an estimated monthly price for playing 35 hours a month in West US 2 region. It assumes that you stream at an averge of around 30 Mbits/second (13.5 GBs an hour) and use one 128GB managed disk. You can divide the total by 35 to find the estimated cost per hour.
 
@@ -199,6 +199,10 @@ Contributions are welcome! Please submit an issue and a PR for your change.
 * Should I install the audio driver update for Steam?
 
     By default, steam won't stream any game before you install its audio driver on the VM. You should just install it to get rid of the popup. Alternatively, you could launch steam with "-skipstreamingdrivers".
+
+* My Low Priority VM was removed from my Virtual machine scale set. How do I get it back?
+
+    To add back a low priority VM, first go to your Virtual machine scale set in Azure portal. Click on Scaling on the left and in the Override condition, change the instance count to 1. Click on Save on the top.
 
 * My question is not listed
 
