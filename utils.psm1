@@ -1,6 +1,6 @@
 [Net.ServicePointManager]::SecurityProtocol = [System.Net.SecurityProtocolType]::Tls12
 $webClient = new-object System.Net.WebClient
-
+$webClient.Headers.Add("user-agent", "Mozilla/5.0 (Android 4.4; Mobile; rv:41.0) Gecko/41.0 Firefox/41.0")
 function Disable-InternetExplorerESC {
     # From https://stackoverflow.com/questions/9368305/disable-ie-security-on-windows-server-via-powershell
     $AdminKey = "HKLM:\SOFTWARE\Microsoft\Active Setup\Installed Components\{A509B1A7-37EF-4b3f-8CFC-4F3A74704073}"
@@ -9,6 +9,40 @@ function Disable-InternetExplorerESC {
     Set-ItemProperty -Path $UserKey -Name "IsInstalled" -Value 0 -Force
     Stop-Process -Name Explorer -Force
     Write-Output "IE Enhanced Security Configuration (ESC) has been disabled." -ForegroundColor Green
+}
+
+function Download-File($displayName, $description, $url, $output) {
+    Import-Module BitsTransfer
+    Start-BitsTransfer -Source $url -Destination $output -DisplayName $displayName -Description $description
+}
+
+
+function Install-Rainway {
+    if ((New-Object Security.Principal.WindowsPrincipal([Security.Principal.WindowsIdentity]::GetCurrent())).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)) {
+        $rainwayRelease = Invoke-WebRequest 'https://releases.rainway.io/Installer_current.json' | ConvertFrom-Json
+        if (!$rainwayRelease) {
+            Write-Host "Failed to fetch remote Rainway config" -ForegroundColor Red
+            return
+        }
+        $version = $rainwayRelease.Version
+        $url = "https://releases.rainway.io/Installer_$version.exe"
+        $downloadedFile = "$PSScriptRoot\RainwayInstaller.exe"
+
+        $description = "Rainway is a web based game streaming platform that lets you play your favorite PC games anywhere. Learn more at rainway.io"
+        Download-File  -displayName  "Downloading Rainway ($version)" -description $description -url $url -output $downloadedFile
+     
+
+        Unblock-File -Path $downloadedFile
+
+        Write-Output "Installing Rainway ($version) from file $downloadedFile"
+        Start-Process -FilePath $downloadedFile -ArgumentList "/qn" -Wait
+
+        Write-Output "Cleaning up Rainway installation file"
+        Remove-Item -Path $downloadedFile -Confirm:$false
+    }
+    else {
+        Write-Host "You must be running as administrator to install Rainway." -ForegroundColor Red 
+    }
 }
 
 function Update-Windows {
@@ -130,7 +164,7 @@ function Install-VirtualAudio {
 function Install-Chocolatey {
     Write-Output "Installing Chocolatey"
     Invoke-Expression ($webClient.DownloadString('https://chocolatey.org/install.ps1'))
-    $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine")
+    $env:Path = [System.Environment]::GetEnvironmentVariable("Path", "Machine")
     chocolatey feature enable -n allowGlobalConfirmation
 }
 
@@ -152,7 +186,7 @@ function Install-VPN {
 
     Write-Output "Installing ZeroTier"
     choco install zerotier-one --force
-    $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine")
+    $env:Path = [System.Environment]::GetEnvironmentVariable("Path", "Machine")
 }
 
 function Join-Network ($network) {
