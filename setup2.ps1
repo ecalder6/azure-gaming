@@ -9,6 +9,7 @@ Import-Module "C:\$script_name"
 
 Disable-ScheduleWorkflow
 Disable-Devices
+Disable-TCC
 Enable-Audio
 Install-VirtualAudio
 Install-Steam
