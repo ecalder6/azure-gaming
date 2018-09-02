@@ -86,6 +86,12 @@ function Disable-Devices {
     Get-Device | Where-Object -Property Name -Like "Microsoft Hyper-V Video" | Disable-Device -Confirm:$false
 }
 
+function Disable-TCC {
+    $nvsmi = "C:\Program Files\NVIDIA Corporation\NVSMI\nvidia-smi.exe"
+    $gpu = & $nvsmi --format=csv,noheader --query-gpu=pci.bus_id
+    & $nvsmi -g $gpu -fdm 0
+}
+
 function Enable-Audio {
     Write-Output "Enabling Audio Service"
     Set-Service -Name "Audiosrv" -StartupType Automatic
