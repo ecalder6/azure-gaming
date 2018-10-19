@@ -184,6 +184,10 @@ function Install-Steam {
 }
 
 function Install-Rainway {
+    #dependencies 
+    choco install dotnet4.7.1 --force
+    choco install msvisualcplusplus2013-redist --force
+    choco install vcredist140 --force
     $rainwayRelease = Invoke-WebRequest 'https://releases.rainway.io/Installer_current.json' | ConvertFrom-Json
     if (!$rainwayRelease) {
         Write-Output "Failed to fetch remote Rainway config" -ForegroundColor Red
