@@ -141,6 +141,9 @@ If you no longer wish to game on Azure, you could remove everything by:
 3. Click on the resource group you've created.
 4. Click on delete resource group on the top.
 
+## Updating Nvidia Driver
+Go to [Install NVIDIA GPU drivers on N-series VMs running Windows](https://docs.microsoft.com/en-us/azure/virtual-machines/windows/n-series-driver-setup#nvidia-grid-drivers) to install the latest driver. Select Nvidia GRID driver for Windows Server 2016 for the NV series VM.
+
 ## Contribution
 Contributions are welcome! Please submit an issue and a PR for your change.
 
