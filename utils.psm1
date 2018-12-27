@@ -1,5 +1,27 @@
 [Net.ServicePointManager]::SecurityProtocol = [System.Net.SecurityProtocolType]::Tls12
 $webClient = new-object System.Net.WebClient
+$webClient.Headers['User-Agent'] = 'Mozilla/5.0 (Windows NT 10.0; WOW64; rv:54.0) Gecko/20100101 Firefox/54.0';
+
+function Install-Rainway {
+    #dependencies 
+    choco install dotnet4.7.1 --force
+    choco install msvisualcplusplus2013-redist --force
+    choco install vcredist140 --force
+    $rainwayRelease = Invoke-WebRequest 'https://releases.rainway.io/Installer_current.json' | ConvertFrom-Json
+    if (!$rainwayRelease) {
+        Write-Output "Failed to fetch remote Rainway config" -ForegroundColor Red
+        return
+    }
+    $version = $rainwayRelease.Version
+    $url = "https://releases.rainway.io/Installer_$version.exe"
+    $downloadedFile = "$PSScriptRoot\RainwayInstaller.exe"
+    $webClient.DownloadFile($url, $downloadedFile)
+    Unblock-File -Path $downloadedFile
+    Write-Output "Installing Rainway ($version) from file $downloadedFile"
+    Start-Process -FilePath $downloadedFile -ArgumentList "/qn" -Wait
+    Write-Output "Cleaning up Rainway installation file"
+    Remove-Item -Path $downloadedFile -Confirm:$false
+}
 
 function Disable-InternetExplorerESC {
     # From https://stackoverflow.com/questions/9368305/disable-ie-security-on-windows-server-via-powershell
@@ -184,7 +206,7 @@ function Install-Steam {
 
 function Set-ScheduleWorkflow ($admin_username, $admin_password, $manual_install) {
     $script_name = "setup2.ps1"
-    $url = "https://raw.githubusercontent.com/ecalder6/azure-gaming/master/$script_name"
+    $url = "https://raw.githubusercontent.com/ecalder6/azure-gaming/testrainway/$script_name"
 
     Write-Output "Downloading second stage setup script from $url"
     $webClient.DownloadFile($url, "C:\$script_name")

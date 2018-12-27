@@ -13,5 +13,6 @@ Disable-TCC
 Enable-Audio
 Install-VirtualAudio
 Install-Steam
+Install-Rainway
 Add-AutoLogin $admin_username $admin_password
 Restart-Computer
