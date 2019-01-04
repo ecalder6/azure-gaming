@@ -182,6 +182,17 @@ function Install-Steam {
     Remove-Item -Path $PSScriptRoot\$steam_exe -Confirm:$false
 }
 
+function Install-Parsec { 
+$parsec_exe = "parsec.exe" 
+Write-Output "Downloading parsec into path $PSScriptRoot\$parsec_exe" 
+$webClient.DownloadFile("https://s3.amazonaws.com/parsec-build/package/parsec-windows...", "$PSScriptRoot\$parsec_exe") 
+Write-Output "Installing parsec" 
+Start-Process -FilePath "$PSScriptRoot\$parsec_exe" -ArgumentList "/S" -Wait 
+
+Write-Output "Cleaning up parsec installation file" 
+Remove-Item -Path $PSScriptRoot\$parsec_exe -Confirm:$false 
+} 
+
 function Set-ScheduleWorkflow ($admin_username, $admin_password, $manual_install) {
     $script_name = "setup2.ps1"
     $url = "https://raw.githubusercontent.com/ecalder6/azure-gaming/master/$script_name"
