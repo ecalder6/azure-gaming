@@ -1,5 +1,9 @@
 # Cloud Gaming Made Easy
 
+## Update 1/11/2020
+1. You no longer need to use ZeroTier VPN. Steam can now stream games from outside your LAN. When deploying your VM, leave the "Network ID" field empty.
+2. The VMs deployed in this guide do not support SSD. If you want SSD, use [NVv3 series](https://docs.microsoft.com/en-us/azure/virtual-machines/windows/sizes-gpu#nvv3-series--1). If you are feeling adventurous, you can try out the new [NVv4 series](https://docs.microsoft.com/en-us/azure/virtual-machines/windows/sizes-gpu#nvv4-series-preview--1) with [AMD MI25](https://www.amd.com/en/products/professional-graphics/instinct-mi25) and AMD EPYC 7V12(Rome). No idea if this works, but please let me know if it does :)
+
 ## About
 Effortlessly stream the latest games on Azure. This project automates the set-up process for cloud gaming on a Nvidia M60 GPU on Azure. 
 The development of this project is heavily inspired by this [excellent guide](https://lg.io/2016/10/12/cloudy-gamer-playing-overwatch-on-azures-new-monster-gpu-instances.html).
