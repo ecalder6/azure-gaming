@@ -14,6 +14,17 @@
                 "description": "Password for the Virtual Machine."
             }
         },
+        "VmType": {
+            "type": "string",
+            "allowedValues": [
+                "Standard_NV6_Promo",
+                "Standard_NV6",
+                "Standard_NV12s_v3"
+            ],
+            "metadata": {
+                "description": "The type of the VM to deploy. Note that only NV-series support gaming."
+            }
+        },
         "autoShutdownStatus": {
             "type": "string",
             "allowedValues": [
@@ -179,7 +190,7 @@
                     }
                 },
                 "hardwareProfile": {
-                    "vmSize": "Standard_NV6"
+                    "vmSize": "[parameters('VmType')]"
                 },
                 "storageProfile": {
                     "imageReference": {
