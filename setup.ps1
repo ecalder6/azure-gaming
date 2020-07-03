@@ -29,8 +29,8 @@ Disable-ScheduledTasks
 Disable-IPv6To4
 if ($manual_install) {
     Disable-InternetExplorerESC
-    Edit-VisualEffectsRegistry
 }
+Edit-VisualEffectsRegistry
 Add-DisconnectShortcut
 
 if ($network) {
