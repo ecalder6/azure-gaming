@@ -35,7 +35,11 @@ Add-DisconnectShortcut
 Install-Chocolatey
 Install-VPN
 Join-Network $network
-Install-NSSM
 
-Set-ScheduleWorkflow $admin_username $admin_password $manual_install
+Disable-Devices
+Disable-TCC
+Enable-Audio
+Install-VirtualAudio
+Install-Steam
+Add-AutoLogin $admin_username $admin_password
 Restart-Computer
