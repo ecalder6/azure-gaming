@@ -3,7 +3,8 @@ param (
     [string]$admin_username = "",
     [string]$admin_password = "",
     [switch]$windows_update = $false,
-    [switch]$manual_install = $false
+    [switch]$manual_install = $false,
+    [switch]$virtual_audio = $false
 )
 
 function Get-UtilsScript ($script_name) {
@@ -41,7 +42,9 @@ if ($network) {
 Disable-Devices
 Disable-TCC
 Enable-Audio
-Install-VirtualAudio
+if($virtual_audio){
+    Install-VirtualAudio
+}
 Install-Steam
 Add-AutoLogin $admin_username $admin_password
 Restart-Computer
