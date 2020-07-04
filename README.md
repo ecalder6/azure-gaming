@@ -105,7 +105,7 @@ You could either install a game to your system drive (managed disk) or a tempora
 Make sure to limit the bandwidth of your local steam client to 15 or 30 Mbits (50 if you don't mind the extra data cost). You can do so through settings -> In-Home Streaming -> Advanced client options.
 
 ### V. Game!
-Close the remote desktop connection using the shortcut C:\disconnect.lnk and enjoy some cloud gaming!
+Close the remote desktop connection using the disconnect.lnk shortcut on the desktop and enjoy some cloud gaming!
 
 In Steam in-home streaming, you can toggle streaming stats display with F6.
 
@@ -195,11 +195,11 @@ Contributions are welcome! Please submit an issue and a PR for your change.
 
 * Can't stream games because the screen is locked on the VM?
 
-    Use the C:\disconnect.lnk in the VM to close the remote desktop connection.
+    Double click on disconnect.lnk on the VM desktop to close the remote desktop connection.
 
-* Double clicking on C:\disconnect.lnk does nothing?
+* Double clicking on disconnect.lnk does nothing?
 
-    Right-click on C:\disconnect.lnk and click Properties. In Target, change the "1" to "2":
+    Right-click on disconnect.lnk and click Properties. In Target, change the "1" to "2":
     ```powershell
     C:\Windows\System32\tscon.exe 2 /dest:console
     ```
