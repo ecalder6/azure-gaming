@@ -209,10 +209,10 @@ function Disable-ScheduleWorkflow {
 
 function Add-DisconnectShortcut {
     # From https://stackoverflow.com/questions/9701840/how-to-create-a-shortcut-using-powershell
-    Write-Output "Create disconnect shortcut under C:\disconnect.lnk"
+    Write-Output "Create disconnect shortcut on the desktop"
 
     $WshShell = New-Object -comObject WScript.Shell
-    $Shortcut = $WshShell.CreateShortcut("C:\disconnect.lnk")
+    $Shortcut = $WshShell.CreateShortcut("C:\Users\Public\Desktop\disconnect.lnk")
     $Shortcut.TargetPath = "C:\Windows\System32\tscon.exe"
     $Shortcut.Arguments = "1 /dest:console"
     $Shortcut.Save()
