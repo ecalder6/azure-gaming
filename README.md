@@ -83,11 +83,12 @@ Click on the button above for your desired VM type and fill out the form. You'll
 
 * Subscription: your paid subscription
 * Resource group: create a new one and name it anything you like
-* Location: pick the location closest to you. Note that not every location has the VM with M60 graphics card. Check [this website](https://azure.microsoft.com/en-us/global-infrastructure/services/) for whether a region supports NV6 VM.* Admin username and password: the login credentials for the local user.
+* Location: pick the location closest to you. Note that not every location has the VM with M60 graphics card. Check [this website](https://azure.microsoft.com/en-us/global-infrastructure/services/) for whether a region supports NV6 VM.
+* Admin username and password: the login credentials for the local user.
 * Vm Type: Use Standard_NV6_Promo if possible to save money. Use Standard_NV12s_v3 if you want SSD.
 * Script location: the location of the setup script. Use the default value.
 * Windows Update: whether to update windows, which takes around an hour. Recommended to leave as false.
-* Network ID: network ID of your zero tier VPN,or empty if you don't need ZeroTier.
+* Network ID: network ID of your zero tier VPN, or empty if you don't need ZeroTier.
 
 For standard VM, you could specify a time when the VM would automatically shut down and deallocate. Once it's deallocated, you do not have to pay for the VM. See [Q & A](#q--a) for more.
 A list of timezones understood by Azure is available [here](https://jackstromberg.com/2017/01/list-of-time-zones-consumed-by-azure/)
