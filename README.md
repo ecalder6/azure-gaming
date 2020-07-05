@@ -131,7 +131,7 @@ If you want to stream from the Steam Link mobile app, don't forget to pair your 
 
 ### V. Game!
 
-Close the remote desktop connection using the shortcut C:\disconnect.lnk and enjoy some cloud gaming!
+Close the remote desktop connection using the disconnect.lnk shortcut on the desktop and enjoy some cloud gaming!
 
 If you don't use this shortcut, the VM gets locked and Steam Remote Play can not capture the game.
 
@@ -224,11 +224,11 @@ Contributions are welcome! Please submit an issue and a PR for your change.
 
 * Steam Remote Play closes instantly after the splash screen ? Can't stream games because the screen is locked on the VM ?
 
-    Use the C:\disconnect.lnk in the VM to close the remote desktop connection.
+    Double click on disconnect.lnk on the VM desktop to close the remote desktop connection.
 
-* Double clicking on C:\disconnect.lnk does nothing?
+* Double clicking on disconnect.lnk does nothing?
 
-    Right-click on C:\disconnect.lnk and click Properties. In Target, change the "1" to "2":
+    Right-click on disconnect.lnk and click Properties. In Target, change the "1" to "2":
     ```powershell
     C:\Windows\System32\tscon.exe 2 /dest:console
     ```
