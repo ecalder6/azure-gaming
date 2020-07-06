@@ -25,6 +25,13 @@
                 "description": "The type of the VM to deploy. Note that only NV-series support gaming."
             }
         },
+        "isSpotVM": {
+            "type": "bool",
+            "metadata": {
+                "description": "Whether the VM is a Spot VM or not. Spot VMs let you use unused Azure resources for a cheaper price but can get force stopped at anytime."
+            },
+            "defaultValue": false
+        },
         "autoShutdownStatus": {
             "type": "string",
             "allowedValues": [
@@ -175,7 +182,7 @@
         {
             "name": "[variables('vmName')]",
             "type": "Microsoft.Compute/virtualMachines",
-            "apiVersion": "2017-03-30",
+            "apiVersion": "2019-03-01",
             "location": "[resourceGroup().location]",
             "dependsOn": [
                 "[variables('nicName')]"
@@ -212,6 +219,11 @@
                             "id": "[resourceId('Microsoft.Network/networkInterfaces',variables('nicName'))]"
                         }
                     ]
+                },
+                "priority": "[if(parameters('isSpotVM'), 'Spot', 'Regular')]",
+                "evictionPolicy": "Deallocate",
+                "billingProfile": {
+                    "maxPrice": -1
                 }
             },
             "resources": [
