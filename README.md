@@ -1,28 +1,47 @@
 # Cloud Gaming Made Easy
 
-## Update 1/11/2020
-1. You no longer need to use ZeroTier VPN. Steam can now stream games from outside your LAN. When deploying your VM, leave the "Network ID" field empty.
-2. The VMs deployed in this guide do not support SSD. If you want SSD, use [NVv3 series](https://docs.microsoft.com/en-us/azure/virtual-machines/windows/sizes-gpu#nvv3-series--1). If you are feeling adventurous, you can try out the new [NVv4 series](https://docs.microsoft.com/en-us/azure/virtual-machines/windows/sizes-gpu#nvv4-series-preview--1) with [AMD MI25](https://www.amd.com/en/products/professional-graphics/instinct-mi25) and AMD EPYC 7V12(Rome). No idea if this works, but please let me know if it does :)
-
 ## About
-Effortlessly stream the latest games on Azure. This project automates the set-up process for cloud gaming on a Nvidia M60 GPU on Azure. 
-The development of this project is heavily inspired by this [excellent guide](https://lg.io/2016/10/12/cloudy-gamer-playing-overwatch-on-azures-new-monster-gpu-instances.html).
+Effortlessly stream the latest games on Azure, including XBox (PC App) games. This is a fork of the ecalder6 repo, reworked to install Windows 10.
 
-The automated setup first deploys an Azure NV6 virtual machine (VM) with a single Nvidia M60 GPU (1/2 of a M60 graphics card) and configures the Custom Script Extension to run the setup script. The setup script configures everything that's needed to run steam games on the VM, such as installing the Nvidia driver, connecting to ZeroTier VPN, and setting up auto login for Windows.
+It relies on Parsec for streaming as it does not appear Nvidia is supporting GameStream under cloud hardware anymore. Windows 10 OS is used instead of Windows Server to allow XBox Game Pass installation.  
+
+
+## Streaming Solutions
+
+Parsec+Raspberry PI - I've gotten this to work on both a Raspberry PI 2 and 3B+, with a 3000 mile distance between my home and the datacenter and minimal lag. The Parsec's FAQ for Raspberry Pis was pretty good, and no issues with the Debain version. ZeroTier VPN was not needed for this solution
+
+Rainway+iPad+ZeroVPN - This was my first attempt, but I couldn't get a playable version up. This required ZeroVPN on my iPad in order to connect to the Azure machine, but even after connection was barely playable. Some further debuging coul 
+
+Nvidia Gamestream - No longer appears selectable on cloud hardware
+
+Paperspace, AWS - Uses Windows Servers unless you have your own Windows 10 profesional license. Xbox Gamepass requires a true Windows 10 OS, and doesn't appear to work on Windows Servers.
+
+## Hardware
+
+I've used the NV6 (Nvidia) machines with SSD pretty consistently, and they are working well. The AMD version (NVv4) installs well, but I've had difficulty getting Parsec or Rainway to work nice with the. I suspect the options here to evolve with time.
+
+## Software
+
+NVidia Extension
+Parsec
+Game Library (Xbox, Epic, Steam, etc)
+(audio setup TBD)
+
+## Configuration
+
+The trickiest part is ensuring the right monitor for your game. Both the CPU and the GPU put out "monitors" that the game and Parsec can attach to, and the default appears to be the CPU monitor. I recommend just going into the device monitor and deactivating the device driver for the non-GPU monitor. As of July 2020 RDP can still remote into the machine, and Parsec can capture the GPU monitor, and you don't accidently start Sea of Thieves with the wrong monitor
 
 ## Disclaimer
 **This software comes with no warranty of any kind**. USE AT YOUR OWN RISK! This a personal project and is NOT endorsed by Microsoft. If you encounter an issue, please submit it on GitHub.
 
 ## How Do I Stream Games?
-Your Azure VM and your local machine are connected through ZeroTier VPN. You can stream games through this connection using Steam In-Home streaming or a third-party streaming software.
+Install Parsec on your home computer (or raspberry pi) as well as the cloud machine. Log-in using same credentials at both ends. Connect and stream!
 
 ## How Much Bandwidth Does It Take?
 The bandwidth needed can vary drastically depending on your streaming host/client, game, and resolution. I recommend most people to limit their bandwidth to either 15 or 30 Mbits/sec. If you are streaming at higher than 1080P or just want to have the best possible experience, go with 50 Mbits/sec.
 
 ## Pricing
 To game on the cloud on Azure, you will have to pay for the virtual machine, outgoing data bandwidth from the VM, and managed disk (See [Q & A](#q--a) for managed disk). 
-
-You can pick between 2 kinds of VM: standard and low priority. A low priority VM is around **60%** cheaper than a standard VM. The downside is that a low priority VM can be shutdown or removed at any time. See [Q & A](#q--a) for how to add back a low priority VM once it's removed.
 
 The calculators below are prepopulated with an estimated monthly price for playing 35 hours a month in West US 2 region. It assumes that you stream at an averge of around 30 Mbits/second (13.5 GBs an hour) and use one 128GB managed disk. You can divide the total by 35 to find the estimated cost per hour.
 
@@ -35,26 +54,17 @@ Azure also charges you for the number of transactions on managed disk. The calcu
 | ------------- | --------------------: | -----------------: | -------------: | ------------: |
 | Standard      |                    30 |                473 |         $95.11 |         $2.72 |
 | Standard      |                    15 |                236 |         $74.49 |         $2.13 |
-| Low Priority  |                    30 |                473 |         $68.16 |         $1.95 |
-| Low Priority  |                    15 |                236 |         $47.54 |         $1.36 |
 
 *As of 05/06/2018
 
 ## Usage
 ### I. Setup your local machine
 1. Sign up for a [Paid Azure subscription](https://azure.microsoft.com/en-us/pricing/purchase-options/). You need a paid subscription as the free account does not grant you access to GPU VMs.
-2. Sign up for an account on [zero tier VPN](https://www.zerotier.com/) and create a network. Make sure the network is set to **public**.
-Note down the network id.
-3. Download and install zero tier VPN on your local machine. Join the network using the network ID noted in the previous step. **Make sure your local machine connect to the network BEFORE the VM does!**
+2. Sign up for [Parsec](https://parsecgaming.com/)
 
 ### II. Automatically Deploy Your Azure VM
 #### Automated Standard
 <a href="https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fecalder6%2Fazure-gaming%2Fmaster%2FStandard.json" target="_blank">
-    <img src="http://azuredeploy.net/deploybutton.png"/>
-</a>
-
-#### Automated Low Priority
-<a href="https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fecalder6%2Fazure-gaming%2Fmaster%2FLowPri.json" target="_blank">
     <img src="http://azuredeploy.net/deploybutton.png"/>
 </a>
 
@@ -88,14 +98,6 @@ You can log into your VM using Remote Desktop Connection. Note that it's a bit m
     3. Open your RDP file. Click on "Don't ask me again" and Connect for RDP popup.
     4. Enter the username and password you provided. Click on more choices -> "Use a different account" if you can't modify the username.
     5. Click on "Don't ask me again" and "Yes" for certificate verification popup.
-
-* Low Priority VM
-
-    1. Navigate to https://resources.azure.com/
-    2. Click on the "+" next to subscriptions on the left and make sure the subscriptionId matches with your desired subscription. You look up your subscriptions by searching "Subscriptions" on the Azure portal.
-    3. In the left panel, go to Name_of_your_subscription -> resourceGroups -> Name_of_your_resource_group -> providers -> Microsoft.Compute -> virtualMachineScaleSets -> CloudGaming -> publicipaddresses
-    4. Note down the ipAddress.
-    5. Launch Remote Desktop Connection on your local machine and follow the last step for Standard VM.
 
 ### IV. Setup Steam
 Steam is automatically installed on your VM. Launch it and log-in with your steam credentials. Once logged in, install your games through Steam on the VM. Unfortunately, Steam no longer allows interaction-free installation from local machine, requring you to do a bit of setup in the VM.
