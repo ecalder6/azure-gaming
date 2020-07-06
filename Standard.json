@@ -221,10 +221,8 @@
                     ]
                 },
                 "priority": "[if(parameters('isSpotVM'), 'Spot', 'Regular')]",
-                "evictionPolicy": "Deallocate",
-                "billingProfile": {
-                    "maxPrice": -1
-                }
+                "evictionPolicy": "[if(parameters('isSpotVM'), 'Deallocate', json('null'))]",
+                "billingProfile": "[if(parameters('isSpotVM'), json('{\"maxPrice\": -1}'), json('null'))]"
             },
             "resources": [
                 {
