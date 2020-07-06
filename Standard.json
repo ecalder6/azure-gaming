@@ -175,7 +175,7 @@
         {
             "name": "[variables('vmName')]",
             "type": "Microsoft.Compute/virtualMachines",
-            "apiVersion": "2017-03-30",
+            "apiVersion": "2018-04-01",
             "location": "[resourceGroup().location]",
             "dependsOn": [
                 "[variables('nicName')]"
@@ -200,9 +200,11 @@
                         "version": "latest"
                     },
                     "osDisk": {
+                        "osType": "Windows",
+                        "caching": "ReadWrite",
                         "createOption": "FromImage",
                         "managedDisk": {
-                            "storageAccountType": "Standard_LRS"
+                            "storageAccountType": "StandardSSD_LRS"
                         }
                     }
                 },
