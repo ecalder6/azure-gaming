@@ -25,6 +25,16 @@
                 "description": "The type of the VM to deploy. Note that only NV-series support gaming."
             }
         },
+        "platform": {
+            "type": "string",
+            "allowedValues": [
+                "WindowsServer",
+                "Windows10"
+            ],
+            "metadata": {
+                "description": "The OS to deploy."
+            }
+        },
         "autoShutdownStatus": {
             "type": "string",
             "allowedValues": [
@@ -88,7 +98,19 @@
         "dnsNameForPublicIP": "[concat('cgp', uniqueString(resourceGroup().id, deployment().name))]",
         "scriptFolder": ".",
         "scriptFileName": "setup.ps1",
-        "scriptParameters": "[concat('-network \"', parameters('networkID'), '\" -admin_username \"', parameters('adminUsername'), '\" -admin_password \"', parameters('adminPassword'), '\"')]"
+        "scriptParameters": "[concat('-network \"', parameters('networkID'), '\" -admin_username \"', parameters('adminUsername'), '\" -admin_password \"', parameters('adminPassword'), '\"')]",
+        "osTypeWindowsServer": {
+            "publisher": "MicrosoftWindowsServer",
+            "offer": "WindowsServer",
+            "sku": "2019-Datacenter",
+            "version": "latest"
+        },
+        "osTypeWindows10": {
+            "publisher": "MicrosoftWindowsDesktop",
+            "offer": "windows-10",
+            "sku": "20h1-pro",
+            "version": "latest"
+        }
     },
     "resources": [
         {
@@ -175,7 +197,7 @@
         {
             "name": "[variables('vmName')]",
             "type": "Microsoft.Compute/virtualMachines",
-            "apiVersion": "2017-03-30",
+            "apiVersion": "2019-12-01",
             "location": "[resourceGroup().location]",
             "dependsOn": [
                 "[variables('nicName')]"
@@ -193,12 +215,7 @@
                     "vmSize": "[parameters('VmType')]"
                 },
                 "storageProfile": {
-                    "imageReference": {
-                        "publisher": "MicrosoftWindowsServer",
-                        "offer": "WindowsServer",
-                        "sku": "2016-Datacenter",
-                        "version": "latest"
-                    },
+                    "imageReference": "[variables(concat('osType',parameters('platform')))]",
                     "osDisk": {
                         "createOption": "FromImage",
                         "managedDisk": {
