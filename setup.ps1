@@ -3,7 +3,8 @@ param (
     [string]$admin_username = "",
     [string]$admin_password = "",
     [switch]$windows_update = $false,
-    [switch]$manual_install = $false
+    [switch]$manual_install = $false,
+    [switch]$virtual_audio = $false
 )
 
 function Get-UtilsScript ($script_name) {
@@ -28,15 +29,22 @@ Disable-ScheduledTasks
 Disable-IPv6To4
 if ($manual_install) {
     Disable-InternetExplorerESC
-    Edit-VisualEffectsRegistry
 }
+Edit-VisualEffectsRegistry
 Add-DisconnectShortcut
 
-Install-Chocolatey
-Install-VPN
-Join-Network $network
-Install-NSSM
+if ($network) {
+    Install-Chocolatey
+    Install-VPN
+    Join-Network $network
+}
 
-Install-NvidiaDriver $manual_install
-Set-ScheduleWorkflow $admin_username $admin_password $manual_install
+Disable-Devices
+Disable-TCC
+Enable-Audio
+if($virtual_audio){
+    Install-VirtualAudio
+}
+Install-Steam
+Add-AutoLogin $admin_username $admin_password
 Restart-Computer
