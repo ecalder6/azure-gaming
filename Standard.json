@@ -28,7 +28,7 @@
         "isSpotVM": {
             "type": "bool",
             "metadata": {
-                "description": "Whether the VM is a Spot VM or not. Spot VMs let you use unused Azure resources for a cheaper price but can get force stopped at anytime."
+                "description": "Whether the VM is a Spot VM or not. Spot VMs let you use unused Azure resources for a cheaper price but can get force stopped at anytime. Note that some VM Types such as the Promo series are not supported with Spot."
             },
             "defaultValue": false
         },
