@@ -216,13 +216,36 @@
             },
             "resources": [
                 {
+                    "name": "microsoft.nvidia-gpu-driver-windows",
+                    "apiVersion": "2015-01-01",
+                    "type": "Microsoft.Resources/deployments",
+                    "properties": {
+                        "mode": "incremental",
+                        "templateLink": {
+                            "uri": "https://gallery.azure.com/artifact/20161101/microsoft.nvidia-gpu-driver-windows-arm.1.1.0/Artifacts/MainTemplate.json"
+                        },
+                        "parameters": {
+                            "vmName": {
+                                "value": "[variables('vmName')]"
+                            },
+                            "location": {
+                                "value": "[resourceGroup().location]"
+                            }
+                        }
+                    },
+                    "dependsOn": [
+                        "[concat('Microsoft.Compute/virtualMachines/', variables('vmName'))]"
+                    ]
+                },
+                {
                     "condition": "[equals(parameters('windowsUpdate'), bool('false') )]",
                     "type": "extensions",
                     "name": "SetupWithoutWindowsUpdate",
                     "apiVersion": "2015-06-15",
                     "location": "[resourceGroup().location]",
                     "dependsOn": [
-                        "[variables('vmName')]"
+                        "[variables('vmName')]",
+                        "microsoft.nvidia-gpu-driver-windows"
                     ],
                     "properties": {
                         "publisher": "Microsoft.Compute",
@@ -244,7 +267,8 @@
                     "apiVersion": "2015-06-15",
                     "location": "[resourceGroup().location]",
                     "dependsOn": [
-                        "[variables('vmName')]"
+                        "[variables('vmName')]",
+                        "microsoft.nvidia-gpu-driver-windows"
                     ],
                     "properties": {
                         "publisher": "Microsoft.Compute",
