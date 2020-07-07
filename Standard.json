@@ -32,7 +32,7 @@
                 "Windows10"
             ],
             "metadata": {
-                "description": "The OS to deploy."
+                "description": "The OS to deploy. Note that Windows 10 VMs requires you yo own a volume license for it."
             }
         },
         "autoShutdownStatus": {
