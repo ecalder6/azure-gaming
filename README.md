@@ -125,7 +125,7 @@ In Steam Remote Play, you can toggle streaming stats display with F6.
 
 You could manually deploy your VM through Azure portal, PowerShell, or Azure CLI. 
 
-1. Deploy a NV6 size VM through the azure portal(see [this guide](https://lg.io/2016/10/12/cloudy-gamer-playing-overwatch-on-azures-new-monster-gpu-instances.html) for instructions).
+1. Deploy a NV6 size VM through the azure portal(see [this guide](https://lg.io/2016/10/12/cloudy-gamer-playing-overwatch-on-azures-new-monster-gpu-instances.html) for instructions). Do not forget to add the Nvidia Driver Extension to the VM !
 2. Remote desktop into your Azure VM instance.
 
 3. Launch PowerShell (click on the Windows key in the bottom-left corner, type "powershell", and click on the app PowerShell).
