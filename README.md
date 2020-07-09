@@ -30,21 +30,21 @@ The bandwidth needed can vary drastically depending on your streaming host/clien
 
 To game on the cloud on Azure, you will have to pay for the virtual machine, outgoing data bandwidth from the VM, and managed disk (See [Q & A](#q--a) for managed disk).
 
-You can pick between 2 kinds of VM: standard and low priority. A low priority VM is around **60%** cheaper than a standard VM. The downside is that a low priority VM can be shutdown or removed at any time. See [Q & A](#q--a) for how to add back a low priority VM once it's removed.
+You can pick between 2 kinds of VM: standard and Spot. A Spot VM is around **60%** cheaper than a standard VM. The downside is that a Spot VM can be shutdown at any time. 
 
 The calculators below are prepopulated with an estimated monthly price for playing 35 hours a month in West US 2 region. It assumes that you stream at an averge of around 30 Mbits/second (13.5 GBs an hour) and use one 128GB managed disk. You can divide the total by 35 to find the estimated cost per hour.
 
 Azure also charges you for the number of transactions on managed disk. The calculator assumes 100k transactions a month (no idea how accurate this is).
 
 * [Price Calculator for Standard](https://azure.com/e/5479babbd37e46b68730b27e9fd1a641)
-* [Price Calculator for Low Priority](https://azure.com/e/f0e1298bc0984f178ba002d3316d9974)
+* [Price Calculator for Spot](https://azure.com/e/f0e1298bc0984f178ba002d3316d9974)
 
 | Type          | Bandwidth (Mbits/sec) | Monthly Data (GBs) | Monthly Price* | Hourly Price* |
 | ------------- | --------------------: | -----------------: | -------------: | ------------: |
 | Standard      |                    30 |                473 |         $95.11 |         $2.72 |
 | Standard      |                    15 |                236 |         $74.49 |         $2.13 |
-| Low Priority  |                    30 |                473 |         $68.16 |         $1.95 |
-| Low Priority  |                    15 |                236 |         $47.54 |         $1.36 |
+| Spot          |                    30 |                473 |         $68.16 |         $1.95 |
+| Spot          |                    15 |                236 |         $47.54 |         $1.36 |
 
 *As of 05/06/2018
 
@@ -67,25 +67,18 @@ Note down the network id.
 
 ### II. Automatically Deploy Your Azure VM
 
-#### Automated Standard
-
 <a href="https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fecalder6%2Fazure-gaming%2Fmaster%2FStandard.json" target="_blank">
     <img src="http://azuredeploy.net/deploybutton.png"/>
 </a>
 
-#### Automated Low Priority
-
-<a href="https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fecalder6%2Fazure-gaming%2Fmaster%2FLowPri.json" target="_blank">
-    <img src="http://azuredeploy.net/deploybutton.png"/>
-</a>
-
-Click on the button above for your desired VM type and fill out the form. You'll need to fill in:
+Click on the button above and fill out the form. You'll need to fill in:
 
 * Subscription: your paid subscription
 * Resource group: create a new one and name it anything you like
 * Location: pick the location closest to you. Note that not every location has the VM with M60 graphics card. Check [this website](https://azure.microsoft.com/en-us/global-infrastructure/services/) for whether a region supports NV6 VM.
 * Admin username and password: the login credentials for the local user.
 * Vm Type: Use Standard_NV6_Promo if possible to save money. Use Standard_NV12s_v3 if you want SSD.
+* Spot VM: Set to true if you want to deploy a Spot VM. Note that it is not compatible with the *Promo* series VMs
 * Script location: the location of the setup script. Use the default value.
 * Windows Update: whether to update windows, which takes around an hour. Recommended to leave as false.
 * Network ID: network ID of your zero tier VPN, or empty if you don't need ZeroTier.
@@ -103,23 +96,13 @@ Wait until the deployment is successful and both extensions are finished before 
 
 ### III. Log into your VM
 
-You can log into your VM using Remote Desktop Connection. Note that it's a bit more involved if you choose to use a low priority VM.
-
-* Standard VM
+You can log into your VM using Remote Desktop Connection.
 
     1. Go to Virtual machines in [Azure Portal](https://portal.azure.com/) and click on CloudGaming
     2. Click on Connect and then Download RDP File (leave everything as default)
     3. Open your RDP file. Click on "Don't ask me again" and Connect for RDP popup.
     4. Enter the username and password you provided. Click on more choices -> "Use a different account" if you can't modify the username.
     5. Click on "Don't ask me again" and "Yes" for certificate verification popup.
-
-* Low Priority VM
-
-    1. Navigate to https://resources.azure.com/
-    2. Click on the "+" next to subscriptions on the left and make sure the subscriptionId matches with your desired subscription. You look up your subscriptions by searching "Subscriptions" on the Azure portal.
-    3. In the left panel, go to Name_of_your_subscription -> resourceGroups -> Name_of_your_resource_group -> providers -> Microsoft.Compute -> virtualMachineScaleSets -> CloudGaming -> publicipaddresses
-    4. Note down the ipAddress.
-    5. Launch Remote Desktop Connection on your local machine and follow the last step for Standard VM.
 
 ### IV. Setup Steam
 
@@ -140,10 +123,11 @@ In Steam Remote Play, you can toggle streaming stats display with F6.
 
 #### I Want to Manually Deploy My VM
 
-You could manually deploy your VM through Azure portal, PowerShell, or Azure CLI. Note that a low priority VM has to exist in a virtual machine scale set, making it a bit more difficult to do manually.
+You could manually deploy your VM through Azure portal, PowerShell, or Azure CLI. 
 
-1. Deploy a NV6 size VM through the azure portal(see [this guide](https://lg.io/2016/10/12/cloudy-gamer-playing-overwatch-on-azures-new-monster-gpu-instances.html) for instructions). For low priority VM, checkout [this documentation](https://docs.microsoft.com/en-us/azure/virtual-machine-scale-sets/virtual-machine-scale-sets-use-low-priority) and [this reddit thread](https://www.reddit.com/r/cloudygamer/comments/8fu2d0/azure_pricing_update/). Do not forget to add the Nvidia Driver Extension to the VM !
-2. Once the deployment is finished for both VM and extensions, remote desktop into your Azure VM instance.
+1. Deploy a NV6 size VM through the azure portal(see [this guide](https://lg.io/2016/10/12/cloudy-gamer-playing-overwatch-on-azures-new-monster-gpu-instances.html) for instructions). Do not forget to add the Nvidia Driver Extension to the VM!
+2. Remote desktop into your Azure VM instance.
+
 3. Launch PowerShell (click on the Windows key in the bottom-left corner, type "powershell", and click on the app PowerShell).
 4. Download https://github.com/ecalder6/azure-gaming/blob/master/setup.ps1. You could download this onto your local machine and paste it through remote desktop.
 5. Navigate to the directory containing setup.ps1 in PowerShell and execute
@@ -166,8 +150,8 @@ If you want to update windows, append
 After you are done with a gaming session, I recommend you stop (deallocate) the VM **using the Azure portal**. When it's stopped (deallocated), you don't have to pay for the VM. If you shut it down from Windows, you will still have to pay. Below are the steps for stopping a VM in portal:
 1. Login to [Azure portal](https://portal.azure.com)
 2. On the left-hand side, click on All resources
-3. Click on the VM you've created (for automated, the VM name is CloudGaming). For low priority VM, click on the CloudGaming virtual machine scale set.
-4. Click on Stop on the top (deallocate for low priority).
+3. Click on the VM you've created (for automated, the VM name is CloudGaming).
+4. Click on Stop on the top.
 
 To start the VM, follow the steps above except that you click on start.
 
@@ -238,9 +222,9 @@ Contributions are welcome! Please submit an issue and a PR for your change.
 
     By default, Steam won't stream any game before you install its audio driver on the VM. Steam installs it automatically without action on your part. Alternatively, you could launch steam with "-skipstreamingdrivers".
 
-* My Low Priority VM was removed from my Virtual machine scale set. How do I get it back?
+* My Spot VM was deallocated. How do I get it back?
 
-    To add back a low priority VM, first go to your Virtual machine scale set in Azure portal. Click on Scaling on the left and in the Override condition, change the instance count to 1. Click on Save on the top.
+    To add back a Spot VM, go to your VM in Azure Portal, and press Start. There is no guarantee that the allocation will succeed.
 
 * My question is not listed
 
