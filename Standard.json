@@ -36,13 +36,14 @@
         "VmStorageType": {
             "type": "string",
             "allowedValues": [
+                "Standard_LRS",
                 "StandardSSD_LRS",
-                "Standard_LRS"
+                "Premium_LRS"
             ],
             "metadata": {
-                "description": "The type of storage for the Virtual Machine. \"StandardSSD_LRS\" for \"Standard SSD\", \"Standard_LRS\" for \"Standard HDD\"."
+                "description": "The type of storage for the Virtual Machine. \"Standard_LRS\" for \"Standard HDD\", \"StandardSSD_LRS\" for \"Standard SSD\", \"Premium_LRS\" for \"Premium SSD\"."
             },
-            "defaultValue": "StandardSSD_LRS"
+            "defaultValue": "Standard_LRS"
         },
         "VmIpType": {
             "type": "string",
