@@ -48,13 +48,13 @@
         "VmIpType": {
             "type": "string",
             "allowedValues": [
-                "Static",
-                "Dynamic"
+                "Dynamic",
+                "Static"
             ],
             "metadata": {
                 "description": "The Public IP allocation method for the Virtual Machine."
             },
-            "defaultValue": "Static"
+            "defaultValue": "Dynamic"
         },
         "isSpotVM": {
             "type": "bool",
