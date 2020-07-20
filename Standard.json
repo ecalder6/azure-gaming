@@ -2,6 +2,13 @@
     "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
+        "VmName": {
+            "type": "string",
+            "metadata": {
+                "description": "The name for the Virtual Machine. Cannot be more than 15 characters long, be entirely numeric, or contain the following characters: ` ~ ! @ # $ % ^ & * ( ) = + _ [ ] { } \\ | ; : . ' \" , < > / ?."
+            },
+            "defaultValue": "CloudGaming"
+        },
         "adminUsername": {
             "type": "string",
             "metadata": {
@@ -23,7 +30,31 @@
             ],
             "metadata": {
                 "description": "The type of the VM to deploy. Note that only NV-series support gaming."
-            }
+            },
+            "defaultValue": "Standard_NV6_Promo"
+        },
+        "VmStorageType": {
+            "type": "string",
+            "allowedValues": [
+                "Standard_LRS",
+                "StandardSSD_LRS",
+                "Premium_LRS"
+            ],
+            "metadata": {
+                "description": "The type of storage for the Virtual Machine. \"Standard_LRS\" for \"Standard HDD\", \"StandardSSD_LRS\" for \"Standard SSD\", \"Premium_LRS\" for \"Premium SSD\"."
+            },
+            "defaultValue": "Standard_LRS"
+        },
+        "VmIpType": {
+            "type": "string",
+            "allowedValues": [
+                "Dynamic",
+                "Static"
+            ],
+            "metadata": {
+                "description": "The Public IP allocation method for the Virtual Machine."
+            },
+            "defaultValue": "Dynamic"
         },
         "isSpotVM": {
             "type": "bool",
@@ -84,14 +115,14 @@
         }
     },
     "variables": {
-        "nicName": "CloudGamingNic",
+        "nicName": "[concat(parameters('VmName'), 'Nic')]",
         "addressPrefix": "10.0.0.0/16",
         "subnetName": "Subnet",
         "subnetPrefix": "10.0.0.0/24",
         "subnetRef": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('virtualNetworkName'), variables('subnetName'))]",
-        "vmName": "CloudGaming",
-        "virtualNetworkName": "CloudGamingVNET",
-        "publicIPAddressName": "CloudGamingsPublicIP",
+        "vmName": "[parameters('VmName')]",
+        "virtualNetworkName": "[concat(parameters('VmName'), 'VNET')]",
+        "publicIPAddressName": "[concat(parameters('VmName'), 'PublicIP')]",
         "dnsNameForPublicIP": "[concat('cgp', uniqueString(resourceGroup().id, deployment().name))]",
         "scriptFolder": ".",
         "scriptFileName": "setup.ps1",
@@ -104,7 +135,7 @@
             "apiVersion": "2017-08-01",
             "location": "[resourceGroup().location]",
             "properties": {
-                "publicIPAllocationMethod": "Dynamic"
+                "publicIPAllocationMethod": "[parameters('VmIpType')]"
             },
             "sku": {
                 "name": "Basic"
@@ -209,7 +240,7 @@
                     "osDisk": {
                         "createOption": "FromImage",
                         "managedDisk": {
-                            "storageAccountType": "Standard_LRS"
+                            "storageAccountType": "[parameters('VmStorageType')]"
                         }
                     }
                 },
