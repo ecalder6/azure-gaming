@@ -2,6 +2,7 @@
 
 ## About
 Effortlessly stream the latest games on Azure. This project automates the set-up process for cloud gaming on a Nvidia M60 GPU on Azure.
+The development of this project is heavily inspired by this [excellent guide](https://lg.io/2016/10/12/cloudy-gamer-playing-overwatch-on-azures-new-monster-gpu-instances.html).
 
 The automated setup first deploys an Azure NV6 virtual machine (VM) with a single Nvidia M60 GPU (1/2 of a M60 graphics card), configures the official Nvidia Driver Extension that installs the Nvidia driver on the VM, and finally deploys a Custom Script Extension to run the setup script. The setup script configures everything that's needed to run Steam games on the VM, such as configuring some Nvidia driver settings, setting up auto login for Windows, and eventually connecting to ZeroTier VPN.
 
