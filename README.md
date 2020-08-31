@@ -21,9 +21,11 @@ Alternatively you can install Parsec on your home computer (or raspberry pi) as 
 You can optionally use ZeroTier VPN by specifying a network ID in the deployment parameters, for other scenarios such as using a third-party streaming software.
 
 ## How Much Bandwidth Does It Take?
+
 The bandwidth needed can vary drastically depending on your streaming host/client, game, and resolution. I recommend most people to limit their bandwidth to either 15 or 30 Mbits/sec. If you are streaming at higher than 1080P or just want to have the best possible experience, go with 50 Mbits/sec.
 
 ## Pricing
+
 To game on the cloud on Azure, you will have to pay for the virtual machine, outgoing data bandwidth from the VM, and managed disk (See [Q & A](#q--a) for managed disk).
 
 You can pick between 2 kinds of VM: Standard and Spot. A Spot VM is around **60%** cheaper than a Standard VM. The downside is that a Spot VM can be shutdown at any time.
@@ -49,9 +51,9 @@ Azure also charges you for the number of transactions on managed disk. The calcu
 ### I. Setup your local machine
 
 1. Sign up for a [Paid Azure subscription](https://azure.microsoft.com/en-us/pricing/purchase-options/). You need a paid subscription as the free account does not grant you access to GPU VMs.
-2. Sign up for [Parsec](https://parsecgaming.com/)
-OR
 2. Have Steam ready and logged in. You can specify client streaming options in Steam's Settings > Remote Play > Advanced Client Options. Make sure to limit the bandwidth of your local steam client to 15 or 30 Mbits (50 if you don't mind the extra data cost).
+OR
+2. Sign up for [Parsec](https://parsecgaming.com/), and install on machines
 
 You can also use Steam Link on a mobile device !
 
