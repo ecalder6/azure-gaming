@@ -52,7 +52,8 @@ function Disable-ScheduledTasks {
 
 function Edit-VisualEffectsRegistry {
     Write-Output "Adjust performance options in registry"
-    Set-ItemProperty -Path "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\VisualEffects" -Name "VisualFXSetting" -Value 2
+    New-Item -Path "Registry::\HKEY_USERS\.DEFAULT\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\VisualEffects"
+    Set-ItemProperty -Path "Registry::\HKEY_USERS\.DEFAULT\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\VisualEffects" -Name "VisualFXSetting" -Value 2
 }
 
 function Install-NvidiaDriver ($manual_install) {
