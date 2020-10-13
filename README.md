@@ -248,6 +248,10 @@ Contributions are welcome! Please submit an issue and a PR for your change.
     C:\Windows\System32\tscon.exe 2 /dest:console
     ```
 
+* How do I setup UPnP for my azure machine
+
+    One attempt: On the network inteface setting for your Azure machine, set Port Forwarding to "Enabled"
+
 * Should I install the audio driver update for Steam?
 
     By default, Steam won't stream any game before you install its audio driver on the VM. Steam installs it automatically without action on your part. Alternatively, you could launch steam with "-skipstreamingdrivers".
