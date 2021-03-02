@@ -263,7 +263,7 @@
                     "properties": {
                         "mode": "incremental",
                         "templateLink": {
-                            "uri": "https://gallery.azure.com/artifact/20161101/microsoft.nvidia-gpu-driver-windows-arm.1.1.0/Artifacts/MainTemplate.json"
+                            "uri": "https://catalogartifact.azureedge.net/publicartifactsmigration/microsoft.nvidia-gpu-driver-windows-arm.1.1.0/Artifacts/MainTemplate.json"
                         },
                         "parameters": {
                             "vmName": {
