@@ -79,6 +79,7 @@ Click on the button above and fill out the form. You'll need to fill in:
 * Vm Name: the name for the VM.
 * Admin username and password: the login credentials for the local user.
 * Vm Type: Use Standard_NV6_Promo if possible to save money. Use Standard_NV12s_v3 if you want Premium SSD.
+* Platform : The OS of the VM to deploy. Note that Windows 10 VMs requires you to own a volume license for it.
 * Vm Storage Type: The type of storage for the VM. Standard_LRS for "Standard HDD", StandardSSD_LRS for "Standard SSD" or Premium_LRS for "Premium SSD".
 * Vm Ip Type: The Public IP allocation method for the VM. Check [here](https://azure.microsoft.com/en-us/pricing/details/ip-addresses/) for Public IP Address pricing.
 * Spot VM: Set to true if you want to deploy a Spot VM. Note that it is not compatible with the *Promo* series VMs.
