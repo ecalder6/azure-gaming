@@ -106,7 +106,7 @@ function Install-VirtualAudio {
     $hardward_id = "VBAudioVACWDM"
 
     Write-Output "Downloading Virtual Audio Driver"
-    $webClient.DownloadFile("http://vbaudio.jcedeveloppement.com/Download_CABLE/VBCABLE_Driver_Pack43.zip", "$PSScriptRoot\$compressed_file")
+    $webClient.DownloadFile("https://download.vb-audio.com/Download_CABLE/VBCABLE_Driver_Pack43.zip", "$PSScriptRoot\$compressed_file")
     Unblock-File -Path "$PSScriptRoot\$compressed_file"
 
     Write-Output "Extracting Virtual Audio Driver"
