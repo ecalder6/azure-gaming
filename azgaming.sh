@@ -48,8 +48,8 @@ case "$1" in
 	read -p "Application Secret (password): " SECRET
 
 
-	sed -i -e "s/SUB_ID=.*/SUB_ID=$SUB_ID/" $PARAMFILE
-	sed -i -e "s/TENANT_ID=.*/TENANT_ID=$TENANT_ID/" $PARAMFILE
+	sed -i -e "s/APP_ID=.*/APP_ID=$APP_ID/" $PARAMFILE
+	sed -i -e "s/SECRET=.*/SECRET=$SECRET/" $PARAMFILE
 
 	echo ""
 	echo "Lastly, we'll set the resource group and computer name"
@@ -57,7 +57,7 @@ case "$1" in
 	echo "Or we can register a new machine now"
 	echo ""
 
-	echo "To list your current machine and thier resource group"
+	echo "To list your current machine and their resource group"
 	echo "  az vm list -o table"
 	echo ""
 	echo "To list your current resource groups use"
@@ -66,9 +66,11 @@ case "$1" in
 	echo "  az group create -l LOCATION -g GROUP_NAME"
 	echo ""
 	read -p "Resource Group Name (name): " RSG
+	read -p "Computer Name (name): " NAME
 	echo ""
 
 	sed -i -e "s/RSG=.*/RSG=$RSG/" $PARAMFILE
+	sed -i -e "s/NAME=.*/NAME=$NAME/" $PARAMFILE
 
 	;;
 	
@@ -196,6 +198,7 @@ case "$1" in
     *)
 	echo "Usage: azgaming.sh token/start/status/rdp/parsec/stop/info"
 	echo ""
+	echo "init - Initialize Azure API connection and VM settings"
 	echo "token - Aquire API token for use and store in params.conf"
 	echo "start - Start your gaming VM"
 	echo "status - Get status of VM (stopping/starting/running/etc)"
