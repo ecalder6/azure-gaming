@@ -1,0 +1,11 @@
+#!/bin/bash
+
+# CONSTANTS. SET THIS TO YOUR PARAMETERS
+APP_ID=
+SECRET=
+TENANT_ID=
+NAME=
+RSG=
+SUB_ID=
+AZURE_SITE=https://management.azure.com/subscriptions
+AZG_TOKEN=

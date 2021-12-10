@@ -1,16 +1,13 @@
 # Cloud Gaming Made Easy
 
-## Update 1/11/2020
-
-1. You no longer need to use ZeroTier VPN. Steam can now stream games from outside your LAN. When deploying your VM, leave the "Network ID" field empty.
-2. The [NV-series](https://docs.microsoft.com/en-us/azure/virtual-machines/sizes-gpu) VMs deployed in this guide do not support Premium SSD. If you want Premium SSD, use [NVv3-series](https://docs.microsoft.com/en-us/azure/virtual-machines/nvv3-series). If you are feeling adventurous, you can try out the new [NVv4-series](https://docs.microsoft.com/en-us/azure/virtual-machines/nvv4-series) with [AMD MI25](https://www.amd.com/en/products/professional-graphics/instinct-mi25) and AMD EPYC 7V12(Rome). No idea if this works, but please let me know if it does :)
-
 ## About
-
 Effortlessly stream the latest games on Azure. This project automates the set-up process for cloud gaming on a Nvidia M60 GPU on Azure.
 The development of this project is heavily inspired by this [excellent guide](https://lg.io/2016/10/12/cloudy-gamer-playing-overwatch-on-azures-new-monster-gpu-instances.html).
 
 The automated setup first deploys an Azure NV6 virtual machine (VM) with a single Nvidia M60 GPU (1/2 of a M60 graphics card), configures the official Nvidia Driver Extension that installs the Nvidia driver on the VM, and finally deploys a Custom Script Extension to run the setup script. The setup script configures everything that's needed to run Steam games on the VM, such as configuring some Nvidia driver settings, setting up auto login for Windows, and eventually connecting to ZeroTier VPN.
+
+Both Steam Streaming and Parsec are available for streaming. Windows 10 OS is recommended if you plan to use XBox Game Pass games.
+
 
 ## Disclaimer
 
@@ -19,6 +16,8 @@ The automated setup first deploys an Azure NV6 virtual machine (VM) with a singl
 ## How Do I Stream Games?
 
 Your Azure VM and your local machine are connected through Steam. You can stream games through this connection using [Steam Remote Play](https://support.steampowered.com/kb_article.php?ref=3629-RIAV-1617).
+
+Alternatively you can install Parsec on your home computer (or raspberry pi) as well as the cloud machine. Log-in using same credentials at both ends. Connect and stream!
 
 You can optionally use ZeroTier VPN by specifying a network ID in the deployment parameters, for other scenarios such as using a third-party streaming software.
 
@@ -54,6 +53,8 @@ Azure also charges you for the number of transactions on managed disk. The calcu
 
 1. Sign up for a [Paid Azure subscription](https://azure.microsoft.com/en-us/pricing/purchase-options/). You need a paid subscription as the free account does not grant you access to GPU VMs.
 2. Have Steam ready and logged in. You can specify client streaming options in Steam's Settings > Remote Play > Advanced Client Options. Make sure to limit the bandwidth of your local steam client to 15 or 30 Mbits (50 if you don't mind the extra data cost).
+OR
+2. Sign up for [Parsec](https://parsecgaming.com/), and install on machines
 
 You can also use Steam Link on a mobile device !
 
@@ -124,6 +125,32 @@ Close the remote desktop connection using the disconnect.lnk shortcut on the des
 If you don't use this shortcut, the VM gets locked and Steam Remote Play can not capture the game.
 
 In Steam Remote Play, you can toggle streaming stats display with F6.
+
+#### Parsec Streaming Solutions
+
+Parsec+Raspberry PI - I've gotten this to work on both a Raspberry PI 2 and 3B+, with a 3000 mile distance between my home and the datacenter and minimal lag. The Parsec's FAQ for Raspberry Pis was pretty good, and no issues with the Debain version. ZeroTier VPN was not needed for this solution
+
+Rainway+iPad+ZeroVPN - This was my first attempt, but I couldn't get a playable version up. This required ZeroVPN on my iPad in order to connect to the Azure machine, but even after connection was barely playable. Some further debuging coul 
+
+Nvidia Gamestream - No longer appears selectable on cloud hardware
+
+Paperspace, AWS - Uses Windows Servers unless you have your own Windows 10 profesional license. Xbox Gamepass requires a true Windows 10 OS, and doesn't appear to work on Windows Servers.
+
+## Hardware
+
+I've used the NV6 (Nvidia) machines with SSD pretty consistently, and they are working well. The AMD version (NVv4) installs well, but I've had difficulty getting Parsec or Rainway to work nice with the. I suspect the options here to evolve with time.
+
+## Software
+
+NVidia Extension
+Parsec
+Game Library (Xbox, Epic, Steam, etc)
+(audio setup TBD)
+
+## Configuration
+
+The trickiest part is ensuring the right monitor for your game. Both the CPU and the GPU put out "monitors" that the game and Parsec can attach to, and the default appears to be the CPU monitor. I recommend just going into the device monitor and deactivating the device driver for the non-GPU monitor. As of July 2020 RDP can still remote into the machine, and Parsec can capture the GPU monitor, and you don't accidently start Sea of Thieves with the wrong monitor
+
 
 #### I Want to Manually Deploy My VM
 
@@ -221,6 +248,10 @@ Contributions are welcome! Please submit an issue and a PR for your change.
     ```powershell
     C:\Windows\System32\tscon.exe 2 /dest:console
     ```
+
+* How do I setup UPnP for my azure machine
+
+    One attempt: On the network inteface setting for your Azure machine, set Port Forwarding to "Enabled"
 
 * Should I install the audio driver update for Steam?
 
